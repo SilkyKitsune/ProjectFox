@@ -1,0 +1,281 @@
+﻿using ProjectFox.CoreEngine.Math;
+using ProjectFox.GameEngine.Physics;
+using ProjectFox.GameEngine.Visuals;
+using static ProjectFox.GameEngine.Visuals.Screen;
+using static ProjectFox.GameEngine.Visuals.Screen.ClearModes;
+
+namespace ProjectFox.GameEngine;
+
+/// <summary> a single threaded scene </summary>
+public class Scene : NamedType
+{
+    /// <param name="name"> the scene's ID </param>
+    public Scene(NameID name) : base(name) { }
+
+    private readonly HashArray<Object> objects = new(0x100);
+    internal readonly HashArray<VisualLayer> visualLayers = new(0x40);
+    //audio channels
+
+    private ClearModes clearMode = Clear;
+    private SetPiece bg = new(new("_BGDraw", 0)) { parallaxFactor = new(0f, 0f) };
+
+    /// <summary> the color used when ClearMode == Fill (black by default) </summary>
+    public Color bgColor = new(255, 255, 255);
+    
+    public ClearModes ClearMode
+    {
+        get => clearMode;
+        set
+        {
+            switch (value)
+            {
+                case None:
+                    clearMode = value;
+                    break;
+                case Clear:
+                    goto case None;
+                case Fill:
+                    goto case None;
+                case DrawTexture:
+                    goto case None;
+                default:
+                    Engine.SendError(ErrorCodes.BadEnumValue, name, nameof(clearMode));
+                    break;
+            }
+        }
+    }
+    
+    public Texture BGTexture { get => bg.texture; set => bg.texture = value; }
+
+    public IPalette BGPalette { get => bg.palette; set => bg.palette = value; }
+
+    /// <summary> the offset of the background when ClearMode == DrawTexture </summary>
+    public Vector BGOffset { get => bg.offset; set => bg.offset = value; }
+
+    public bool BGVerticalFlip { get => bg.verticalFlipTexture; set => bg.verticalFlipTexture = value; }
+
+    public bool BGHorizontalFlip { get => bg.horizontalFlipTexture; set => bg.horizontalFlipTexture = value; }
+
+    internal void _frame()
+    {
+        switch (clearMode)
+        {
+            case None:
+                break;
+            case Clear:
+                screenLayer.Clear();
+                break;
+            case Fill:
+                screenLayer.Fill(bgColor);
+                break;
+            case DrawTexture:
+                bg._draw(screenLayer);
+                break;
+            default:
+                Engine.SendError(ErrorCodes.BadEnumValue, name, nameof(clearMode));
+                clearMode = None;
+                break;
+        }
+
+        for (int i = 0; i < visualLayers.codes.length; i++)
+            visualLayers.values.elements[i].Clear();
+
+        //pause change event?
+
+        for (int i = 0; i < objects.codes.length; i++)
+        {
+            Object obj = objects.values.elements[i];
+            if (obj.enabled)//store object?
+            {
+                obj._frame();
+                obj._draw();
+            }
+        }
+
+        //pause change event?
+
+        for (int i = 0; i < visualLayers.codes.length; i++)
+        {
+            VisualLayer layer = visualLayers.values.elements[i];
+            if (layer.visible) layer.Blend(layer.pixels, screenLayer.pixels);
+        }
+    }
+
+    #region Objects
+    public void AddObject(Object obj)
+    {
+        if (obj == null)
+            Engine.SendError(ErrorCodes.NullArgument, name, nameof(obj));
+        else if (obj.owner != null)
+            Engine.SendError(ErrorCodes.AlreadyOwnedOrInScene, name, nameof(obj));
+        else if (objects.codes.Contains(obj.name))
+            Engine.SendError(
+                ErrorCodes.AlreadyOwnedOrInScene,
+                name, nameof(obj),
+                $"Scene '{name}' already contains object '{obj.name}'");
+        else
+        {
+            obj.scene?.RemoveObject(obj.name);
+            objects.AddDirect(obj.name, obj);
+            obj.scene = this;
+        }
+    }
+
+    /// <summary></summary>
+    /// <param name="objects"></param>
+    /// <remarks> Possible Errors: "NullArgument", "AlreadyOwnedOrInScene" </remarks>
+    public void AddObjects(params Object[] objects)
+    {
+        if (objects == null || objects.Length == 0)
+        {
+            Engine.SendError(ErrorCodes.NullArgument, name, nameof(objects));
+            return;
+        }
+
+        foreach (Object obj in objects)
+            if (obj == null)
+                Engine.SendError(ErrorCodes.NullArgument, name, nameof(obj));
+            else if (obj.owner != null)
+                Engine.SendError(ErrorCodes.AlreadyOwnedOrInScene, name, nameof(obj));
+            else if (this.objects.codes.Contains(obj.name))
+                Engine.SendError(
+                    ErrorCodes.AlreadyOwnedOrInScene,
+                    name, nameof(obj),
+                    $"Scene '{name}' already contains object '{obj.name}'");
+            else
+            {
+                obj.scene?.RemoveObject(obj.name);
+                this.objects.AddDirect(obj.name, obj);
+                obj.scene = this;
+            }
+    }
+
+    public void RemoveObject(NameID name)
+    {
+        int index = objects.codes.IndexOf(name);
+        if (index < 0)
+        {
+            Engine.SendError(
+                ErrorCodes.BadArgument,
+                this.name, nameof(name),
+                $"Object '{name}' could not be found in scene '{this.name}'");
+            return;
+        }
+        objects.values.elements[index].scene = null;
+        objects.RemoveAt(index);
+    }
+
+    public void RemoveObjects(params NameID[] names)
+    {
+        if (names == null || names.Length == 0)
+        {
+            Engine.SendError(ErrorCodes.NullArgument, name, nameof(names));
+            return;
+        }
+
+        foreach (NameID name in names)
+        {
+            int index = objects.codes.IndexOf(name);
+            if (index < 0) Engine.SendError(
+                ErrorCodes.BadArgument,
+                this.name, nameof(name),
+                $"Object '{name}' could not be found in scene '{this.name}'");
+            else
+            {
+                objects.values.elements[index].scene = null;
+                objects.RemoveAt(index);
+            }
+        }
+    }
+
+    //Pausing
+    #endregion
+
+    #region VisualLayers
+    public void AddVisualLayer(VisualLayer layer)
+    {
+        if (layer == null)
+            Engine.SendError(ErrorCodes.NullArgument, name, nameof(layer));
+        else if (visualLayers.codes.Contains(layer.name))
+            Engine.SendError(
+                ErrorCodes.AlreadyOwnedOrInScene,
+                name, nameof(layer),
+                $"Scene '{name}' already contains layer '{layer.name}'");
+        else
+        {
+            layer.scene?.RemoveVisualLayer(layer.name);
+            visualLayers.AddDirect(layer.name, layer);
+            layer.scene = this;
+            layer.Clear();
+        }
+    }
+
+    public void AddVisualLayers(params VisualLayer[] layers)
+    {
+        if (layers == null || layers.Length == 0)
+        {
+            Engine.SendError(ErrorCodes.NullArgument, name, nameof(layers));
+            return;
+        }
+
+        foreach (VisualLayer layer in layers)
+            if (layer == null)
+                Engine.SendError(ErrorCodes.NullArgument, name, nameof(layer));
+            else if (visualLayers.codes.Contains(layer.name))
+                Engine.SendError(
+                    ErrorCodes.AlreadyOwnedOrInScene,
+                    name, nameof(layer),
+                    $"Scene '{name}' already contains layer '{layer.name}'");
+            else
+            {
+                layer.scene?.RemoveVisualLayer(layer.name);
+                visualLayers.AddDirect(layer.name, layer);
+                layer.scene = this;
+                layer.Clear();
+            }
+    }
+
+    public void RemoveVisualLayer(NameID name)
+    {
+        int index = visualLayers.codes.IndexOf(name);
+        if (index < 0)
+        {
+            Engine.SendError(
+                ErrorCodes.BadArgument,
+                this.name, nameof(name),
+                $"Layer '{name}' could not be found in scene '{this.name}'");
+            return;
+        }
+        visualLayers.values.elements[index].scene = null;
+        visualLayers.RemoveAt(index);
+    }
+
+    public void RemoveVisualLayers(params NameID[] names)
+    {
+        if (names == null || names.Length == 0)
+        {
+            Engine.SendError(ErrorCodes.NullArgument, name, nameof(names));
+            return;
+        }
+
+        foreach (NameID name in names)
+        {
+            int index = visualLayers.codes.IndexOf(name);
+            if (index < 0) Engine.SendError(
+                ErrorCodes.BadArgument,
+                this.name, nameof(name),
+                $"Layer '{name}' could not be found in scene '{this.name}'");
+            else
+            {
+                visualLayers.values.elements[index].scene = null;
+                visualLayers.RemoveAt(index);
+            }
+        }
+    }
+    #endregion
+
+    //public void AddAudioChannel
+    //public void AddAudioChannels(params)
+    //public void RemoveChannel
+    //public void RemoveChannels(params)
+}
