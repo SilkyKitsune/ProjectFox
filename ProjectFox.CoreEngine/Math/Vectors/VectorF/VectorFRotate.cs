@@ -63,6 +63,7 @@ public partial struct VectorF
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public VectorF Rotate(float amount, VectorF pivot = default)
     {
+#if DEBUG
         if (amount == 0f || Equals(pivot)) return new(x, y);
         
         bool noPivot = pivot.IsZero();
@@ -95,6 +96,9 @@ public partial struct VectorF
                 break;
         }
         return noPivot ? vf : new(vf.x + pivot.x, vf.y + pivot.y);
+#else
+        return default;
+#endif
     }
 
     /*[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -130,7 +134,11 @@ public partial struct VectorF
     }*/
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#if DEBUG
     public VectorF RotateByRadians(float radians, VectorF pivot = default) => Rotate(radians / Math.Tau, pivot);
+#else
+    public VectorF RotateByRadians(float radians, VectorF pivot = default) => default;
+#endif
 
     /*[MethodImpl(MethodImplOptions.AggressiveInlining)]
     public VectorF RotateByDegrees(float degrees)
@@ -195,5 +203,5 @@ public partial struct VectorF
         VectorF vf = new VectorF(x - refPoint.x, y - refPoint.y).RotateByRightAngles(rightAngles);
         return new((int)(vf.x + refPoint.x), (int)(vf.y + refPoint.y));
     }
-    #endregion
+#endregion
 }

@@ -8,8 +8,12 @@ public partial struct Vector
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static VectorF PointFromRotationOrigin(float angle)
     {
+#if DEBUG
         Math.SineCosine(angle, out float sin, out float cos);
         return new(sin, -cos);
+#else
+        return default;
+#endif
     }
 
     #region Angle
@@ -129,7 +133,8 @@ angleorigin()
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public VectorF Rotate(float amount, VectorF pivot = default)
-    {        
+    {
+#if DEBUG
         if (amount == 0f || Equals(pivot)) return new(x, y);
 
         bool noPivot = pivot.IsZero();//vectorf.rotate needs same fixes
@@ -162,6 +167,9 @@ angleorigin()
                 break;
         }
         return noPivot ? vf : new(vf.x + pivot.x, vf.y + pivot.y);
+#else
+        return default;
+#endif
     }
 
     /*[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -199,7 +207,11 @@ angleorigin()
     }*/
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#if DEBUG
     public VectorF RotateByRadians(float radians, VectorF pivot = default) => Rotate(radians / Math.Tau, pivot);
+#else
+    public VectorF RotateByRadians(float radians, VectorF pivot = default) => default;
+#endif
 
     /*[MethodImpl(MethodImplOptions.AggressiveInlining)]
     public VectorF RotateByRadians(VectorF pivot, float radians)
