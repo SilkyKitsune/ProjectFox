@@ -5,6 +5,8 @@ using static ProjectFox.Windows.WinUser;
 
 namespace ProjectFox.Windows;
 
+//minimizing throws exception from IntPtr
+
 /// <summary> Base class for building a window using WinUser/WinGDI </summary>
 public abstract class Window
 {

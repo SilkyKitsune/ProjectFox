@@ -1,9 +1,8 @@
-﻿//using D = System.Diagnostics.Debug;
-
-namespace ProjectFox.CoreEngine.Math;
+﻿namespace ProjectFox.CoreEngine.Math;
 
 public partial struct Vector
 {
+#if DEBUG
     [System.Obsolete] public static Vector[] StepInterpolateOld(Vector endPoint, Vector startPoint = default)
     {
         Vector distance = startPoint.IsZero() ? endPoint : new(endPoint.x - startPoint.x, endPoint.y - startPoint.y);
@@ -45,6 +44,7 @@ public partial struct Vector
         }
         return array;
     }
+#endif
 
     public static Vector[] StepInterpolate(Vector endPoint, Vector startPoint = default)//there are some values that give bad steps
     {

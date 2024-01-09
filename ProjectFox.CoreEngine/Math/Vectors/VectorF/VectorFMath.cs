@@ -342,11 +342,13 @@ public partial struct VectorF
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public VectorF SqrRoot() => new(Math.SqrRoot(x), Math.SqrRoot(y));
 
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public VectorF Wrap(float min, float max) => default;
-    //new(Math.Wrap(x, min, max), Math.Wrap(y, min, max));
 
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public VectorF Wrap(VectorF min, VectorF max) => default;
-    //new(Math.Wrap(x, min.x, max.x), Math.Wrap(y, min.y, max.y));
 }

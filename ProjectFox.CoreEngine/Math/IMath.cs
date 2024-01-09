@@ -5,6 +5,8 @@
 /// <typeparam name="F"> equivalent floating point type, use inheriting type for floating point types </typeparam>
 public interface IMath<T, F>
 {
+    //T FromBytes(byte[])
+    
     /// <summary> equivalent to the Math.Abs method </summary>
     public abstract T Abs();
 
@@ -54,6 +56,8 @@ public interface IMath<T, F>
 
     /// <summary> equivalent to the Math.FarthestIndex method </summary>
     public abstract int FarthestIndex(T[] values);
+
+    //byte[] GetBytes()
 
     /// <summary> if the value is equal to zero </summary>
     public abstract bool IsZero();

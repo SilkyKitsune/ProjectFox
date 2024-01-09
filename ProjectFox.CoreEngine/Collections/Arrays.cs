@@ -3,8 +3,7 @@ using System;
 
 namespace ProjectFox.CoreEngine.Collections;
 
-[Obsolete]
-internal static class Arrays
+[Obsolete] internal static class Arrays//
 {
     public static void Copy<T>(T[] source, T[] destination, int length)
     {

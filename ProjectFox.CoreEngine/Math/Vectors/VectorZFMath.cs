@@ -358,11 +358,13 @@ public partial struct VectorZF
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public VectorZF SqrRoot() => new(Math.SqrRoot(x), Math.SqrRoot(y), Math.SqrRoot(z));
 
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public VectorZF Wrap(float min, float max) => default;
-    //new(Math.Wrap(x, min, max), Math.Wrap(y, min, max), Math.Wrap(z, min, max));
 
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public VectorZF Wrap(VectorZF min, VectorZF max) => default;
-    //new(Math.Wrap(x, min.x, max.x), Math.Wrap(y, min.y, max.y), Math.Wrap(z, min.z, max.z));
 }

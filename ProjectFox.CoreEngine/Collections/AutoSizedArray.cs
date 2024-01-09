@@ -87,6 +87,7 @@ public sealed class AutoSizedArray<T> : ICollection<T>, ICopy<AutoSizedArray<T>>
         }
         set//this doesn't seem to work right
         {//endIndex is redundant here because value.Length is functionally a lenght argument
+            //endindex can specify the range to remove before adding value
 #if DEBUG
             if (value == null) throw new ArgumentNullException(nameof(value));
 

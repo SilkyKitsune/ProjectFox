@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace ProjectFox.CoreEngine.Math;
 
-public interface IShape3D<S, V, t, F> : IShape<S, V, t, F>//, IGenericShape<V>
+public interface IShape3D<S, V, t, F> : IShape<S, V, t, F>//, IPolytope<V>
 {
     public abstract bool Enveloping(IPolytope<VectorZ, Tetrahedron> shape);
     public abstract bool Enveloping(IPolytope<VectorZF, TetrahedronF> shape);
@@ -48,7 +48,7 @@ public interface IShape3D<S, V, t, F> : IShape<S, V, t, F>//, IGenericShape<V>
     public abstract bool Overlapping(VectorZ vector);
     public abstract bool Overlapping(VectorZF vector);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]//need to update to abstract
     public virtual bool Overlapping(IPolytope<VectorZ, Tetrahedron> shape) => Equals(shape) || Enveloping(shape);//|| Within(shape);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

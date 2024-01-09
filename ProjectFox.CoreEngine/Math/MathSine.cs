@@ -3,6 +3,8 @@ using System.Runtime.CompilerServices;
 
 namespace ProjectFox.CoreEngine.Math
 {
+    //sine/cosine methods are not ready for deployment
+
     public static partial class Math
     {
         /// <summary> the closest approximation to π/2 (1.57079632679) </summary>

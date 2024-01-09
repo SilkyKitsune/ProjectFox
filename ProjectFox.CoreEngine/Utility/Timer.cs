@@ -4,6 +4,8 @@ using static ProjectFox.CoreEngine.Math.Math;
 
 namespace ProjectFox.CoreEngine.Utility;
 
+/// <summary> A sort of accurate-ish Timer class (not meant for deployment) </summary>
+/// <remarks> DEBUG Only </remarks>
 public sealed class Timer
 {
     public delegate void TimerDelegate();

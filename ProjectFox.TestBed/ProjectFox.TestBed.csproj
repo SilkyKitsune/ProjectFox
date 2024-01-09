@@ -17,7 +17,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\IPSLib\IPSLib.csproj" />
     <ProjectReference Include="..\ProjectFox.CoreEngine\ProjectFox.CoreEngine.csproj" />
     <ProjectReference Include="..\ProjectFox.GameEngine\ProjectFox.GameEngine.csproj" />
     <ProjectReference Include="..\ProjectFox.Windows\ProjectFox.Windows.csproj" />

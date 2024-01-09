@@ -4,6 +4,8 @@ using System.Threading;
 
 namespace ProjectFox.CoreEngine.Utility;
 
+/// <summary> A sort of accurate-ish Stopwatch class (not meant for deployment) </summary>
+/// <remarks> DEBUG Only </remarks>
 public sealed class Stopwatch
 {
     private bool running = false;
