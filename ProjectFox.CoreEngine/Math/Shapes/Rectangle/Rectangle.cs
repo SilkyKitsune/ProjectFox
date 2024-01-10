@@ -88,6 +88,5 @@ public partial struct Rectangle : IShape2D<Rectangle, Vector, int, RectangleF>, 
 
     /// <returns> $"(Pos = {(0b)position}, Size = {(0b)size})" </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ToBinString(bool littleEndian = false, char byteSeparator = '|', char nibbleSeparator = '_', bool leadingText = false) =>
-        $"(Pos = {position.ToBinString(littleEndian, byteSeparator, nibbleSeparator, leadingText)}, Size = {size.ToBinString(littleEndian, byteSeparator, nibbleSeparator, leadingText)})";
-}
+    public string ToBinString(bool littleEndian = false, bool leadingText = false, char byteSeparator = '|', char nibbleSeparator = '_') =>
+        $"(Pos = {position.ToBinString(littleEndian, leadingText, byteSeparator, nibbleSeparator)}, Size = {size.ToBinString(littleEndian, leadingText, byteSeparator, nibbleSeparator)})";}

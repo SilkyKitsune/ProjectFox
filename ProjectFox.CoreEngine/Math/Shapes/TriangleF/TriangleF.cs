@@ -87,8 +87,8 @@ public partial struct TriangleF : IShape2D<TriangleF, VectorF, float, TriangleF>
         $"(A = {a.ToHexString(littleEndian, leadingText)}, B = {b.ToHexString(littleEndian, leadingText)}, C = {c.ToHexString(littleEndian, leadingText)})";
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ToBinString(bool littleEndian = false, char byteSeparator = '|', char nibbleSeparator = '_', bool leadingText = false) =>
-        $"(A = {a.ToBinString(littleEndian, byteSeparator, nibbleSeparator, leadingText)}, B = {b.ToBinString(littleEndian, byteSeparator, nibbleSeparator, leadingText)}, C = {c.ToBinString(littleEndian, byteSeparator, nibbleSeparator, leadingText)})";
+    public string ToBinString(bool littleEndian = false, bool leadingText = false, char byteSeparator = '|', char nibbleSeparator = '_') =>
+        $"(A = {a.ToBinString(littleEndian, leadingText, byteSeparator, nibbleSeparator)}, B = {b.ToBinString(littleEndian, leadingText, byteSeparator, nibbleSeparator)}, C = {c.ToBinString(littleEndian, leadingText, byteSeparator, nibbleSeparator)})";
 
 #if DEBUG
     public Triangle.TriangleLayout Getlayout()

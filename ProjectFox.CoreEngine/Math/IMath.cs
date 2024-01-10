@@ -3,9 +3,9 @@
 /// <summary> An interface for implementing basic math types </summary>
 /// <typeparam name="T"> inheriting type </typeparam>
 /// <typeparam name="F"> equivalent floating point type, use inheriting type for floating point types </typeparam>
-public interface IMath<T, F>
+public interface IMath<T, F> : IData<T>
 {
-    //T FromBytes(byte[])
+    //operators
     
     /// <summary> equivalent to the Math.Abs method </summary>
     public abstract T Abs();
@@ -57,8 +57,6 @@ public interface IMath<T, F>
     /// <summary> equivalent to the Math.FarthestIndex method </summary>
     public abstract int FarthestIndex(T[] values);
 
-    //byte[] GetBytes()
-
     /// <summary> if the value is equal to zero </summary>
     public abstract bool IsZero();
 
@@ -99,10 +97,6 @@ public interface IMath<T, F>
 
     /// <summary> equivalent to the Math.SqrRoot method </summary>
     public abstract F SqrRoot();
-
-    public abstract string ToHexString(bool littleEndian = false, bool leadingText = false);
-
-    public abstract string ToBinString(bool littleEndian = false, char byteSeparator = '|', char nibbleSeparator = '_', bool leadingText = false);
 
     /// <summary> equivalent to the Math.Wrap method </summary>
     public abstract T Wrap(T min, T max);

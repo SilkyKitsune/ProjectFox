@@ -96,6 +96,9 @@ public sealed class HashLookupTable<H, T> : IHashTable<H, T>, ICopy<HashLookupTa
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public HashLookupTable<H, T> Copy() => new(codes.Copy(), values.Copy());
 
+    /// <summary> Not Fully Implemented Yet </summary>
+    /// <param name="table"></param>
+    /// <exception cref="ArgumentNullException"></exception>
     public void CopyTo(IHashTable<H, T> table)
     {
         if (table == null) throw new ArgumentNullException(nameof(table));
@@ -111,10 +114,11 @@ public sealed class HashLookupTable<H, T> : IHashTable<H, T>, ICopy<HashLookupTa
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void CopyTo(HashLookupTable<H, T> table)//what if there are conflicting codes?
+    public void CopyTo(HashLookupTable<H, T> table)
     {
         if (table == null) throw new ArgumentNullException(nameof(table));
         if (codes.Length == 0) return;
+
         codes.CopyTo(table.codes);
         values.CopyTo(table.values);
     }

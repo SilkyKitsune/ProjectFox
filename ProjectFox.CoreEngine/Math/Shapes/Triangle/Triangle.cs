@@ -131,8 +131,8 @@ public partial struct Triangle : IShape2D<Triangle, Vector, int, TriangleF>, IPo
 
     /// <returns> $"(A = {(0b)a}, B = {(0b)b}, C = {(0b)c})" </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ToBinString(bool littleEndian = false, char byteSeparator = '|', char nibbleSeparator = '_', bool leadingText = false) =>
-        $"(A = {a.ToBinString(littleEndian, byteSeparator, nibbleSeparator, leadingText)}, B = {b.ToBinString(littleEndian, byteSeparator, nibbleSeparator, leadingText)}, C = {c.ToBinString(littleEndian, byteSeparator, nibbleSeparator, leadingText)})";
+    public string ToBinString(bool littleEndian = false, bool leadingText = false, char byteSeparator = '|', char nibbleSeparator = '_') =>
+        $"(A = {a.ToBinString(littleEndian, leadingText, byteSeparator, nibbleSeparator)}, B = {b.ToBinString(littleEndian, leadingText, byteSeparator, nibbleSeparator)}, C = {c.ToBinString(littleEndian, leadingText, byteSeparator, nibbleSeparator)})";
 
     /*public bool IsRight()
     {

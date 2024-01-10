@@ -272,9 +272,9 @@ public static class Strings
     };
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string ToBinString(byte b, bool littleEndian = false, bool leadingText = false, char separator = '_') => littleEndian ?
-        (leadingText ? "0b" : "") + $"{NibbleBin(b & FourBits, littleEndian)}{separator}{NibbleBin(b >> 4 & FourBits, littleEndian)}" :
-        (leadingText ? "0b" : "") + $"{NibbleBin(b >> 4 & FourBits, littleEndian)}{separator}{NibbleBin(b & FourBits, littleEndian)}";
+    public static string ToBinString(byte b, bool littleEndian = false, bool leadingText = false, char nibbleSeparator = '_') => littleEndian ?
+        (leadingText ? "0b" : "") + $"{NibbleBin(b & FourBits, littleEndian)}{nibbleSeparator}{NibbleBin(b >> 4 & FourBits, littleEndian)}" :
+        (leadingText ? "0b" : "") + $"{NibbleBin(b >> 4 & FourBits, littleEndian)}{nibbleSeparator}{NibbleBin(b & FourBits, littleEndian)}";
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string ToBinString(short s, bool littleEndian = false, bool leadingText = false, char byteSeparator = '|', char nibbleSeparator = '_') => littleEndian ?
@@ -327,343 +327,340 @@ public static class Strings
     public unsafe static string ToBinString(double d, bool littleEndian = false, bool leadingText = false, char byteSeparator = '|', char nibbleSeparator = '_') =>
         ToBinString(*(long*)&d, littleEndian, leadingText, byteSeparator, nibbleSeparator);
 
-    public static string ConcatHex(bool littleEndian, bool leadingText, params byte[] bytes)
-    {
-        string s = "";
-        foreach (byte b in bytes) s += ToHexString(b, littleEndian, leadingText);
-        return s;
-    }
-
-    public static string ConcatHex(bool littleEndian, bool leadingText, ReadOnlySpan<byte> bytes)
-    {
-        string s = "";
-        foreach (byte b in bytes) s += ToHexString(b, littleEndian, leadingText);
-        return s;
-    }
-
-    public static string ConcatHex(bool littleEndian, bool leadingText, params short[] shorts)
+    public static string ConcatHex(bool littleEndian, bool leadingText, params byte[] values)
     {
         string str = "";
-        foreach (short s in shorts) str += ToHexString(s, littleEndian, leadingText);
+        foreach (byte value in values) str += ToHexString(value, littleEndian, leadingText);
         return str;
     }
 
-    public static string ConcatHex(bool littleEndian, bool leadingText, ReadOnlySpan<short> shorts)
+    public static string ConcatHex(bool littleEndian, bool leadingText, ReadOnlySpan<byte> values)
     {
         string str = "";
-        foreach (short s in shorts) str += ToHexString(s, littleEndian, leadingText);
+        foreach (byte value in values) str += ToHexString(value, littleEndian, leadingText);
         return str;
     }
 
-    public static string ConcatHex(bool littleEndian, bool leadingText, params int[] ints)
-    {
-        string s = "";
-        foreach (int i in ints) s += ToHexString(i, littleEndian, leadingText);
-        return s;
-    }
-
-    public static string ConcatHex(bool littleEndian, bool leadingText, ReadOnlySpan<int> ints)
-    {
-        string s = "";
-        foreach (int i in ints) s += ToHexString(i, littleEndian, leadingText);
-        return s;
-    }
-
-    public static string ConcatHex(bool littleEndian, bool leadingText, params long[] longs)
-    {
-        string s = "";
-        foreach (long l in longs) s += ToHexString(l, littleEndian, leadingText);
-        return s;
-    }
-
-    public static string ConcatHex(bool littleEndian, bool leadingText, ReadOnlySpan<long> longs)
-    {
-        string s = "";
-        foreach (long l in longs) s += ToHexString(l, littleEndian, leadingText);
-        return s;
-    }
-
-    public static string ConcatHex(bool littleEndian, bool leadingText, params float[] floats)
-    {
-        string s = "";
-        foreach (float f in floats) s += ToHexString(f, littleEndian, leadingText);
-        return s;
-    }
-
-    public static string ConcatHex(bool littleEndian, bool leadingText, ReadOnlySpan<float> floats)
-    {
-        string s = "";
-        foreach (float f in floats) s += ToHexString(f, littleEndian, leadingText);
-        return s;
-    }
-
-    public static string ConcatHex(bool littleEndian, bool leadingText, params double[] doubles)
-    {
-        string s = "";
-        foreach (double d in doubles) s += ToHexString(d, littleEndian, leadingText);
-        return s;
-    }
-
-    public static string ConcatHex(bool littleEndian, bool leadingText, ReadOnlySpan<double> doubles)
-    {
-        string s = "";
-        foreach (double d in doubles) s += ToHexString(d, littleEndian, leadingText);
-        return s;
-    }
-
-    public static string ConcatBin(bool littleEndian, bool leadingText, char nibbleSeparator, params byte[] bytes)
-    {
-        string s = "";
-        foreach (byte b in bytes) s += ToBinString(b, littleEndian, leadingText, nibbleSeparator);
-        return s;
-    }
-
-    public static string ConcatBin(bool littleEndian, bool leadingText, char nibbleSeparator, ReadOnlySpan<byte> bytes)
-    {
-        string s = "";
-        foreach (byte b in bytes) s += ToBinString(b, littleEndian, leadingText, nibbleSeparator);
-        return s;
-    }
-
-    public static string ConcatBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, params short[] shorts)
+    public static string ConcatHex(bool littleEndian, bool leadingText, params short[] values)
     {
         string str = "";
-        foreach (short s in shorts) str += ToBinString(s, littleEndian, leadingText, byteSeparator, nibbleSeparator);
+        foreach (short value in values) str += ToHexString(value, littleEndian, leadingText);
         return str;
     }
 
-    public static string ConcatBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, ReadOnlySpan<short> shorts)
+    public static string ConcatHex(bool littleEndian, bool leadingText, ReadOnlySpan<short> values)
     {
         string str = "";
-        foreach (short s in shorts) str += ToBinString(s, littleEndian, leadingText, byteSeparator, nibbleSeparator);
+        foreach (short value in values) str += ToHexString(value, littleEndian, leadingText);
         return str;
     }
 
-    public static string ConcatBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, params int[] ints)
-    {
-        string s = "";
-        foreach (int i in ints) s += ToBinString(i, littleEndian, leadingText, byteSeparator, nibbleSeparator);
-        return s;
-    }
-
-    public static string ConcatBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, ReadOnlySpan<int> ints)
-    {
-        string s = "";
-        foreach (int i in ints) s += ToBinString(i, littleEndian, leadingText, byteSeparator, nibbleSeparator);
-        return s;
-    }
-
-    public static string ConcatBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, params long[] longs)
-    {
-        string s = "";
-        foreach (long l in longs) s += ToBinString(l, littleEndian, leadingText, byteSeparator, nibbleSeparator);
-        return s;
-    }
-
-    public static string ConcatBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, ReadOnlySpan<long> longs)
-    {
-        string s = "";
-        foreach (long l in longs) s += ToBinString(l, littleEndian, leadingText, byteSeparator, nibbleSeparator);
-        return s;
-    }
-
-    public static string ConcatBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, params float[] floats)
-    {
-        string s = "";
-        foreach (float f in floats) s += ToBinString(f, littleEndian, leadingText, byteSeparator, nibbleSeparator);
-        return s;
-    }
-
-    public static string ConcatBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, ReadOnlySpan<float> floats)
-    {
-        string s = "";
-        foreach (float f in floats) s += ToBinString(f, littleEndian, leadingText, byteSeparator, nibbleSeparator);
-        return s;
-    }
-
-    public static string ConcatBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, params double[] doubles)
-    {
-        string s = "";
-        foreach (double d in doubles) s += ToBinString(d, littleEndian, leadingText, byteSeparator, nibbleSeparator);
-        return s;
-    }
-
-    public static string ConcatBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, ReadOnlySpan<double> doubles)
-    {
-        string s = "";
-        foreach (double d in doubles) s += ToBinString(d, littleEndian, leadingText, byteSeparator, nibbleSeparator);
-        return s;
-    }
-
-    public static string JoinHex(bool littleEndian, bool leadingText, string separator, params byte[] bytes)
-    {
-        string s = "";
-        foreach (byte b in bytes) s += ToHexString(b, littleEndian, leadingText) + separator;
-        return s;
-    }
-
-    public static string JoinHex(bool littleEndian, bool leadingText, string separator, ReadOnlySpan<byte> bytes)
-    {
-        string s = "";
-        foreach (byte b in bytes) s += ToHexString(b, littleEndian, leadingText) + separator;
-        return s;
-    }
-
-    public static string JoinHex(bool littleEndian, bool leadingText, string separator, params short[] shorts)
+    public static string ConcatHex(bool littleEndian, bool leadingText, params int[] values)
     {
         string str = "";
-        foreach (short s in shorts) str += ToHexString(s, littleEndian, leadingText) + separator;
+        foreach (int value in values) str += ToHexString(value, littleEndian, leadingText);
         return str;
     }
 
-    public static string JoinHex(bool littleEndian, bool leadingText, string separator, ReadOnlySpan<short> shorts)
+    public static string ConcatHex(bool littleEndian, bool leadingText, ReadOnlySpan<int> values)
     {
         string str = "";
-        foreach (short s in shorts) str += ToHexString(s, littleEndian, leadingText) + separator;
+        foreach (int value in values) str += ToHexString(value, littleEndian, leadingText);
         return str;
     }
 
-    public static string JoinHex(bool littleEndian, bool leadingText, string separator, params int[] ints)
-    {
-        string s = "";
-        foreach (int i in ints) s += ToHexString(i, littleEndian, leadingText) + separator;
-        return s;
-    }
-
-    public static string JoinHex(bool littleEndian, bool leadingText, string separator, ReadOnlySpan<int> ints)
-    {
-        string s = "";
-        foreach (int i in ints) s += ToHexString(i, littleEndian, leadingText) + separator;
-        return s;
-    }
-
-    public static string JoinHex(bool littleEndian, bool leadingText, string separator, params long[] longs)
-    {
-        string s = "";
-        foreach (long l in longs) s += ToHexString(l, littleEndian, leadingText) + separator;
-        return s;
-    }
-
-    public static string JoinHex(bool littleEndian, bool leadingText, string separator, ReadOnlySpan<long> longs)
-    {
-        string s = "";
-        foreach (long l in longs) s += ToHexString(l, littleEndian, leadingText) + separator;
-        return s;
-    }
-
-    public static string JoinHex(bool littleEndian, bool leadingText, string separator, params float[] floats)
-    {
-        string s = "";
-        foreach (float f in floats) s += ToHexString(f, littleEndian, leadingText) + separator;
-        return s;
-    }
-
-    public static string JoinHex(bool littleEndian, bool leadingText, string separator, ReadOnlySpan<float> floats)
-    {
-        string s = "";
-        foreach (float f in floats) s += ToHexString(f, littleEndian, leadingText) + separator;
-        return s;
-    }
-
-    public static string JoinHex(bool littleEndian, bool leadingText, string separator, params double[] doubles)
-    {
-        string s = "";
-        foreach (double d in doubles) s += ToHexString(d, littleEndian, leadingText) + separator;
-        return s;
-    }
-
-    public static string JoinHex(bool littleEndian, bool leadingText, string separator, ReadOnlySpan<double> doubles)
-    {
-        string s = "";
-        foreach (double d in doubles) s += ToHexString(d, littleEndian, leadingText) + separator;
-        return s;
-    }
-
-    public static string JoinBin(bool littleEndian, bool leadingText, char nibbleSeparator, string elementSeparator, params byte[] bytes)
-    {
-        string s = "";
-        foreach (byte b in bytes) s += ToBinString(b, littleEndian, leadingText, nibbleSeparator) + elementSeparator;
-        return s;
-    }
-
-    public static string JoinBin(bool littleEndian, bool leadingText, char nibbleSeparator, string elementSeparator, ReadOnlySpan<byte> bytes)
-    {
-        string s = "";
-        foreach (byte b in bytes) s += ToBinString(b, littleEndian, leadingText, nibbleSeparator) + elementSeparator;
-        return s;
-    }
-
-    public static string JoinBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, string elementSeparator, params short[] shorts)
+    public static string ConcatHex(bool littleEndian, bool leadingText, params long[] values)
     {
         string str = "";
-        foreach (short s in shorts) str += ToBinString(s, littleEndian, leadingText, byteSeparator, nibbleSeparator) + elementSeparator;
+        foreach (long value in values) str += ToHexString(value, littleEndian, leadingText);
         return str;
     }
 
-    public static string JoinBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, string elementSeparator, ReadOnlySpan<short> shorts)
+    public static string ConcatHex(bool littleEndian, bool leadingText, ReadOnlySpan<long> values)
     {
         string str = "";
-        foreach (short s in shorts) str += ToBinString(s, littleEndian, leadingText, byteSeparator, nibbleSeparator) + elementSeparator;
+        foreach (long value in values) str += ToHexString(value, littleEndian, leadingText);
         return str;
     }
 
-    public static string JoinBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, string elementSeparator, params int[] ints)
+    public static string ConcatHex(bool littleEndian, bool leadingText, params float[] values)
     {
-        string s = "";
-        foreach (int i in ints) s += ToBinString(i, littleEndian, leadingText, byteSeparator, nibbleSeparator) + elementSeparator;
-        return s;
+        string str = "";
+        foreach (float value in values) str += ToHexString(value, littleEndian, leadingText);
+        return str;
     }
 
-    public static string JoinBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, string elementSeparator, ReadOnlySpan<int> ints)
+    public static string ConcatHex(bool littleEndian, bool leadingText, ReadOnlySpan<float> values)
     {
-        string s = "";
-        foreach (int i in ints) s += ToBinString(i, littleEndian, leadingText, byteSeparator, nibbleSeparator) + elementSeparator;
-        return s;
+        string str = "";
+        foreach (float value in values) str += ToHexString(value, littleEndian, leadingText);
+        return str;
     }
 
-    public static string JoinBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, string elementSeparator, params long[] longs)
+    public static string ConcatHex(bool littleEndian, bool leadingText, params double[] values)
     {
-        string s = "";
-        foreach (long l in longs) s += ToBinString(l, littleEndian, leadingText, byteSeparator, nibbleSeparator) + elementSeparator;
-        return s;
+        string str = "";
+        foreach (double value in values) str += ToHexString(value, littleEndian, leadingText);
+        return str;
     }
 
-    public static string JoinBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, string elementSeparator, ReadOnlySpan<long> longs)
+    public static string ConcatHex(bool littleEndian, bool leadingText, ReadOnlySpan<double> values)
     {
-        string s = "";
-        foreach (long l in longs) s += ToBinString(l, littleEndian, leadingText, byteSeparator, nibbleSeparator) + elementSeparator;
-        return s;
+        string str = "";
+        foreach (double value in values) str += ToHexString(value, littleEndian, leadingText);
+        return str;
     }
 
-    public static string JoinBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, string elementSeparator, params float[] floats)
+    public static string ConcatBin(bool littleEndian, bool leadingText, char nibbleSeparator, params byte[] values)
     {
-        string s = "";
-        foreach (float f in floats) s += ToBinString(f, littleEndian, leadingText, byteSeparator, nibbleSeparator) + elementSeparator;
-        return s;
+        string str = "";
+        foreach (byte value in values) str += ToBinString(value, littleEndian, leadingText, nibbleSeparator);
+        return str;
     }
 
-    public static string JoinBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, string elementSeparator, ReadOnlySpan<float> floats)
+    public static string ConcatBin(bool littleEndian, bool leadingText, char nibbleSeparator, ReadOnlySpan<byte> values)
     {
-        string s = "";
-        foreach (float f in floats) s += ToBinString(f, littleEndian, leadingText, byteSeparator, nibbleSeparator) + elementSeparator;
-        return s;
+        string str = "";
+        foreach (byte value in values) str += ToBinString(value, littleEndian, leadingText, nibbleSeparator);
+        return str;
     }
 
-    public static string JoinBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, string elementSeparator, params double[] doubles)
+    public static string ConcatBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, params short[] values)
     {
-        string s = "";
-        foreach (double d in doubles) s += ToBinString(d, littleEndian, leadingText, byteSeparator, nibbleSeparator) + elementSeparator;
-        return s;
+        string str = "";
+        foreach (short value in values) str += ToBinString(value, littleEndian, leadingText, byteSeparator, nibbleSeparator);
+        return str;
     }
 
-    public static string JoinBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, string elementSeparator, ReadOnlySpan<double> doubles)
+    public static string ConcatBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, ReadOnlySpan<short> values)
     {
-        string s = "";
-        foreach (double d in doubles) s += ToBinString(d, littleEndian, leadingText, byteSeparator, nibbleSeparator) + elementSeparator;
-        return s;
+        string str = "";
+        foreach (short value in values) str += ToBinString(value, littleEndian, leadingText, byteSeparator, nibbleSeparator);
+        return str;
     }
 
-    //imath?
-    //ext methods?
+    public static string ConcatBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, params int[] values)
+    {
+        string str = "";
+        foreach (int value in values) str += ToBinString(value, littleEndian, leadingText, byteSeparator, nibbleSeparator);
+        return str;
+    }
+
+    public static string ConcatBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, ReadOnlySpan<int> values)
+    {
+        string str = "";
+        foreach (int value in values) str += ToBinString(value, littleEndian, leadingText, byteSeparator, nibbleSeparator);
+        return str;
+    }
+
+    public static string ConcatBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, params long[] values)
+    {
+        string str = "";
+        foreach (long value in values) str += ToBinString(value, littleEndian, leadingText, byteSeparator, nibbleSeparator);
+        return str;
+    }
+
+    public static string ConcatBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, ReadOnlySpan<long> values)
+    {
+        string str = "";
+        foreach (long value in values) str += ToBinString(value, littleEndian, leadingText, byteSeparator, nibbleSeparator);
+        return str;
+    }
+
+    public static string ConcatBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, params float[] values)
+    {
+        string str = "";
+        foreach (float value in values) str += ToBinString(value, littleEndian, leadingText, byteSeparator, nibbleSeparator);
+        return str;
+    }
+
+    public static string ConcatBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, ReadOnlySpan<float> values)
+    {
+        string str = "";
+        foreach (float value in values) str += ToBinString(value, littleEndian, leadingText, byteSeparator, nibbleSeparator);
+        return str;
+    }
+
+    public static string ConcatBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, params double[] values)
+    {
+        string str = "";
+        foreach (double value in values) str += ToBinString(value, littleEndian, leadingText, byteSeparator, nibbleSeparator);
+        return str;
+    }
+
+    public static string ConcatBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, ReadOnlySpan<double> values)
+    {
+        string str = "";
+        foreach (double value in values) str += ToBinString(value, littleEndian, leadingText, byteSeparator, nibbleSeparator);
+        return str;
+    }
+
+    public static string JoinHex(bool littleEndian, bool leadingText, string elementSeparator, params byte[] values)
+    {
+        string str = "";
+        foreach (byte value in values) str += ToHexString(value, littleEndian, leadingText) + elementSeparator;
+        return str;
+    }
+
+    public static string JoinHex(bool littleEndian, bool leadingText, string elementSeparator, ReadOnlySpan<byte> values)
+    {
+        string str = "";
+        foreach (byte value in values) str += ToHexString(value, littleEndian, leadingText) + elementSeparator;
+        return str;
+    }
+
+    public static string JoinHex(bool littleEndian, bool leadingText, string elementSeparator, params short[] values)
+    {
+        string str = "";
+        foreach (short value in values) str += ToHexString(value, littleEndian, leadingText) + elementSeparator;
+        return str;
+    }
+
+    public static string JoinHex(bool littleEndian, bool leadingText, string elementSeparator, ReadOnlySpan<short> values)
+    {
+        string str = "";
+        foreach (short value in values) str += ToHexString(value, littleEndian, leadingText) + elementSeparator;
+        return str;
+    }
+
+    public static string JoinHex(bool littleEndian, bool leadingText, string elementSeparator, params int[] values)
+    {
+        string str = "";
+        foreach (int value in values) str += ToHexString(value, littleEndian, leadingText) + elementSeparator;
+        return str;
+    }
+
+    public static string JoinHex(bool littleEndian, bool leadingText, string elementSeparator, ReadOnlySpan<int> values)
+    {
+        string str = "";
+        foreach (int value in values) str += ToHexString(value, littleEndian, leadingText) + elementSeparator;
+        return str;
+    }
+
+    public static string JoinHex(bool littleEndian, bool leadingText, string elementSeparator, params long[] values)
+    {
+        string str = "";
+        foreach (long value in values) str += ToHexString(value, littleEndian, leadingText) + elementSeparator;
+        return str;
+    }
+
+    public static string JoinHex(bool littleEndian, bool leadingText, string elementSeparator, ReadOnlySpan<long> values)
+    {
+        string str = "";
+        foreach (long value in values) str += ToHexString(value, littleEndian, leadingText) + elementSeparator;
+        return str;
+    }
+
+    public static string JoinHex(bool littleEndian, bool leadingText, string elementSeparator, params float[] values)
+    {
+        string str = "";
+        foreach (float value in values) str += ToHexString(value, littleEndian, leadingText) + elementSeparator;
+        return str;
+    }
+
+    public static string JoinHex(bool littleEndian, bool leadingText, string elementSeparator, ReadOnlySpan<float> values)
+    {
+        string str = "";
+        foreach (float value in values) str += ToHexString(value, littleEndian, leadingText) + elementSeparator;
+        return str;
+    }
+
+    public static string JoinHex(bool littleEndian, bool leadingText, string elementSeparator, params double[] values)
+    {
+        string str = "";
+        foreach (double value in values) str += ToHexString(value, littleEndian, leadingText) + elementSeparator;
+        return str;
+    }
+
+    public static string JoinHex(bool littleEndian, bool leadingText, string elementSeparator, ReadOnlySpan<double> values)
+    {
+        string str = "";
+        foreach (double value in values) str += ToHexString(value, littleEndian, leadingText) + elementSeparator;
+        return str;
+    }
+
+    public static string JoinBin(bool littleEndian, bool leadingText, char nibbleSeparator, string elementSeparator, params byte[] values)
+    {
+        string str = "";
+        foreach (byte value in values) str += ToBinString(value, littleEndian, leadingText, nibbleSeparator) + elementSeparator;
+        return str;
+    }
+
+    public static string JoinBin(bool littleEndian, bool leadingText, char nibbleSeparator, string elementSeparator, ReadOnlySpan<byte> values)
+    {
+        string str = "";
+        foreach (byte value in values) str += ToBinString(value, littleEndian, leadingText, nibbleSeparator) + elementSeparator;
+        return str;
+    }
+
+    public static string JoinBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, string elementSeparator, params short[] values)
+    {
+        string str = "";
+        foreach (short value in values) str += ToBinString(value, littleEndian, leadingText, byteSeparator, nibbleSeparator) + elementSeparator;
+        return str;
+    }
+
+    public static string JoinBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, string elementSeparator, ReadOnlySpan<short> values)
+    {
+        string str = "";
+        foreach (short value in values) str += ToBinString(value, littleEndian, leadingText, byteSeparator, nibbleSeparator) + elementSeparator;
+        return str;
+    }
+
+    public static string JoinBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, string elementSeparator, params int[] values)
+    {
+        string str = "";
+        foreach (int value in values) str += ToBinString(value, littleEndian, leadingText, byteSeparator, nibbleSeparator) + elementSeparator;
+        return str;
+    }
+
+    public static string JoinBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, string elementSeparator, ReadOnlySpan<int> values)
+    {
+        string str = "";
+        foreach (int value in values) str += ToBinString(value, littleEndian, leadingText, byteSeparator, nibbleSeparator) + elementSeparator;
+        return str;
+    }
+
+    public static string JoinBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, string elementSeparator, params long[] values)
+    {
+        string str = "";
+        foreach (long value in values) str += ToBinString(value, littleEndian, leadingText, byteSeparator, nibbleSeparator) + elementSeparator;
+        return str;
+    }
+
+    public static string JoinBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, string elementSeparator, ReadOnlySpan<long> values)
+    {
+        string str = "";
+        foreach (long value in values) str += ToBinString(value, littleEndian, leadingText, byteSeparator, nibbleSeparator) + elementSeparator;
+        return str;
+    }
+
+    public static string JoinBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, string elementSeparator, params float[] values)
+    {
+        string str = "";
+        foreach (float value in values) str += ToBinString(value, littleEndian, leadingText, byteSeparator, nibbleSeparator) + elementSeparator;
+        return str;
+    }
+
+    public static string JoinBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, string elementSeparator, ReadOnlySpan<float> values)
+    {
+        string str = "";
+        foreach (float value in values) str += ToBinString(value, littleEndian, leadingText, byteSeparator, nibbleSeparator) + elementSeparator;
+        return str;
+    }
+
+    public static string JoinBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, string elementSeparator, params double[] values)
+    {
+        string str = "";
+        foreach (double value in values) str += ToBinString(value, littleEndian, leadingText, byteSeparator, nibbleSeparator) + elementSeparator;
+        return str;
+    }
+
+    public static string JoinBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, string elementSeparator, ReadOnlySpan<double> values)
+    {
+        string str = "";
+        foreach (double value in values) str += ToBinString(value, littleEndian, leadingText, byteSeparator, nibbleSeparator) + elementSeparator;
+        return str;
+    }
     #endregion
 }

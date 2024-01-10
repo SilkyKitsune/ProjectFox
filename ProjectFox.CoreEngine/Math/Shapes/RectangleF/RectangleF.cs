@@ -78,6 +78,6 @@ public partial struct RectangleF : IShape2D<RectangleF, VectorF, float, Rectangl
         $"(Pos = {position.ToHexString(littleEndian, leadingText)}, Size = {size.ToHexString(littleEndian, leadingText)})";
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ToBinString(bool littleEndian = false, char byteSeparator = '|', char nibbleSeparator = '_', bool leadingText = false) =>
-        $"(Pos = {position.ToBinString(littleEndian, byteSeparator, nibbleSeparator, leadingText)}, Size = {size.ToBinString(littleEndian, byteSeparator, nibbleSeparator, leadingText)})";
+    public string ToBinString(bool littleEndian = false, bool leadingText = false, char byteSeparator = '|', char nibbleSeparator = '_') =>
+        $"(Pos = {position.ToBinString(littleEndian, leadingText, byteSeparator, nibbleSeparator)}, Size = {size.ToBinString(littleEndian, leadingText, byteSeparator, nibbleSeparator)})";
 }
