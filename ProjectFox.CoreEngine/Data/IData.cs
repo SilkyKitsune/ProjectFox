@@ -4,7 +4,7 @@
 /// <typeparam name="T"> inheriting type </typeparam>
 public interface IData<T>
 {
-    public abstract static string ConcatHex(bool littleEndian, bool leadingText, params T[] values);//readonlyspan overload?
+    public abstract static string ConcatHex(bool littleEndian, bool leadingText, params T[] values);
 
     public abstract static string ConcatBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, params T[] values);
 
@@ -12,7 +12,7 @@ public interface IData<T>
 
     public abstract static T[] FromBytesMultiple(byte[] bytes, bool littleEndian);//rename?
 
-    public abstract static byte[] GetBytes(T[] values, bool littleEndian);//params?
+    public abstract static byte[] GetBytes(T[] values, bool littleEndian);
 
     public abstract static string JoinHex(bool littleEndian, bool leadingText, string separator, params T[] values);
 

@@ -262,11 +262,6 @@ public unsafe static class Data
     }
     #endregion
 
-    //limited arg overloads?
-    //private static byte[] GetBytesBig(int i) => new byte[3] { (byte)(i >> 16 & byte.MaxValue), (byte)(i >> 8 & byte.MaxValue), (byte)(i & byte.MaxValue), };
-    //private static byte[] GetBytesBig(ushort s) => new byte[2] { (byte)(s >> 8 & byte.MaxValue), (byte)(s & byte.MaxValue), };
-    //private static int ToInt16Big(byte byte0, byte byte1) => (byte0 << 8) | byte1;
-    //private static int ToInt24Big(byte byte0, byte byte1, byte byte2) => (byte0 << 16) | (byte1 << 8) | byte2;
     #region To
     public static float ToFloat32(byte[] bytes, bool littleEndian)
     {
