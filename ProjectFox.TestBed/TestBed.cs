@@ -2,8 +2,5 @@
 
 public static class TestBed
 {
-    public unsafe static void Main()
-    {
-        
-    }
+    public unsafe static void Main() => SNESPaletteViewer.Run();
 }

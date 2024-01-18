@@ -12,15 +12,15 @@ public partial struct VectorZ
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
-    public static VectorZ FromBytes(byte[] bytes) => default;
+    public static VectorZ FromBytes(byte[] bytes, bool littleEndian) => default;
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
-    public static VectorZ[] FromBytesMultiple(byte[] bytes) => default;
+    public static VectorZ[] FromBytesMultiple(byte[] bytes, bool littleEndian) => default;
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
-    public static byte[] GetBytes(VectorZ[] values) => default;
+    public static byte[] GetBytes(VectorZ[] values, bool littleEndian) => default;
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
@@ -32,5 +32,5 @@ public partial struct VectorZ
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
-    public byte[] GetBytes() => default;
+    public byte[] GetBytes(bool littleEndian) => default;
 }

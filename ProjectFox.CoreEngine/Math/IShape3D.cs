@@ -5,11 +5,11 @@ namespace ProjectFox.CoreEngine.Math;
 
 public interface IShape3D<S, V, t, F> : IShape<S, V, t, F>//, IPolytope<V>
 {
-    public abstract bool Enveloping(IPolytope<VectorZ, Tetrahedron> shape);
-    public abstract bool Enveloping(IPolytope<VectorZF, TetrahedronF> shape);
-
     public abstract bool Enveloping(VectorZ value);
     public abstract bool Enveloping(VectorZF value);
+
+    public abstract bool Enveloping(IPolytope<VectorZ, Tetrahedron> shape);
+    public abstract bool Enveloping(IPolytope<VectorZF, TetrahedronF> shape);
 
     public bool Equals(IPolytope<VectorZ, Tetrahedron> shape)
     {

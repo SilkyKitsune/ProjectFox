@@ -13,6 +13,47 @@ public partial struct Color : IVector<Color, byte, Color>
     /// <summary> The silliest limegirl </summary>
     public static Color Lime => 0x80FF40FF;
 
+    public static Color Convert(int value, int channelDepth, bool alpha)
+    {
+        if (channelDepth < 1) throw new ArgumentException($"Invalid channelDepth! '{channelDepth}'");
+
+        if (channelDepth == 8) return alpha ? new((uint)value) : new((uint)value << 8 | byte.MaxValue);
+
+        int channelCount = alpha ? 4 : 3, depth = sizeof(int) * 8;
+        if (depth / channelDepth < channelCount) throw new ArgumentException($"Value is too small! {depth}bits < {channelDepth * channelCount}bits");
+
+        int max = 0;
+        for (int i = 0; i < channelDepth; i++) max = max << 1 | 1;
+        float maxF = max;
+
+        return alpha ?
+          new(
+            (byte)((value >> (channelDepth * 3) & max) / maxF * MaxByteF),
+            (byte)((value >> (channelDepth * 2) & max) / maxF * MaxByteF),
+            (byte)((value >> channelDepth & max) / maxF * MaxByteF),
+            (byte)((value & max) / maxF * MaxByteF)) :
+          new(
+            (byte)((value >> (channelDepth * 2) & max) / maxF * MaxByteF),
+            (byte)((value >> channelDepth & max) / maxF * MaxByteF),
+            (byte)((value & max) / maxF * MaxByteF));
+    }
+
+    public static Color[] Convert(int[] values, int channelDepth, bool alpha)
+    {
+        Color[] colors = new Color[values.Length];
+        for (int i = 0; i < values.Length; i++)
+            colors[i] = Color.Convert(values[i], channelDepth, alpha);//inline?
+        return colors;
+    }
+
+    public static int[] Convert(Color[] values, int channelDepth, bool alpha)
+    {
+        int[] colors = new int[values.Length];
+        for (int i = 0; i < values.Length; i++)
+            colors[i] = values[i].Convert(channelDepth, alpha);//inline?
+        return colors;
+    }
+
     public Color(byte r, byte g, byte b)
     {
         hex = 0;
@@ -156,6 +197,30 @@ public partial struct Color : IVector<Color, byte, Color>
     #endregion
 
     #region Color Methods
+    public int Convert(int channelDepth, bool alpha)
+    {
+        if (channelDepth < 1) throw new ArgumentException($"Invalid channelDepth! '{channelDepth}'");
+
+        if (channelDepth == 8) return alpha ? (int)hex : (int)hex >> 8;
+
+        int channelCount = alpha ? 4 : 3, depth = sizeof(int) * 8;
+        if (depth / channelDepth < channelCount) throw new ArgumentException($"Value is too small! {depth}bits < {channelDepth * channelCount}bits");
+
+        int max = 0;
+        for (int i = 0; i < channelDepth; i++) max = max << 1 | 1;
+        float maxF = max;
+
+        return alpha ?
+            (int)(r / MaxByteF * maxF) << (channelDepth * 3) |
+            (int)(g / MaxByteF * maxF) << (channelDepth * 2) |
+            (int)(b / MaxByteF * maxF) << channelDepth |
+            (int)(a / MaxByteF * maxF)
+            :
+            (int)(r / MaxByteF * maxF) << (channelDepth * 2) |
+            (int)(g / MaxByteF * maxF) << channelDepth |
+            (int)(b / MaxByteF * maxF);
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool EqualsColor(Color c) => r == c.r && g == c.g && b == c.b;
 

@@ -12,15 +12,15 @@ public partial struct Vector
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
-    public static Vector FromBytes(byte[] bytes) => default;
+    public static Vector FromBytes(byte[] bytes, bool littleEndian) => default;
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
-    public static Vector[] FromBytesMultiple(byte[] bytes) => default;
+    public static Vector[] FromBytesMultiple(byte[] bytes, bool littleEndian) => default;
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
-    public static byte[] GetBytes(Vector[] values) => default;
+    public static byte[] GetBytes(Vector[] values, bool littleEndian) => default;
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
@@ -32,5 +32,5 @@ public partial struct Vector
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
-    public byte[] GetBytes() => default;
+    public byte[] GetBytes(bool littleEndian) => default;
 }

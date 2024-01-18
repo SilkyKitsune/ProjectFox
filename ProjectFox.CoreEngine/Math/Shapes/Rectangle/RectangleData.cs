@@ -12,15 +12,15 @@ public partial struct Rectangle
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
-    public static Rectangle FromBytes(byte[] bytes) => default;
+    public static Rectangle FromBytes(byte[] bytes, bool littleEndian) => default;
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
-    public static Rectangle[] FromBytesMultiple(byte[] bytes) => default;
+    public static Rectangle[] FromBytesMultiple(byte[] bytes, bool littleEndian) => default;
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
-    public static byte[] GetBytes(Rectangle[] values) => default;
+    public static byte[] GetBytes(Rectangle[] values, bool littleEndian) => default;
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
@@ -32,5 +32,5 @@ public partial struct Rectangle
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
-    public byte[] GetBytes() => default;
+    public byte[] GetBytes(bool littleEndian) => default;
 }

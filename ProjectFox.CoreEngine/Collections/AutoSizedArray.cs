@@ -22,7 +22,7 @@ public sealed class AutoSizedArray<T> : ICollection<T>, ICopy<AutoSizedArray<T>>
 
         this.chunkSize = chunkSize;
         length = array.Length;
-        elements = new T[length / chunkSize + 1 * chunkSize];
+        elements = new T[(length / chunkSize + 1) * chunkSize];
         for (int i = 0; i < length; i++) elements[i] = array[i];
     }
 

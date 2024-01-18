@@ -20,14 +20,14 @@ public partial struct Color
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Color FromBytes(byte[] bytes) =>
+    public static Color FromBytes(byte[] bytes, bool littleEndian) =>
         (bytes == null || bytes.Length < 4) ? throw new ArgumentException() : new(bytes[0], bytes[1], bytes[2], bytes[3]);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Color FromBytes24(byte[] bytes) =>
         (bytes == null || bytes.Length < 3) ? throw new ArgumentException() : new(bytes[0], bytes[1], bytes[2]);
 
-    public static Color[] FromBytesMultiple(byte[] bytes)
+    public static Color[] FromBytesMultiple(byte[] bytes, bool littleEndian)
     {
         if (bytes == null || bytes.Length < 4) throw new ArgumentException();
 
@@ -47,7 +47,7 @@ public partial struct Color
         return values;
     }
 
-    public static byte[] GetBytes(Color[] values)
+    public static byte[] GetBytes(Color[] values, bool littleEndian)//bgr overload?
     {
         if (values == null || values.Length == 0) throw new ArgumentException();
 
@@ -63,7 +63,7 @@ public partial struct Color
         return bytes;
     }
 
-    public static byte[] GetBytes24(Color[] values)
+    public static byte[] GetBytes24(Color[] values)//bgr overload?
     {
         if (values == null || values.Length == 0) throw new ArgumentException();
 
@@ -93,7 +93,7 @@ public partial struct Color
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public byte[] GetBytes() => new byte[4] { r, g, b, a };
+    public byte[] GetBytes(bool littleEndian) => new byte[4] { r, g, b, a };
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public byte[] GetBytes24() => new byte[3] { r, g, b };

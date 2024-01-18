@@ -1,4 +1,6 @@
-﻿namespace ProjectFox.CoreEngine.Math;
+﻿using ProjectFox.CoreEngine.Data;
+
+namespace ProjectFox.CoreEngine.Math;
 
 /// <summary> An interface for implementing basic math types </summary>
 /// <typeparam name="T"> inheriting type </typeparam>
@@ -61,22 +63,22 @@ public interface IMath<T, F> : IData<T>
     public abstract bool IsZero();
 
     /// <summary> equivalent to the Math.Max method </summary>
-    public abstract T Max(T value);
+    public abstract T Max(T value);//static?
 
     /// <summary> equivalent to the Math.Max method </summary>
-    public abstract T Max(params T[] values);
+    public abstract T Max(params T[] values);//static?
 
     /// <summary> equivalent to the Math.MaxIndex method </summary>
-    public abstract int MaxIndex(T[] values);
+    public abstract int MaxIndex(T[] values);//static?
 
     /// <summary> equivalent to the Math.Min method </summary>
-    public abstract T Min(T value);
+    public abstract T Min(T value);//static?
 
     /// <summary> equivalent to the Math.Min method </summary>
-    public abstract T Min(params T[] values);
+    public abstract T Min(params T[] values);//static?
 
     /// <summary> equivalent to the Math.MinIndex method </summary>
-    public abstract int MinIndex(T[] values);
+    public abstract int MinIndex(T[] values);//static?
 
     public abstract void MoveToZero(T amount);
 

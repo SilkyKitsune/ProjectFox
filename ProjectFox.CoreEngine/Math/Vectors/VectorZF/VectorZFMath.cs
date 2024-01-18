@@ -240,7 +240,7 @@ public partial struct VectorZF
 
         float delta = DistanceFromZeroSquared(), newDelta;
 
-        int max = -1;
+        int max = -1;//this will throw exception
         for (int i = 0; i < values.Length; i++)
         {
             VectorZF current = values[i];

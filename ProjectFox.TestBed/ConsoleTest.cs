@@ -15,10 +15,10 @@ using ProjectFox.GameEngine.Visuals;
 
 namespace ProjectFox.TestBed;
 
-public static class GameEngineConsoleTest
+public static partial class GameEngineTest
 {
     #region Main
-    public static void MainTest()
+    public static void ConsoleMainTest()
     {
         #region console
         QueueMessage("test");
@@ -366,7 +366,7 @@ public static class GameEngineConsoleTest
     #endregion
 
     #region Physics
-    public static void PhysicsTest()
+    public static void ConsolePhysicsTest()
     {
         #region ScanModes
         /*QueueMessage($"{M.None} : {(short)M.None} : {ToBinString((short)M.None, false, '|', '_', true)}");

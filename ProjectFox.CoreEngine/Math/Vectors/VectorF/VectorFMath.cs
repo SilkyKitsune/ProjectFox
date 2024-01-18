@@ -233,7 +233,7 @@ public partial struct VectorF
 
         float delta = DistanceFromZeroSquared(), newDelta;
 
-        int max = -1;
+        int max = -1;//this will throw exception
         for (int i = 0; i < values.Length; i++)
         {
             VectorF current = values[i];
@@ -282,7 +282,7 @@ public partial struct VectorF
 
         float delta = DistanceFromZeroSquared(), newDelta;
 
-        int min = 1;
+        int min = 1;//this will throw exception
         for (int i = 0; i < values.Length; i++)
         {
             VectorF current = values[i];

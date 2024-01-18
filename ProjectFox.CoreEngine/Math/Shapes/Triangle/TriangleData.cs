@@ -12,15 +12,15 @@ public partial struct Triangle
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
-    public static Triangle FromBytes(byte[] bytes) => default;
+    public static Triangle FromBytes(byte[] bytes, bool littleEndian) => default;
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
-    public static Triangle[] FromBytesMultiple(byte[] bytes) => default;
+    public static Triangle[] FromBytesMultiple(byte[] bytes, bool littleEndian) => default;
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
-    public static byte[] GetBytes(Triangle[] values) => default;
+    public static byte[] GetBytes(Triangle[] values, bool littleEndian) => default;
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
@@ -32,5 +32,5 @@ public partial struct Triangle
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
-    public byte[] GetBytes() => default;
+    public byte[] GetBytes(bool littleEndian) => default;
 }
