@@ -14,7 +14,7 @@ public static partial class CoreEngineTest
 {
     private static void IDataTest<T>(IData<T> iData)
     {
-        C.WriteLine("-IMath-");
+        C.WriteLine("-IData-");
 
         C.WriteLine(iData.GetType());
         C.WriteLine(typeof(IData<T>));
