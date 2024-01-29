@@ -125,7 +125,7 @@ internal sealed class Array<T> : ICollection<T>
         int newLength = length + values.Length;
         if (newLength >= elements.Length)
         {
-            T[] array = new T[newLength / chunkSize + 1 * chunkSize];
+            T[] array = new T[(newLength / chunkSize + 1) * chunkSize];
             for (int i = 0; i < length; i++) array[i] = elements[i];
             elements = array;
         }
