@@ -79,6 +79,7 @@ public partial struct Color : IVector<Color, byte, Color>
         this.hex = hex;
     }
 
+    //are these backwards? do they change with endianess?
     /// <summary> Red channel </summary>
     [FieldOffset(3)] public byte r;
     /// <summary> Green channel </summary>
