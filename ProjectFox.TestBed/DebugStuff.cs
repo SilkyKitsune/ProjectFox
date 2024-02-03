@@ -8,7 +8,6 @@ using ProjectFox.GameEngine.Visuals;
 using ProjectFox.GameEngine.Input;
 
 using ProjectFox.Windows;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace ProjectFox.TestBed;
 
