@@ -37,6 +37,34 @@ public abstract class Object2D : Object
         }
     }
 
+#if DEBUG
+    internal override void _draw(VisualLayer layer = null)
+    {
+        if (!Debug.debugLayer.visible || !drawPosition) return;
+
+        Rectangle screen = new(Screen.position, Screen.size);
+        if (screen.Overlapping(position))
+        {
+            Vector pos = new(
+                position.x - screen.position.x,
+                position.y - screen.position.y);
+            if (intersectingLines)
+            {
+                int x = 0, d = pos.y * screen.size.x;
+                while (x++ < screen.size.x && d < Debug.debugLayer.pixels.Length)
+                    Debug.debugLayer.pixels[d++] = positionColor;//blend?
+                d = pos.x;
+                while (d < Debug.debugLayer.pixels.Length)
+                {
+                    Debug.debugLayer.pixels[d] = positionColor;//blend?
+                    d += screen.size.x;
+                }
+            }
+            else Debug.debugLayer.pixels[pos.y * screen.size.x + pos.x] = positionColor;//blend?
+        }
+    }
+#endif
+
     public Object2D Closest(params Object2D[] objects)
     {
         if (objects.Length == 0)
@@ -158,32 +186,4 @@ public abstract class Object2D : Object
         }
         return farthest;
     }
-
-#if DEBUG
-    internal override void _draw(VisualLayer layer = null)
-    {
-        if (!Debug.debugLayer.visible || !drawPosition) return;
-
-        Rectangle screen = new(Screen.position, Screen.size);
-        if (screen.Overlapping(position))
-        {
-            Vector pos = new(
-                position.x - screen.position.x,
-                position.y - screen.position.y);
-            if (intersectingLines)
-            {
-                int x = 0, d = pos.y * screen.size.x;
-                while (x++ < screen.size.x && d < Debug.debugLayer.pixels.Length)
-                    Debug.debugLayer.pixels[d++] = positionColor;//blend?
-                d = pos.x;
-                while (d < Debug.debugLayer.pixels.Length)
-                {
-                    Debug.debugLayer.pixels[d] = positionColor;//blend?
-                    d += screen.size.x;
-                }
-            }
-            else Debug.debugLayer.pixels[pos.y * screen.size.x + pos.x] = positionColor;//blend?
-        }
-    }
-#endif
 }
