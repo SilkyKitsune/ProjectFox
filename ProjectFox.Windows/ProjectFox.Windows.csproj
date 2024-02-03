@@ -12,15 +12,15 @@
     <Version>$(VersionPrefix)0.9</Version>
     <Authors>SilkyKitsune</Authors>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
-  </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>none</DebugType>
   </PropertyGroup>
   
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\ProjectFox.CoreEngine\ProjectFox.CoreEngine.csproj" />
     <ProjectReference Include="..\ProjectFox.GameEngine\ProjectFox.GameEngine.csproj" />
