@@ -42,7 +42,7 @@ public static class Engine
         get => frameCount;
     }
 
-    /// <summary> number of times per second Engine.Frame() should be called </summary>
+    /// <summary> the number of times per second Engine.Frame() should be called </summary>
     public static int Frequency
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
