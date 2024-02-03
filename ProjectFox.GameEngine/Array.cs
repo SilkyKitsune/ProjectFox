@@ -133,6 +133,18 @@ internal sealed class Array<T> : ICollection<T>
         length = newLength;
     }
 
+    internal void AddLength(int addedLength)
+    {
+        int newLength = length + addedLength;
+        if (newLength >= elements.Length)
+        {
+            T[] array = new T[(newLength / chunkSize + 1) * chunkSize];
+            for (int i = 0; i < length; i++) array[i] = elements[i];
+            elements = array;
+        }
+        length = newLength;
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Clear()
     {
