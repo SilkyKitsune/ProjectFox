@@ -1,13 +1,20 @@
 # ProjectFox
+Portable C# game engine, will fill out more later
 
-### CoreEngine
-Utility Library, will fill out later
+### ProjectFox.CoreEngine
+Utility library, will fill out more later
 
-### GameEngine
-fill out later
+### ProjectFox.GameEngine
+Game engine library, the basis for object behaviour and scene structure. Contains audio/video renderer, input manager, and lightweight physics system. will fill out more later
 
-### Windows
-WinUser/WinGDI Wrapper, will fill out later
+### ProjectFox.TestBed
+An app for testing features of the engine's libraries
 
-### TestBed
-fill out later
+### ProjectFox.Windows
+WinUser/WinGDI wrapper, will fill out more later
+
+### ProjectFox.OpenTK (Coming soon)
+OpenTK wrapper, will fill out more later
+
+### ProjectFox.NAudio (Coming soon)
+NAudio wrapper, will fill out more later
