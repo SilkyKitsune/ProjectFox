@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 using ProjectFox.CoreEngine.Collections;
 using ProjectFox.CoreEngine.Data;
-using D = ProjectFox.CoreEngine.Data.Data;
+//using D = ProjectFox.CoreEngine.Data.Data;//remove
 
 namespace ProjectFox.CoreEngine.Math;
 
@@ -24,32 +24,122 @@ public struct Sample : IData<Sample>//other interfaces?
         return str;
     }
 
-    public static Sample FromBytes(byte[] bytes, bool littleEndian) => new(
-            D.ToInt16(new byte[2] { bytes[0], bytes[1] }, littleEndian),
-            D.ToInt16(new byte[2] { bytes[2], bytes[3] }, littleEndian));
-
-    //FromBytesMono?
-
-    public static Sample[] FromBytesMultiple(byte[] bytes, bool littleEndian)
+    public unsafe static Sample FromBytes(byte[] bytes, bool littleEndian)
     {
-        if (bytes == null || bytes.Length < 4) throw new ArgumentException();
+        /*return new(
+            D.ToInt16(new byte[2] { bytes[0], bytes[1] }, littleEndian),//cast directly?
+            D.ToInt16(new byte[2] { bytes[2], bytes[3] }, littleEndian));*/
 
-        Sample[] values = new Sample[bytes.Length / 4];
-        for (int i = 0, j = 0; i < values.Length; i++)
+        if (bytes == null || bytes.Length < sizeof(Sample)) throw new ArgumentNullException();
+
+        short l = 0, r = 0;
+#if BIGENDIAN
+        if (!littleEndian)
+#else
+        if (littleEndian)
+#endif
+            fixed (byte* ptr = bytes)
+            {
+                short* ptr_ = (short*)ptr;
+                l = ptr_[0];
+                r = ptr_[1];
+            }
+        else
+        {
+            l = (short)((
+                bytes[0] << 0x08) |
+                bytes[1]);
+            r = (short)((
+                bytes[2] << 0x08) |
+                bytes[3]);
+        }
+        return new(l, r);
+    }
+
+    public unsafe static Sample FromBytesMono(byte[] bytes, bool littleEndian)
+    {
+        if (bytes == null || bytes.Length < sizeof(short)) throw new ArgumentNullException();
+
+        short value = 0;
+#if BIGENDIAN
+        if (!littleEndian)
+#else
+        if (littleEndian)
+#endif
+            fixed (byte* ptr = bytes) value = *(short*)ptr;
+        else value = (short)((
+                bytes[0] << 0x08) |
+                bytes[1]);
+        return new(value);
+    }
+
+    public unsafe static Sample[] FromBytesMultiple(byte[] bytes, bool littleEndian)
+    {
+        int size = sizeof(Sample);
+
+        if (bytes == null || bytes.Length < size) throw new ArgumentException();
+
+        Sample[] values = new Sample[bytes.Length / size];
+
+        /*for (int i = 0, j = 0; i < values.Length; i++)
             values[i] = new(
                 D.ToInt16(new byte[2] { bytes[j++], bytes[j++] }, littleEndian),
-                D.ToInt16(new byte[2] { bytes[j++], bytes[j++] }, littleEndian));
+                D.ToInt16(new byte[2] { bytes[j++], bytes[j++] }, littleEndian));*/
+
+#if BIGENDIAN
+        if (!littleEndian)
+#else
+        if (littleEndian)
+#endif
+            fixed (byte* ptr = bytes)
+            {
+                short* ptr_ = (short*)ptr;
+                for (int i = 0, j = 0; i < values.Length; i++)
+                    values[i] = new(ptr_[j++], ptr_[j++]);
+            }
+        else for (int i = 0, j = 0; i < values.Length; i++)
+                values[i] = new(
+                    (short)((
+                    bytes[j++] << 0x08) |
+                    bytes[j++]),
+                    (short)((
+                    bytes[j++] << 0x08) |
+                    bytes[j++]));
         return values;
     }
 
-    //FromBytesMultipleMono?
+    public unsafe static Sample[] FromBytesMultipleMono(byte[] bytes, bool littleEndian)
+    {
+        int size = sizeof(short);
 
-    public static byte[] GetBytes(Sample[] values, bool littleEndian)
+        if (bytes == null || bytes.Length < size) throw new ArgumentNullException();
+
+        Sample[] values = new Sample[bytes.Length / size];
+#if BIGENDIAN
+        if (!littleEndian)
+#else
+        if (littleEndian)
+#endif
+            fixed (byte* ptr = bytes)
+            {
+                short* ptr_ = (short*)ptr;
+                for (int i = 0; i < values.Length; i++)
+                    values[i] = new(ptr_[i]);
+            }
+        else for (int i = 0, j = 0; i < values.Length; i++)
+                values[i] = new((short)((
+                    bytes[j++] << 0x08) |
+                    bytes[j++]));
+        return values;
+    }
+
+    public unsafe static byte[] GetBytes(Sample[] values, bool littleEndian)
     {
         if (values == null || values.Length == 0) throw new ArgumentException();
 
-        byte[] bytes = new byte[values.Length * 4];
-        for (int i = 0, j = 0; i < values.Length; i++)
+        byte[] bytes = new byte[values.Length * sizeof(Sample)];
+
+        /*for (int i = 0, j = 0; i < values.Length; i++)
         {
             Sample s = values[i];
             byte[] left = D.GetBytes(s.left, littleEndian), right = D.GetBytes(s.right, littleEndian);
@@ -57,11 +147,57 @@ public struct Sample : IData<Sample>//other interfaces?
             bytes[j++] = left[1];
             bytes[j++] = right[0];
             bytes[j++] = right[1];
-        }
+        }*/
+
+#if BIGENDIAN
+        if (!littleEndian)
+#else
+        if (littleEndian)
+#endif
+            fixed (byte* ptr = bytes)
+            {
+                short* ptr_ = (short*)ptr;
+                for (int i = 0, j = 0; i < values.Length; i++)
+                {
+                    ptr_[j++] = values[i].left;
+                    ptr_[j++] = values[i].right;
+                }
+            }
+        else for (int i = 0, j = 0; i < values.Length; i++)
+            {
+                Sample value = values[i];
+                bytes[j++] = (byte)(value.left >> 0x08);
+                bytes[j++] = (byte)value.left;
+                bytes[j++] = (byte)(value.right >> 0x08);
+                bytes[j++] = (byte)value.right;
+            }
         return bytes;
     }
 
-    //GetBytesMono?
+    public unsafe static byte[] GetBytesMono(Sample[] values, bool littleEndian, bool right)
+    {
+        if (values == null || values.Length == 0) throw new ArgumentNullException();
+
+        byte[] bytes = new byte[values.Length * sizeof(short)];
+#if BIGENDIAN
+        if (!littleEndian)
+#else
+        if (littleEndian)
+#endif
+            fixed (byte* ptr = bytes)
+            {
+                short* ptr_ = (short*)ptr;
+                for (int i = 0; i < values.Length; i++)
+                    ptr_[i] = right ? values[i].right : values[i].left;
+            }
+        else for (int i = 0, j = 0; i < values.Length; i++)
+            {
+                int value = right ? values[i].right : values[i].left;
+                bytes[j++] = (byte)(value >> 0x08);
+                bytes[j++] = (byte)value;
+            }
+        return bytes;
+    }
 
     public static string JoinHex(bool littleEndian, bool leadingText, string separator, params Sample[] values)
     {
@@ -109,16 +245,40 @@ public struct Sample : IData<Sample>//other interfaces?
     public string ToBinString(bool littleEndian = false, bool leadingText = false, char byteSeparator = '|', char nibbleSeparator = '_') =>
         $"(L: {Strings.ToBinString(left, littleEndian, leadingText, byteSeparator, nibbleSeparator)}, R: {Strings.ToBinString(right, littleEndian, leadingText, byteSeparator, nibbleSeparator)})";
 
-    public byte[] GetBytes(bool littleEndian)
+    public unsafe byte[] GetBytes(bool littleEndian)
     {
-        byte[] left = D.GetBytes(this.left, littleEndian),
+        /*byte[] left = D.GetBytes(this.left, littleEndian),
             right = D.GetBytes(this.right, littleEndian);
-        return new byte[4] { left[0], left[1], right[0], right[1] };
+        return new byte[4] { left[0], left[1], right[0], right[1] };*/
+
+        byte[] bytes = new byte[sizeof(Sample)];
+#if BIGENDIAN 
+        if (!littleEndian)
+#else
+        if (littleEndian)
+#endif
+            fixed (byte* ptr = bytes)
+            {
+                short* ptr_ = (short*)ptr;
+                ptr_[0] = left;
+                ptr_[1] = right;
+            }
+        else
+        {
+            bytes[0] = (byte)(left >> 0x08);
+            bytes[1] = (byte)left;
+            bytes[2] = (byte)(right >> 0x08);
+            bytes[3] = (byte)right;
+        }
+        return bytes;
     }
 
-    //GetBytesMono?
+    //is this redundant?
+    //public byte[] GetBytesMono(bool littleEndian)
 
     public static implicit operator Sample(uint i) => new(i);
 
     public static implicit operator Sample(int i) => new((uint)i);
+
+    //operators?
 }
