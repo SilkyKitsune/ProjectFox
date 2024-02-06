@@ -42,7 +42,7 @@ public abstract class Object : SceneType//icopy?
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal virtual void _draw(VisualLayer layer = null) { }
+    internal virtual void _draw(VisualLayer layer = null) { }//this argument is bad for audio objects
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal virtual void _frame()

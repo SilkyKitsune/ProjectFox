@@ -19,13 +19,14 @@ public enum ErrorCodes
     NullPhysicsSpace,
     /// <summary> RasterObject's VisualLayer was null </summary>
     NullVisualLayer,
-    /// <summary> AudioObject's AudioChannel was null </summary>
+    /// <summary> AudioSource's AudioChannel was null </summary>
     NullAudioChannel,
     /// <summary> RasterObject attempted to draw a PalettizedTexture with a null palette </summary>
     NullPalette,
     /// <summary> RasterObject attempted to draw with a null texture </summary>
     NullTexture,
     NullAnimation,
+    NullWaveShape,
 
     EmptyPalette,
     MissingAnimation,
@@ -42,6 +43,7 @@ public enum ErrorCodes
 
     PhysicsShapeNotInScene,
     VisualLayerNotInScene,
+    AudioChannelNotInScene,
 
     SelfRegistration,//recursive?
 }
@@ -84,9 +86,11 @@ public class ErrorMessage
             ErrorCodes.NullPet => ErrorSeverity.Error,
             ErrorCodes.NullPhysicsSpace => ErrorSeverity.Warning,
             ErrorCodes.NullVisualLayer => ErrorSeverity.Warning,
+            ErrorCodes.NullAudioChannel => ErrorSeverity.Warning,
             ErrorCodes.NullPalette => ErrorSeverity.Warning,
             ErrorCodes.NullTexture => ErrorSeverity.Warning,
             ErrorCodes.NullAnimation => ErrorSeverity.Warning,
+            ErrorCodes.NullWaveShape => ErrorSeverity.Warning,
 
             ErrorCodes.EmptyPalette => ErrorSeverity.Warning,
             ErrorCodes.MissingAnimation => ErrorSeverity.Warning,
@@ -100,6 +104,7 @@ public class ErrorMessage
 
             ErrorCodes.PhysicsShapeNotInScene => ErrorSeverity.Warning,
             ErrorCodes.VisualLayerNotInScene => ErrorSeverity.Warning,
+            ErrorCodes.AudioChannelNotInScene => ErrorSeverity.Warning,
 
             ErrorCodes.SelfRegistration => ErrorSeverity.Error,
 

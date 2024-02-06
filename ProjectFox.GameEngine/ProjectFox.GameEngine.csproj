@@ -9,7 +9,7 @@
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
     <RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
-    <Version>$(VersionPrefix)0.5</Version>
+    <Version>$(VersionPrefix)0.6</Version>
     <Authors>SilkyKitsune</Authors>
   </PropertyGroup>
 

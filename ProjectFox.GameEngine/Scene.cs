@@ -1,5 +1,6 @@
 ﻿using ProjectFox.CoreEngine.Math;
 using ProjectFox.GameEngine.Physics;
+using ProjectFox.GameEngine.Audio;
 using ProjectFox.GameEngine.Visuals;
 using static ProjectFox.GameEngine.Visuals.Screen;
 using static ProjectFox.GameEngine.Visuals.Screen.ClearModes;
@@ -14,7 +15,7 @@ public class Scene : NamedType
 
     private readonly HashArray<Object> objects = new(0x100);
     internal readonly HashArray<VisualLayer> visualLayers = new(0x40);
-    //audio channels
+    private readonly HashArray<AudioChannel> audioChannels = new(0x40);//chunksize?, internal?
 
     private ClearModes clearMode = Clear;
     private SetPiece bg = new(new("_BGDraw", 0)) { parallaxFactor = new(0f, 0f) };
@@ -56,6 +57,9 @@ public class Scene : NamedType
 
     public bool BGHorizontalFlip { get => bg.horizontalFlipTexture; set => bg.horizontalFlipTexture = value; }
 
+    //bg audio?
+    //bg volume?
+
     internal void _frame()
     {
         switch (clearMode)
@@ -77,8 +81,13 @@ public class Scene : NamedType
                 break;
         }
 
+        Speakers.speakersChannel.samples.Clear();//temp
+
         for (int i = 0; i < visualLayers.codes.length; i++)
             visualLayers.values.elements[i].Clear();
+
+        for (int i = 0; i < audioChannels.codes.length; i++)
+            audioChannels.values.elements[i].Clear();
 
         //pause change event?
 
@@ -98,6 +107,13 @@ public class Scene : NamedType
         {
             VisualLayer layer = visualLayers.values.elements[i];
             if (layer.visible) layer.Blend(layer.pixels, screenLayer.pixels);
+        }
+
+        for (int i = 0; i < audioChannels.codes.length; i++)
+        {
+            AudioChannel channel = audioChannels.values.elements[i];
+            if (channel.audible && channel.volume > 0f && (channel.leftVolume > 0f || channel.rightVolume > 0f))
+                channel.Blend();
         }
     }
 
@@ -274,8 +290,86 @@ public class Scene : NamedType
     }
     #endregion
 
-    //public void AddAudioChannel
-    //public void AddAudioChannels(params)
-    //public void RemoveChannel
-    //public void RemoveChannels(params)
+    #region AudioChannels
+    public void AddAudioChannel(AudioChannel channel)
+    {
+        if (channel == null)
+            Engine.SendError(ErrorCodes.NullArgument, name, nameof(channel));
+        else if (audioChannels.codes.Contains(channel.name))
+            Engine.SendError(
+                ErrorCodes.AlreadyOwnedOrInScene,
+                name, nameof(channel),
+                $"Scene '{name}' already contains channel '{channel.name}");
+        else
+        {
+            channel.scene?.RemoveAudioChannel(channel.name);
+            audioChannels.AddDirect(channel.name, channel);
+            channel.scene = this;
+            //channel.Clear()?
+        }
+    }
+
+    public void AddAudioChannels(params AudioChannel[] channels)
+    {
+        if (channels == null || channels.Length == 0)
+        {
+            Engine.SendError(ErrorCodes.NullArgument, name, nameof(channels));
+            return;
+        }
+
+        foreach (AudioChannel channel in channels)
+            if (channel == null)
+                Engine.SendError(ErrorCodes.NullArgument, name, nameof(channel));
+            else if (audioChannels.codes.Contains(channel.name))
+                Engine.SendError(
+                    ErrorCodes.AlreadyOwnedOrInScene,
+                    name, nameof(channel),
+                    $"Scene '{name}' already contains channel '{channel.name}'");
+            else
+            {
+                channel.scene?.RemoveAudioChannel(channel.name);
+                audioChannels.AddDirect(channel.name, channel);
+                channel.scene = this;
+                //channel.Clear()?
+            }
+    }
+
+    public void RemoveAudioChannel(NameID name)
+    {
+        int index = audioChannels.codes.IndexOf(name);
+        if (index < 0)
+        {
+            Engine.SendError(
+                ErrorCodes.BadArgument,
+                this.name, nameof(name),
+                $"Channel '{name}' could not be found in scene '{this.name}'");
+            return;
+        }
+        audioChannels.values.elements[index].scene = null;
+        audioChannels.RemoveAt(index);
+    }
+
+    public void RemoveAudioChannels(params NameID[] names)
+    {
+        if (names == null || names.Length == 0)
+        {
+            Engine.SendError(ErrorCodes.NullArgument, name, nameof(names));
+            return;
+        }
+
+        foreach (NameID name in names)
+        {
+            int index = audioChannels.codes.IndexOf(name);
+            if (index < 0) Engine.SendError(
+                ErrorCodes.BadArgument,
+                this.name, nameof(name),
+                $"Channel '{name} could not be found in scene '{this.name}'");
+            else
+            {
+                audioChannels.values.elements[index].scene = null;
+                audioChannels.RemoveAt(index);
+            }
+        }
+    }
+    #endregion
 }
