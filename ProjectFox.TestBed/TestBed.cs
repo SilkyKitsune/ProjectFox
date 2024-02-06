@@ -2,5 +2,5 @@
 
 public static class TestBed
 {
-    public unsafe static void Main() => SNESPaletteViewer.Run();
+    public unsafe static void Main() => CoreEngineTest.SampleTest();
 }
