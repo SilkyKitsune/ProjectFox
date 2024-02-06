@@ -44,7 +44,7 @@ public class DigitalButton
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator bool(DigitalButton digitalButton) => digitalButton.value;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]//could this interfere with if conditions? probably not since it's explicit
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static explicit operator byte(DigitalButton digitalButton) => digitalButton.value ? byte.MaxValue : byte.MinValue;
 }
 
@@ -71,6 +71,12 @@ public class AnalogButton
 public class DirectionalPad
 {
     public Vector.Direction value = Vector.Direction.Zero;
+
+    public readonly ICollection<DirectionalPad> bindings = new Array<DirectionalPad>(0x2);
+    public readonly ICollection<DigitalButton> xNegBindings = new Array<DigitalButton>(0x2);
+    public readonly ICollection<DigitalButton> xPosBindings = new Array<DigitalButton>(0x2);
+    public readonly ICollection<DigitalButton> yNegBindings = new Array<DigitalButton>(0x2);
+    public readonly ICollection<DigitalButton> yPosBindings = new Array<DigitalButton>(0x2);
 }
 
 public class Stick//directional stick?
@@ -85,6 +91,7 @@ public class Stick//directional stick?
     public readonly ICollection<Stick> bindings = new Array<Stick>(0x2);
     //analog button bindings
     //digital button bindings
+    //dpad bindings
     //cursor bindings?
 
     //Analog stick = direction.tovector() * 127
@@ -207,7 +214,7 @@ public class Stick//directional stick?
         get => yMoved.changed;
     }
 
-    //left right up down
+    //left right up down?
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator Vector(Stick analogStick) => analogStick.position;
