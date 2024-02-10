@@ -1,7 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using ProjectFox.CoreEngine.Math;
 using ProjectFox.CoreEngine.Collections;
-using static ProjectFox.GameEngine.DelegateAnimation;
 
 namespace ProjectFox.GameEngine.Visuals;
 
@@ -64,12 +63,6 @@ public class ColorPalette : IPalette, IColorGroup
         for (int i = 0; i < colors.length; i++)
             colors.elements[i].Highest = (byte)(colors.elements[i].Highest * modifier);
     }
-
-#if DEBUG
-    public override string ToString() =>
-        $"{base.ToString()}: {colors.Length}\n" +
-        $"{string.Join('\n', colors.ToArray())}";
-#endif
 }
 
 public abstract class IndexPalette : IPalette
@@ -86,7 +79,7 @@ public abstract class IndexPalette : IPalette
         Color[] colors = new Color[indices.length];
 
         for (int i = 0; i < indices.length; i++)//can this throw exceptions?
-            colors[i] = this[indices.elements[i]];
+            colors[i] = this[indices.elements[i]];//could this be inlined somehow?
 
         return colors;
     }
@@ -95,12 +88,6 @@ public abstract class IndexPalette : IPalette
     public ColorPalette ColorCopy() => new(GetColors());
 
     public abstract IPalette Copy();
-
-#if DEBUG
-    public override string ToString() =>
-        $"{base.ToString()}: {indices.Length}\n" +
-        $"{string.Join('\n', indices.ToArray())}";
-#endif
 }
 
 public sealed class PaletteAnimation : Animation, IPalette
@@ -141,8 +128,5 @@ public sealed class PaletteAnimation : Animation, IPalette
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     void IPalette._animate() => _animate();//is this okay?
 
-    public IPalette Copy()
-    {
-        throw new System.NotImplementedException();
-    }
+    public IPalette Copy() => Engine.SendError<IPalette>(ErrorCodes.NotImplemented, new("PalAnim", 0));
 }
