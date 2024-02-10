@@ -115,13 +115,13 @@ public abstract class PhysicsShape : Object2D
     public Vector velocity = new(0, 0);
 
 #if DEBUG
-    /// <summary> Controls whether the shape should be drawn for debugging </summary>
+    /// <summary> Whether the shape should be drawn for debugging </summary>
     public bool drawShape = false;
 
     /// <summary> Color used for debug drawing </summary>
     public Color shapeColor;
 
-    /// <summary> value initially assigned to color, can be overriden, blue by default </summary>
+    /// <summary> Value initially assigned to shapeColor, can be overriden, blue by default </summary>
     protected virtual Color DefaultShapeColor => new(0, 0, byte.MaxValue);
 #endif
 
