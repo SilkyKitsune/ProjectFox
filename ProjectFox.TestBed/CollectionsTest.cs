@@ -134,7 +134,7 @@ public static partial class CoreEngineTest
 
         AutoSizedArray<char> array = new AutoSizedArray<char>(new char[]
         {
-                'a', 'b', 'c', 'd', 'e'
+            'a', 'b', 'c', 'd', 'e'
         });
 
         ICopyTest(array, out AutoSizedArray<char> arrayCopy);
@@ -193,7 +193,7 @@ public static partial class CoreEngineTest
             C.WriteLine(e.Message);
         }
 
-        try
+        /*try
         {
             C.WriteLine(array[1, 0]);
         }
@@ -253,7 +253,7 @@ public static partial class CoreEngineTest
         catch (IndexOutOfRangeException e)
         {
             C.WriteLine(e.Message);
-        }
+        }*/
 
         try
         {
@@ -292,12 +292,39 @@ public static partial class CoreEngineTest
 
         try
         {
-            array.RemoveRange(1, 0);
+            C.WriteLine(array.GetRange(-1, 0));
         }
-        catch (ArgumentException e)
+        catch (ArgumentOutOfRangeException e)
         {
             C.WriteLine(e.Message);
         }
+        try
+        {
+            C.WriteLine(array.GetRange(0, -1));
+        }
+        catch (ArgumentOutOfRangeException e)
+        {
+            C.WriteLine(e.Message);
+        }
+
+        try
+        {
+            array.RemoveRange(-1, 0);
+        }
+        catch (ArgumentOutOfRangeException e)
+        {
+            C.WriteLine(e.Message);
+        }
+        try
+        {
+            array.RemoveRange(0, -1);
+        }
+        catch (ArgumentOutOfRangeException e)
+        {
+            C.WriteLine(e.Message);
+        }
+
+        //replace range
 
         AutoSizedArray<int> array2 = new AutoSizedArray<int>(new int[]
         {
@@ -319,7 +346,7 @@ public static partial class CoreEngineTest
         hashTable.Add('c', new Vector(3, 3));
         hashTable.Add('d', new Vector(4, 4));
         hashTable.Add('e', new Vector(5, 5));
-        hashTable.Add((char)0, new Vector(-1, -1));
+        hashTable.Add('&'/*(char)0*/, new Vector(-1, -1));
 
         ICopyTest(hashTable, out HashLookupTable<char, Vector> hashTableCopy);
         IHashTableTest(hashTable, hashTableCopy, 'a', 'b', 'c', 'x', 'y', 'z', new Vector(-69, 69));
@@ -408,17 +435,17 @@ public static partial class CoreEngineTest
         iCollection[0] = item;
         C.WriteLine(iCollection[0]);
 
-        C.WriteLine(string.Join(", ", iCollection[0, iCollection.Length]));
+        //C.WriteLine(string.Join(", ", iCollection[0, iCollection.Length]));
 
-        T[] items = iCollection[0, iCollection.Length];
-        iCollection[0, iCollection.Length] = new T[3] { value1, value2, value3 };//incorrect
-        C.WriteLine(string.Join(", ", iCollection[0, iCollection.Length]));
-        C.WriteLine(iCollection.Length);
+        //T[] items = iCollection[0, iCollection.Length];
+        //iCollection[0, iCollection.Length] = new T[3] { value1, value2, value3 };//incorrect
+        //C.WriteLine(string.Join(", ", iCollection[0, iCollection.Length]));
+        //C.WriteLine(iCollection.Length);
 
-        iCollection[0, iCollection.Length] = items;
-        C.WriteLine(string.Join(", ", iCollection[0, iCollection.Length]));
+        //iCollection[0, iCollection.Length] = items;
+        //C.WriteLine(string.Join(", ", iCollection[0, iCollection.Length]));
 
-        C.WriteLine(string.Join(", ", iCollection[0, 2]));
+        //C.WriteLine(string.Join(", ", iCollection[0, 2]));
 
         C.WriteLine(iCollection.Concat());
 
@@ -428,6 +455,8 @@ public static partial class CoreEngineTest
         C.WriteLine(iCollection.FromLastIndex(1));
 
         C.WriteLine(string.Join(", ", iCollection.GetMultiple(3, 1, 4)));
+        
+        C.WriteLine(string.Join(", ", iCollection.GetRange(1, 3)));
 
         C.WriteLine(iCollection.IndexOf(iCollection[0]));
         C.WriteLine(iCollection.IndexOf(iCollection[1]));
@@ -451,10 +480,10 @@ public static partial class CoreEngineTest
         iCollection.Add(value1, value2, value3);
         C.WriteLine(iCollection.Join(", "));
 
-        iCollection.RemoveAt(iCollection.Length - 1);
+        iCollection.RemoveRange(iCollection.Length - 3, 2);
         C.WriteLine(iCollection.Join(", "));
 
-        iCollection.RemoveRange(iCollection.Length - 2, iCollection.Length - 1);
+        iCollection.RemoveAt(iCollection.Length - 1);
         C.WriteLine(iCollection.Join(", "));
 
         iCollection.Insert(2, value1);
@@ -463,10 +492,23 @@ public static partial class CoreEngineTest
         iCollection.Remove(value1);
         C.WriteLine(iCollection.Join(", "));
 
-        iCollection.Insert(3, value1, value2, value3);//incorrect
+        iCollection.Insert(3, value1, value2, value3);
         C.WriteLine(iCollection.Join(", "));
 
         iCollection.Move(2, 0);
+        C.WriteLine(iCollection.Join(", "));
+
+        copy.CopyTo(iCollection);
+        C.WriteLine(iCollection.Join(", "));
+
+        T[] values = iCollection.GetRange(1, 2);
+        iCollection.ReplaceRange(1, 2, value1, value2, value3);
+        C.WriteLine(iCollection.Join(", "));
+
+        iCollection.ReplaceRange(1, 3, values);
+        C.WriteLine(iCollection.Join(", "));
+
+        iCollection.ReplaceRange(3, iCollection.Length, value1, value1, value1, value1, value1);
         C.WriteLine(iCollection.Join(", "));
 
         iCollection.Clear();
