@@ -33,8 +33,8 @@ internal sealed class Array<T> : ICollection<T>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => (index >= length || index < 0) ?
             Engine.SendError<T>(ErrorCodes.BadArgument, ArrayName, nameof(index),
-                $"Invalid index in ICollection<{typeof(T)}>")
-            : elements[index];
+                $"Invalid index in ICollection<{typeof(T)}>") :
+            elements[index];
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set
         {
@@ -52,14 +52,6 @@ internal sealed class Array<T> : ICollection<T>
             }
             elements[index] = value;
         }
-    }
-
-    public T[] this[int startIndex, int endIndex]
-    {
-        get => Engine.SendError<T[]>(ErrorCodes.NotImplemented, ArrayName, null,
-            "ICollection.this[,] is not implemented for this type");
-        set => Engine.SendError(ErrorCodes.NotImplemented, ArrayName, null,
-            "ICollection.this[,] is not implemented for this type");
     }
 
     public void Add(T value)
@@ -111,6 +103,7 @@ internal sealed class Array<T> : ICollection<T>
         if (values.Length == 0) return;
 
         #region temp
+        //need to better integrate this if possible
         Array<T> newValues = new(values.Length);
         foreach (T value in values)
         {
@@ -188,8 +181,7 @@ internal sealed class Array<T> : ICollection<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public T FromLastIndex(int index) => index > length || index <= 0 ?
         Engine.SendError<T>(ErrorCodes.BadArgument, ArrayName, nameof(index),
-            $"Invalid index in ICollection<{typeof(T)}>")
-        : elements[length - index];
+            $"Invalid index in ICollection<{typeof(T)}>") : elements[length - index];
 
     public T[] GetMultiple(params int[] indices)
     {
@@ -200,6 +192,23 @@ internal sealed class Array<T> : ICollection<T>
             if (indices[i] >= 0 && indices[i] < length)
                 array[i] = elements[indices[i]];
         return array;
+    }
+
+    public T[] GetRange(int index, int length)
+    {
+        if (index < 0)
+            return Engine.SendError<T[]>(ErrorCodes.BadArgument, ArrayName, nameof(index),
+                $"Invalid index in ICollection<{typeof(T)}>");
+        if (length < 0)
+            return Engine.SendError<T[]>(ErrorCodes.BadArgument, ArrayName, nameof(length),
+                $"Invalid length in ICollection<{typeof(T)}>");
+
+        if (index >= this.length || length == 0) return null;
+
+        int lastIndex = index + length;
+        if (lastIndex >= this.length) lastIndex = this.length;
+
+        return elements[index..lastIndex];
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -245,9 +254,42 @@ internal sealed class Array<T> : ICollection<T>
         length++;
     }
 
-    public void Insert(int index, params T[] values) =>
-        Engine.SendError(ErrorCodes.NotImplemented, ArrayName, null,
-            "ICollection.Insert() is not implemented for this type");
+    public void Insert(int index, params T[] values)
+    {
+        if (index >= length)
+        {
+            Add(values);
+            return;
+        }
+
+        #region temp
+        //need to better integrate this if possible
+        Array<T> newValues = new(values.Length);
+        foreach (T value in values)
+        {
+            if (value == null)
+                Engine.SendError(ErrorCodes.NullArgument, ArrayName, nameof(value),
+                    $"This type does not allow null elements, ICollection<{typeof(T)}>");
+            else newValues.AddDirect(value);
+        }
+        values = newValues.ToArray();
+        #endregion
+
+        int newLength = length + values.Length;
+        if (newLength >= elements.Length)
+        {
+            T[] array = new T[(newLength / chunkSize + 1) * chunkSize];
+
+            for (int i = 0; i < index; i++) array[i] = elements[i];
+            for (int i = newLength - 1, j = length - 1, k = index - 1; j > k;) array[i--] = elements[j--];
+
+            elements = array;
+        }
+        else for (int i = newLength - 1, j = length - 1, k = index - 1; j > k;) elements[i--] = elements[j--];
+
+        for (int i = 0; i < values.Length; i++) elements[index++] = values[i];
+        length = newLength;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsEmpty() => length == 0;
@@ -315,9 +357,97 @@ internal sealed class Array<T> : ICollection<T>
         return true;
     }
 
-    public bool RemoveRange(int startIndex, int endIndex) =>
-        Engine.SendError<bool>(ErrorCodes.NotImplemented, ArrayName, null,
-            "ICollection.RemoveRange() is not implemented for this type");
+    public int RemoveRange(int index, int length)
+    {
+        if (index < 0)
+            return Engine.SendError<int>(ErrorCodes.BadArgument, ArrayName, nameof(index),
+                $"Invalid index in ICollection<{typeof(T)}>");
+        if (length < 0)
+            return Engine.SendError<int>(ErrorCodes.BadArgument, ArrayName, nameof(length),
+                $"Invalid length in ICollection<{typeof(T)}>");
+
+        if (index >= this.length || length == 0) return 0;
+
+        if (index == 0 && length == this.length)
+        {
+            Clear();
+            return length;
+        }
+
+        int toEnd = this.length - index;
+        if (toEnd < length) length = toEnd;
+
+        int newLength = this.length - length, lastIndex = index + length;
+        T[] array = new T[(newLength / chunkSize + 1) * chunkSize];
+
+        for (int i = 0; i < index; i++) array[i] = elements[i];
+        while (lastIndex < this.length) array[index++] = elements[lastIndex++];
+
+        elements = array;
+        this.length = newLength;
+
+        return length;
+    }
+
+    public int ReplaceRange(int index, int length, params T[] values)
+    {
+        if (index < 0)
+            return Engine.SendError<int>(ErrorCodes.BadArgument, ArrayName, nameof(index),
+                $"Invalid index in ICollection<{typeof(T)}>");
+        if (length < 0)
+            return Engine.SendError<int>(ErrorCodes.BadArgument, ArrayName, nameof(length),
+                $"Invalid length in ICollection<{typeof(T)}>");
+
+        #region temp
+        //need to better integrate this if possible
+        Array<T> newValues = new(values.Length);
+        foreach (T value in values)
+        {
+            if (value == null)
+                Engine.SendError(ErrorCodes.NullArgument, ArrayName, nameof(value),
+                    $"This type does not allow null elements, ICollection<{typeof(T)}>");
+            else newValues.AddDirect(value);
+        }
+        values = newValues.ToArray();
+        #endregion
+
+        if (values.Length == 0) return 0;
+
+        if (length == 0) length = values.Length;
+
+        if (index == 0 && length == this.length)
+        {
+            Clear();
+            Add(values);
+            return length;
+        }
+
+        if (index >= this.length)
+        {
+            Add(values);
+            return 0;
+        }
+
+        int toEnd = this.length - index;
+        if (toEnd < length) length = toEnd;
+
+        if (length != values.Length)
+        {
+            int newLength = (this.length - length) + values.Length;
+            T[] array = new T[(newLength / chunkSize + 1) * chunkSize];
+
+            for (int i = 0; i < index; i++) array[i] = elements[i];
+            for (int i = index + length, j = index + values.Length; i < this.length;)
+                array[j++] = elements[i++];
+
+            elements = array;
+            this.length = newLength;
+        }
+
+        for (int i = 0; i < values.Length; i++) elements[index++] = values[i];
+
+        return length;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public T[] ToArray() => length == 0 ? new T[0] : elements[0..length];
