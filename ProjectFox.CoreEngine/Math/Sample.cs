@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 using ProjectFox.CoreEngine.Collections;
 using ProjectFox.CoreEngine.Data;
-//using D = ProjectFox.CoreEngine.Data.Data;//remove
 
 namespace ProjectFox.CoreEngine.Math;
 
@@ -26,10 +25,6 @@ public struct Sample : IData<Sample>//other interfaces?
 
     public unsafe static Sample FromBytes(byte[] bytes, bool littleEndian)
     {
-        /*return new(
-            D.ToInt16(new byte[2] { bytes[0], bytes[1] }, littleEndian),//cast directly?
-            D.ToInt16(new byte[2] { bytes[2], bytes[3] }, littleEndian));*/
-
         if (bytes == null || bytes.Length < sizeof(Sample)) throw new ArgumentNullException();
 
         short l = 0, r = 0;
@@ -80,11 +75,6 @@ public struct Sample : IData<Sample>//other interfaces?
         if (bytes == null || bytes.Length < size) throw new ArgumentException();
 
         Sample[] values = new Sample[bytes.Length / size];
-
-        /*for (int i = 0, j = 0; i < values.Length; i++)
-            values[i] = new(
-                D.ToInt16(new byte[2] { bytes[j++], bytes[j++] }, littleEndian),
-                D.ToInt16(new byte[2] { bytes[j++], bytes[j++] }, littleEndian));*/
 
 #if BIGENDIAN
         if (!littleEndian)
@@ -138,16 +128,6 @@ public struct Sample : IData<Sample>//other interfaces?
         if (values == null || values.Length == 0) throw new ArgumentException();
 
         byte[] bytes = new byte[values.Length * sizeof(Sample)];
-
-        /*for (int i = 0, j = 0; i < values.Length; i++)
-        {
-            Sample s = values[i];
-            byte[] left = D.GetBytes(s.left, littleEndian), right = D.GetBytes(s.right, littleEndian);
-            bytes[j++] = left[0];
-            bytes[j++] = left[1];
-            bytes[j++] = right[0];
-            bytes[j++] = right[1];
-        }*/
 
 #if BIGENDIAN
         if (!littleEndian)
@@ -247,10 +227,6 @@ public struct Sample : IData<Sample>//other interfaces?
 
     public unsafe byte[] GetBytes(bool littleEndian)
     {
-        /*byte[] left = D.GetBytes(this.left, littleEndian),
-            right = D.GetBytes(this.right, littleEndian);
-        return new byte[4] { left[0], left[1], right[0], right[1] };*/
-
         byte[] bytes = new byte[sizeof(Sample)];
 #if BIGENDIAN 
         if (!littleEndian)
@@ -272,9 +248,6 @@ public struct Sample : IData<Sample>//other interfaces?
         }
         return bytes;
     }
-
-    //is this redundant?
-    //public byte[] GetBytesMono(bool littleEndian)
 
     public static implicit operator Sample(uint i) => new(i);
 
