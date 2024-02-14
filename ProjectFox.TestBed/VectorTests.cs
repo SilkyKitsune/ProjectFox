@@ -12,7 +12,15 @@ public static partial class CoreEngineTest
 {
     public static void VectorTests()
     {
-        #region Vector Static
+        DirectionTest();
+        VectorTest();
+        VectorFTest();
+        VectorZTest();
+        VectorZFTest();
+    }
+
+    private static void DirectionTest()
+    {
         C.WriteLine("---Vector Static---");
 
         C.WriteLine(ToBinString((byte)Vector.Direction.Zero));
@@ -66,9 +74,10 @@ public static partial class CoreEngineTest
         C.WriteLine(string.Join(',', Vector.StepInterpolate(new(2, 5), new(10, 10))));
 
         C.WriteLine("-----\n");
-        #endregion
+    }
 
-        #region Vector
+    private static void VectorTest()
+    {
         C.WriteLine("---Vector---");
 
         Vector v = new(2, 4);
@@ -78,6 +87,27 @@ public static partial class CoreEngineTest
         int vSmallert = -10;
         VectorF vBiggerF = new(5.5f, 5.5f);
         VectorF vSmallerF = new(-1.25f, -10.99f);
+
+        C.WriteLine(Vector.ConcatHex(false, false, v, vBigger, vSmaller));
+        C.WriteLine(Vector.ConcatBin(false, false, '|', '_', v, vBigger, vSmaller));
+        C.WriteLine(Vector.JoinHex(false, false, ", ", v, vBigger, vSmaller));
+        C.WriteLine(Vector.JoinBin(false, false, '|', '_', ", ", v, vBigger, vSmaller));
+
+        byte[] bytes = new byte[17] {
+            0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
+            0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF, 0x00, 0x1F };
+        C.WriteLine(Vector.FromBytes(bytes, false).ToHexString());
+        C.WriteLine(Vector.FromBytes(bytes, true).ToHexString());
+
+        C.WriteLine(JoinHex(false, false, ", ", v.GetBytes(false)));
+        C.WriteLine(JoinHex(false, false, ", ", v.GetBytes(true)));
+
+        Vector[] vectors = Vector.FromBytesMultiple(bytes, false);
+        C.WriteLine(Vector.JoinHex(false, false, ", ", vectors));
+        C.WriteLine(Vector.JoinHex(false, false, ", ", Vector.FromBytesMultiple(bytes, true)));
+
+        C.WriteLine(JoinHex(false, false, ", ", Vector.GetBytes(vectors, false)));
+        C.WriteLine(JoinHex(false, false, ", ", Vector.GetBytes(vectors, true)));
 
         IVectorTest(v, vBigger, vSmaller, vBiggert, vSmallert, vBiggerF, vSmallerF);
 
@@ -224,9 +254,10 @@ public static partial class CoreEngineTest
         #endregion
 
         C.WriteLine("-----\n");
-        #endregion
+    }
 
-        #region VectorF
+    private static void VectorFTest()
+    {
         C.WriteLine("---VectorF---");
 
         VectorF vf = new(2f, 4f);
@@ -236,6 +267,28 @@ public static partial class CoreEngineTest
         float vfSmallert = -10f;
         VectorF vfBiggerF = new(5.5f, 5.5f);
         VectorF vfSmallerF = new(-1.25f, -10.99f);
+        Vector v = new(2, 4);
+
+        C.WriteLine(VectorF.ConcatHex(false, false, vf, vfBigger, vfSmaller));
+        C.WriteLine(VectorF.ConcatBin(false, false, '|', '_', vf, vfBigger, vfSmaller));
+        C.WriteLine(VectorF.JoinHex(false, false, ", ", vf, vfBigger, vfSmaller));
+        C.WriteLine(VectorF.JoinBin(false, false, '|', '_', ", ", vf, vfBigger, vfSmaller));
+
+        byte[] bytes = new byte[17] {
+            0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
+            0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF, 0x00, 0x1F };
+        C.WriteLine(VectorF.FromBytes(bytes, false).ToHexString());
+        C.WriteLine(VectorF.FromBytes(bytes, true).ToHexString());
+
+        C.WriteLine(JoinHex(false, false, ", ", vf.GetBytes(false)));
+        C.WriteLine(JoinHex(false, false, ", ", vf.GetBytes(true)));
+
+        VectorF[] vectors = VectorF.FromBytesMultiple(bytes, false);
+        C.WriteLine(VectorF.JoinHex(false, false, ", ", vectors));
+        C.WriteLine(VectorF.JoinHex(false, false, ", ", VectorF.FromBytesMultiple(bytes, true)));
+
+        C.WriteLine(JoinHex(false, false, ", ", VectorF.GetBytes(vectors, false)));
+        C.WriteLine(JoinHex(false, false, ", ", VectorF.GetBytes(vectors, true)));
 
         IVectorTest(vf, vfBigger, vfSmaller, vfBiggert, vfSmallert, vfBiggerF, vfSmallerF);
 
@@ -388,9 +441,10 @@ public static partial class CoreEngineTest
         #endregion
 
         C.WriteLine("-----\n");
-        #endregion
+    }
 
-        #region VectorZ
+    private static void VectorZTest()
+    {
         C.WriteLine("---VectorZ---");
 
         VectorZ vz = new(2, 4, 5);
@@ -400,6 +454,27 @@ public static partial class CoreEngineTest
         int vzSmallert = -10;
         VectorZF vzBiggerF = new(5.5f, 5.5f, 5.5f);
         VectorZF vzSmallerF = new(-1.25f, -10.99f, -0.00001f);
+
+        C.WriteLine(VectorZ.ConcatHex(false, false, vz, vzBigger, vzSmaller));
+        C.WriteLine(VectorZ.ConcatBin(false, false, '|', '_', vz, vzBigger, vzSmaller));
+        C.WriteLine(VectorZ.JoinHex(false, false, ", ", vz, vzBigger, vzSmaller));
+        C.WriteLine(VectorZ.JoinBin(false, false, '|', '_', ", ", vz, vzBigger, vzSmaller));
+
+        byte[] bytes = new byte[25] {
+            0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xAA, 0xBB, 0xCC,
+            0xDD, 0xEE, 0xFF, 0x00, 0x1F, 0x2F, 0x3F, 0x4F, 0x5F, 0x6F, 0x7F, 0x8F, 0x0F };
+        C.WriteLine(VectorZ.FromBytes(bytes, false).ToHexString());
+        C.WriteLine(VectorZ.FromBytes(bytes, true).ToHexString());
+
+        C.WriteLine(JoinHex(false, false, ", ", vz.GetBytes(false)));
+        C.WriteLine(JoinHex(false, false, ", ", vz.GetBytes(true)));
+
+        VectorZ[] vectors = VectorZ.FromBytesMultiple(bytes, false);
+        C.WriteLine(VectorZ.JoinHex(false, false, ", ", vectors));
+        C.WriteLine(VectorZ.JoinHex(false, false, ", ", VectorZ.FromBytesMultiple(bytes, true)));
+
+        C.WriteLine(JoinHex(false, false, ", ", VectorZ.GetBytes(vectors, false)));
+        C.WriteLine(JoinHex(false, false, ", ", VectorZ.GetBytes(vectors, true)));
 
         IVectorTest(vz, vzBigger, vzSmaller, vzBiggert, vzSmallert, vzBiggerF, vzSmallerF);
 
@@ -545,9 +620,10 @@ public static partial class CoreEngineTest
         #endregion
 
         C.WriteLine("-----\n");
-        #endregion
+    }
 
-        #region VectorZF
+    private static void VectorZFTest()
+    {
         C.WriteLine("---VectorZF---");
 
         VectorZF vzf = new(2f, 4f, 5f);
@@ -557,6 +633,28 @@ public static partial class CoreEngineTest
         float vzfSmallert = -10f;
         VectorZF vzfBiggerF = new(5.5f, 5.5f, 5.5f);
         VectorZF vzfSmallerF = new(-1.25f, -10.99f, -0.00001f);
+        VectorZ vz = new(2, 4, 5);
+
+        C.WriteLine(VectorZF.ConcatHex(false, false, vzf, vzfBigger, vzfSmaller));
+        C.WriteLine(VectorZF.ConcatBin(false, false, '|', '_', vzf, vzfBigger, vzfSmaller));
+        C.WriteLine(VectorZF.JoinHex(false, false, ", ", vzf, vzfBigger, vzfSmaller));
+        C.WriteLine(VectorZF.JoinBin(false, false, '|', '_', ", ", vzf, vzfBigger, vzfSmaller));
+
+        byte[] bytes = new byte[25] {
+            0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xAA, 0xBB, 0xCC,
+            0xDD, 0xEE, 0xFF, 0x00, 0x1F, 0x2F, 0x3F, 0x4F, 0x5F, 0x6F, 0x7F, 0x8F, 0x0F };
+        C.WriteLine(VectorZF.FromBytes(bytes, false).ToHexString());
+        C.WriteLine(VectorZF.FromBytes(bytes, true).ToHexString());
+
+        C.WriteLine(JoinHex(false, false, ", ", vzf.GetBytes(false)));
+        C.WriteLine(JoinHex(false, false, ", ", vzf.GetBytes(true)));
+
+        VectorZF[] vectors = VectorZF.FromBytesMultiple(bytes, false);
+        C.WriteLine(VectorZF.JoinHex(false, false, ", ", vectors));
+        C.WriteLine(VectorZF.JoinHex(false, false, ", ", VectorZF.FromBytesMultiple(bytes, true)));
+
+        C.WriteLine(JoinHex(false, false, ", ", VectorZF.GetBytes(vectors, false)));
+        C.WriteLine(JoinHex(false, false, ", ", VectorZF.GetBytes(vectors, true)));
 
         IVectorTest(vzf, vzfBigger, vzfSmaller, vzfBiggert, vzfSmallert, vzfBiggerF, vzfSmallerF);
 
@@ -706,6 +804,5 @@ public static partial class CoreEngineTest
         #endregion
 
         C.WriteLine("-----\n");
-        #endregion
     }
 }
