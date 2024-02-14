@@ -96,13 +96,10 @@ public sealed class HashLookupTable<H, T> : IHashTable<H, T>, ICopy<HashLookupTa
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public HashLookupTable<H, T> Copy() => new(codes.Copy(), values.Copy());
 
-    /// <summary> Not Fully Implemented Yet </summary>
-    /// <param name="table"></param>
-    /// <exception cref="ArgumentNullException"></exception>
     public void CopyTo(IHashTable<H, T> table)
     {
         if (table == null) throw new ArgumentNullException(nameof(table));
-        if (codes.Length == 0) return;
+        if (this.codes.Length == 0) return;
 
         if (table is HashLookupTable<H, T> hashTable)
         {
@@ -110,7 +107,12 @@ public sealed class HashLookupTable<H, T> : IHashTable<H, T>, ICopy<HashLookupTa
             return;
         }
 
-        //?
+        H[] codes = this.codes.ToArray();
+        T[] values = this.values.ToArray();
+
+        table.Clear();
+        for (int i = 0; i < codes.Length; i++)
+            table.Add(codes[i], values[i]);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
