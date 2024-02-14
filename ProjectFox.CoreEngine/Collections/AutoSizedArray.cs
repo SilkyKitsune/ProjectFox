@@ -35,7 +35,7 @@ public sealed class AutoSizedArray<T> : ICollection<T>, ICopy<AutoSizedArray<T>>
     }
     
     private readonly int chunkSize;
-    private int length;//internal?
+    private int length;
     private T[] elements;
 
     public int ChunkSize
@@ -63,56 +63,6 @@ public sealed class AutoSizedArray<T> : ICollection<T>, ICopy<AutoSizedArray<T>>
                 throw new IndexOutOfRangeException();
             elements[index] = value;
         }
-    }
-
-    /// <summary></summary>
-    /// <param name="startIndex"></param>
-    /// <param name="endIndex"></param>
-    /// <returns></returns>
-    /// <remarks> set is DEBUG only </remarks>
-    /// <exception cref="ArgumentException"></exception>
-    /// <exception cref="IndexOutOfRangeException"></exception>
-    /// <exception cref="ArgumentNullException"></exception>
-    public T[] this[int startIndex, int endIndex]//might change to length
-    {
-        get
-        {
-            if (startIndex > endIndex)
-                throw new ArgumentException($"MinMaxException ({nameof(startIndex)}={startIndex} > {nameof(endIndex)}={endIndex})");
-
-            if (startIndex >= length || startIndex < 0) throw new IndexOutOfRangeException();
-
-            if (endIndex >= length) return elements[startIndex..length];
-            return elements[startIndex..endIndex];
-        }
-        set//this doesn't seem to work right
-        {//endIndex is redundant here because value.Length is functionally a lenght argument
-            //endindex can specify the range to remove before adding value
-#if DEBUG
-            if (value == null) throw new ArgumentNullException(nameof(value));
-
-            if (startIndex > endIndex)
-                throw new ArgumentException($"MinMaxException ({nameof(startIndex)}={startIndex} > {nameof(endIndex)}={endIndex})");
-
-            if (startIndex >= length || startIndex < 0) throw new IndexOutOfRangeException();
-
-            int lengthToWrite = endIndex - startIndex;
-            if (lengthToWrite > value.Length)
-                endIndex -= lengthToWrite - value.Length;
-
-            if (endIndex >= length)
-            {
-                T[] array = new T[endIndex + 1 / chunkSize + 1 * chunkSize];
-                for (int i = 0; i < length; i++) array[i] = elements[i];
-                elements = array;
-            }
-            for (int i = 0; i < value.Length; i++) elements[startIndex++] = value[i];
-            length = endIndex + 1;
-#else
-            throw new NotImplementedException();
-#endif
-        }
-
     }
     
     public void Add(T value)
@@ -212,6 +162,18 @@ public sealed class AutoSizedArray<T> : ICollection<T>, ICopy<AutoSizedArray<T>>
         return array;
     }
 
+    public T[] GetRange(int index, int length)
+    {
+        if (index < 0 || length < 0) throw new ArgumentOutOfRangeException();
+
+        if (index >= this.length || length == 0) return null;
+
+        int lastIndex = index + length;
+        if (lastIndex >= this.length) lastIndex = this.length;
+
+        return elements[index..lastIndex];
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int IndexOf(T value)
     {
@@ -246,10 +208,8 @@ public sealed class AutoSizedArray<T> : ICollection<T>, ICopy<AutoSizedArray<T>>
         length++;
     }
 
-    /// <remarks> DEBUG only </remarks>
-    public void Insert(int index, params T[] values)//don't think this works right
+    public void Insert(int index, params T[] values)
     {
-#if DEBUG
         if (index >= length)
         {
             Add(values);
@@ -259,22 +219,17 @@ public sealed class AutoSizedArray<T> : ICollection<T>, ICopy<AutoSizedArray<T>>
         int newLength = length + values.Length;
         if (newLength >= elements.Length)
         {
-            T[] array = new T[(int)(newLength / (float)chunkSize) + 1 * chunkSize];
-            //copying the elements up to just before index
-            for (int i = 0; i < index; i++) array[i] = elements[i];
-            //copying the elements after index + values.Length backwards
-            for (int i = newLength - 1, j = length - 1; j > index;)
-                array[i--] = elements[j--];
+            T[] array = new T[(newLength / chunkSize + 1) * chunkSize];
+            
+            for (int i = 0; i < index; i++) array[i] = elements[i]; //copying the elements up to just before index
+            for (int i = newLength - 1, j = length - 1, k = index - 1; j > k;) array[i--] = elements[j--]; //copying the elements after index + values.Length backwards
+
             elements = array;
-        }//  copying the elements after index + values.Length backwards
-        else for (int i = newLength - 1, j = length - 1; j > index;)
-                elements[i--] = elements[j--];
+        }
+        else for (int i = newLength - 1, j = length - 1, k = index - 1; j > k;) elements[i--] = elements[j--]; //copying the elements after index + values.Length backwards
 
         for (int i = 0; i < values.Length; i++) elements[index++] = values[i];
         length = newLength;
-#else
-        throw new NotImplementedException();
-#endif
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -345,33 +300,73 @@ public sealed class AutoSizedArray<T> : ICollection<T>, ICopy<AutoSizedArray<T>>
         return true;
     }
 
-    public bool RemoveRange(int startIndex, int endIndex)//change to length
+    public int RemoveRange(int index, int length)
     {
-        if (startIndex > endIndex)
-            throw new ArgumentException($"MinMaxException ({nameof(startIndex)}={startIndex} > {nameof(endIndex)}={endIndex})");
+        if (index < 0 || length < 0) throw new ArgumentOutOfRangeException();
 
-        if (startIndex >= length || startIndex < 0) return false;
+        if (index >= this.length || length == 0) return 0;
 
-        //if endIndex is >= the final index
-        if (endIndex >= length - 1) length = startIndex;
-        else
+        if (index == 0 && length == this.length)
         {
-            //storing the new length before startIndex and endIndex are modified
-            int newLength = length - (endIndex - startIndex);
-            //moving the values from one ahead of endIndex to startIndex
-            while (endIndex < length) elements[startIndex++] = elements[++endIndex];
-            length = newLength;
+            Clear();
+            return length;
         }
 
-        //if the number of empty elements is >= 2 chunks
-        if (elements.Length - length >= chunkSize * 2)
+        int toEnd = this.length - index;
+        if (toEnd < length) length = toEnd;
+
+        int newLength = this.length - length, lastIndex = index + length;
+        T[] array = new T[(newLength / chunkSize + 1) * chunkSize];
+        
+        for (int i = 0; i < index; i++) array[i] = elements[i];
+        while (lastIndex < this.length) array[index++] = elements[lastIndex++];
+
+        elements = array;
+        this.length = newLength;
+
+        return length;
+    }
+
+    public int ReplaceRange(int index, int length, params T[] values)
+    {
+        if (index < 0 || length < 0) throw new ArgumentOutOfRangeException();
+
+        if (values.Length == 0) return 0;//removerange instead?
+
+        if (length == 0) length = values.Length;
+        
+        if (index == 0 && length == this.length)
         {
-            T[] array = new T[length / chunkSize + 1 * chunkSize];
-            for (int i = 0; i < length; i++) array[i] = elements[i];
+            Clear();
+            Add(values);
+            return length;
+        }
+
+        if (index >= this.length)
+        {
+            Add(values);
+            return 0;
+        }
+
+        int toEnd = this.length - index;
+        if (toEnd < length) length = toEnd;
+
+        if (length != values.Length)
+        {
+            int newLength = (this.length - length) + values.Length;
+            T[] array = new T[(newLength / chunkSize + 1) * chunkSize];
+
+            for (int i = 0; i < index; i++) array[i] = elements[i];
+            for (int i = index + length, j = index + values.Length; i < this.length;)
+                array[j++] = elements[i++];
+
             elements = array;
+            this.length = newLength;
         }
 
-        return true;
+        for (int i = 0; i < values.Length; i++) elements[index++] = values[i];
+
+        return length;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
