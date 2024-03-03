@@ -2,7 +2,6 @@
 using ProjectFox.GameEngine;
 using ProjectFox.GameEngine.Visuals;
 using ProjectFox.GameEngine.Input;
-using System.Threading;
 
 namespace ProjectFox.Windows;
 
