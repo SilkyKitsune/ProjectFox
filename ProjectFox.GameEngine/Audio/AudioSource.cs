@@ -14,7 +14,7 @@ public abstract class AudioSource : Object2D
 
     public bool audible = true, repeat = false, exceedMaxVolume = false;
 
-    public float volume = 1f,leftVolume = 1f, rightVolume = 1f, /*panning = 0f,*/ maxVolumeDistance = 1f;
+    public float volume = 1f, leftVolume = 1f, rightVolume = 1f, panning = 0f, maxVolumeDistance = 1f;
 
     protected abstract Sample[] GetDrawInfo();
 
@@ -46,32 +46,50 @@ public abstract class AudioSource : Object2D
             return;
         }
 
-        //incorporate panning
         float v = volume;
 
         Array<Object2D> listeners = (Array<Object2D>)this.listeners;
-        if (listeners.length > 0)
+        if (listeners.length > 0)//this makes it quieter if closer
         {
-            Object2D closest = Closest(listeners.ToArray());//overload?
+            Object2D closest = Closest(listeners.ToArray());//overload for awway<>?
             v *= closest.position.Distance(position) / maxVolumeDistance;
         }
 
-        if (!exceedMaxVolume && v > 1f) v = 1f;
+        if (!exceedMaxVolume && v > 1f) v = 1f;//should l/r vol be clamped?
 
-        float l = v * leftVolume, r = v * rightVolume;
-        
+        bool leftPan = panning < 0, rightPan = panning > 0;
+        float l = v * leftVolume, r = v * rightVolume, pan = leftPan ? -panning : panning, reversePan = 1 - pan;
+
+        //Debug.Console.QueueMessage(Speakers.SamplesPerFrame * Engine.TimeOfLastFrame);
+
         for (int i = 0; i < waveShape.Length; i++)
         {
             int addedLength = waveShape.Length - channel.samples.length;
             if (addedLength > 0) channel.samples.AddLength(addedLength);
 
-            Sample sample = waveShape[i], channelSample = channel.samples.elements[i];
+            Sample sample = waveShape[i], channelSample = channel.samples.elements[i];//does channel need a different index?
+            float left = sample.left * l, right = sample.right * r;
 
-            channel.samples.elements[i] = channel.monophonic ?//could the double clamp be abbreviated?
-                    new((short)(Math.Clamp(sample.left * l, short.MinValue, short.MaxValue)),
-                        (short)(Math.Clamp(sample.right * r, short.MinValue, short.MaxValue))) :
-                    new((short)(Math.Clamp(channelSample.left + (sample.left * l), short.MinValue, short.MaxValue)),
-                        (short)(Math.Clamp(channelSample.right + (sample.right * r), short.MinValue, short.MaxValue)));
+            if (leftPan)
+            {
+                left += right * pan;
+                right *= reversePan;
+            }
+            else if (rightPan)
+            {
+                right += left * pan;
+                left *= reversePan;
+            }
+
+            if (!channel.monophonic)
+            {
+                left += channelSample.left;
+                right += channelSample.right;
+            }
+            
+            channel.samples.elements[i] = new(//could the double clamp be abbreviated?
+                (short)(Math.Clamp(left, short.MinValue, short.MaxValue)),
+                (short)(Math.Clamp(right, short.MinValue, short.MaxValue)));
         }
 
         if (!repeat) audible = false;
