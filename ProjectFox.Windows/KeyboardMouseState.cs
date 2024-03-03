@@ -591,7 +591,7 @@ public struct KeyboardMouseState
                 break;
 
             default:
-                throw new Exception($"Invalid KeyCode '{keyCode}'");
+                throw new Exception($"Invalid KeyCode '{keyCode}'");//mute key throws exception
         }
     }
 }
