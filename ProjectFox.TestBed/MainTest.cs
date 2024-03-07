@@ -9,6 +9,8 @@ using ProjectFox.GameEngine.Visuals;
 
 using ProjectFox.Windows;
 
+using ProjectFox.NAudio;
+
 using static ProjectFox.TestBed.DebugColors;
 
 namespace ProjectFox.TestBed;
@@ -16,6 +18,7 @@ namespace ProjectFox.TestBed;
 public static partial class GameEngineTest
 {
     private static GameWindow window;
+    private static GameAudioOutput audioOutput;
 
     public static void MainTest()
     {

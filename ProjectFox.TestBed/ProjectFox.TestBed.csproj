@@ -18,8 +18,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Nefarius.ViGEm.Client" Version="1.21.256" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ProjectFox.CoreEngine\ProjectFox.CoreEngine.csproj" />
     <ProjectReference Include="..\ProjectFox.GameEngine\ProjectFox.GameEngine.csproj" />
+    <ProjectReference Include="..\ProjectFox.HidApi\ProjectFox.HidApi.csproj" />
+    <ProjectReference Include="..\ProjectFox.NAudio\ProjectFox.NAudio.csproj" />
     <ProjectReference Include="..\ProjectFox.Windows\ProjectFox.Windows.csproj" />
   </ItemGroup>
 
