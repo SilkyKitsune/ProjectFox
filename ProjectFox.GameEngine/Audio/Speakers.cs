@@ -12,8 +12,8 @@ public static class Speakers
     public static int SamplesPerFrame
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => SampleRate / Engine.Frequency;
+        get => SampleRate / Engine.Frequency;//inline?
     }
 
-    public static Sample[] GetFrame() => speakersChannel.samples.ToArray();
+    public static Sample[] GetFrame() => speakersChannel.samples;
 }

@@ -6,14 +6,14 @@ namespace ProjectFox.GameEngine.Audio;
 
 public class AudioChannel : SceneType
 {
-    public AudioChannel(NameID name) : base(name) { }
+    public AudioChannel(NameID name) : base(name) => Clear();
 
-    internal readonly Array<Sample> samples = new(Speakers.SampleRate);
+    internal Sample[] samples = null;
 
     //polyphony? property? -1 = unlimited?
-    public bool audible = true, monophonic = false, blendAll = true;//rename playperframe
+    public bool audible = true, monophonic = false;//mono?, swapstereo?
 
-    public float volume = 1f, leftVolume = 1f, rightVolume = 1f, panning = 0f;//-1 = left, 1 = right, 0 = center
+    public float volume = 1f, leftVolume = 1f, rightVolume = 1f, panning = 0f;
     
     public sealed override Scene Scene
     {
@@ -27,23 +27,18 @@ public class AudioChannel : SceneType
         }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Clear() => samples.Clear();//play per frame doesn't work because channels are cleared each frame
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]//inline properties
+    public void Clear() => samples = new Sample[/*matchTime ? (int)(SamplesPerFrame * TimeOfLastFrame) :*/ Speakers.SamplesPerFrame];
 
     protected internal virtual void Blend()//this needs an argument to pass to base
     {
-        Sample[] outSamples = this.samples.elements[..(blendAll ? this.samples.length : Speakers.SamplesPerFrame)];//inline samples per frame?
-
-        int addedLength = outSamples.Length - Speakers.speakersChannel.samples.length;
-        if (addedLength > 0) Speakers.speakersChannel.samples.AddLength(addedLength);
-
-        bool leftPan = panning < 0, rightPan = panning > 0;
+        bool leftPan = panning < 0, rightPan = panning > 0;//clamp pan?
         float l = volume * leftVolume, r = volume * rightVolume, pan = leftPan ? -panning : panning, reversePan = 1 - pan;
 
-        for (int i = 0; i < outSamples.Length; i++)
+        for (int i = 0; i < samples.Length; i++)
         {
-            Sample channelSample = outSamples[i], speakerSample = Speakers.speakersChannel.samples.elements[i];
-            float left = speakerSample.left + (channelSample.left * l), right = speakerSample.right + (channelSample.right * r);//speaker sample should be after pan
+            Sample channelSample = samples[i], speakerSample = Speakers.speakersChannel.samples[i];
+            float left = channelSample.left * l, right = channelSample.right * r;
 
             if (leftPan)
             {
@@ -56,9 +51,9 @@ public class AudioChannel : SceneType
                 left *= reversePan;
             }
 
-            Speakers.speakersChannel.samples.elements[i] = new(//could the double clamp be abbreviated?
-                (short)(Math.Clamp(left, short.MinValue, short.MaxValue)),
-                (short)(Math.Clamp(right, short.MinValue, short.MaxValue)));
+            Speakers.speakersChannel.samples[i] = new(//could the double clamp be abbreviated?
+                (short)(Math.Clamp(speakerSample.left + left, short.MinValue, short.MaxValue)),
+                (short)(Math.Clamp(speakerSample.right + right, short.MinValue, short.MaxValue)));
         }
     }
 }

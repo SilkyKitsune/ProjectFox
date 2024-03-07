@@ -8,13 +8,15 @@ public abstract class AudioSource : Object2D
 {
     public AudioSource(NameID name) : base(name) { }
 
+    private int waveShapeIndex = 0;
+
     public AudioChannel channel = null;
 
     public readonly ICollection<Object2D> listeners = new Array<Object2D>(0x4);
 
-    public bool audible = true, repeat = false, exceedMaxVolume = false;
+    public bool audible = true, loop = false, exceedMaxVolume = false, mono = false, swapStereo = false;//rename mono? mergestereo?
 
-    public float volume = 1f, leftVolume = 1f, rightVolume = 1f, panning = 0f, maxVolumeDistance = 1f;
+    public float volume = 1f, leftVolume = 1f, rightVolume = 1f, panning = 0f, maxVolumeDistance = 1f, minVolumeDistance = 10f;//Separate pan into leftMergeToRight/rightMergeToLeft?
 
     protected abstract Sample[] GetDrawInfo();
 
@@ -39,7 +41,7 @@ public abstract class AudioSource : Object2D
                 $"AudioSource '{name}' drew to channel from a null/different scene");
 
         Sample[] waveShape = GetDrawInfo();
-        
+
         if (waveShape == null)
         {
             Engine.SendError(ErrorCodes.NullWaveShape, name);
@@ -49,54 +51,76 @@ public abstract class AudioSource : Object2D
         float v = volume;
 
         Array<Object2D> listeners = (Array<Object2D>)this.listeners;
-        if (listeners.length > 0)//this makes it quieter if closer
+        if (listeners.length > 0)
         {
-            Object2D closest = Closest(listeners.ToArray());//overload for awway<>?
-            v *= closest.position.Distance(position) / maxVolumeDistance;
+            //clamp distances?
+
+            //overload for awway<>?
+            float dist = Closest(listeners.ToArray()).position.Distance(position),
+                f = 1 - ((dist - maxVolumeDistance) / (minVolumeDistance - maxVolumeDistance));
+            v *= f;
+            //clean up later
+            //Debug.Console.QueueMessage($"{dist} : {f}");//remove
         }
 
-        if (!exceedMaxVolume && v > 1f) v = 1f;//should l/r vol be clamped?
+        if (v <= 0f) v = 0f;
+        else if (!exceedMaxVolume && v > 1f) v = 1f;//should l/r vol be clamped?
 
-        bool leftPan = panning < 0, rightPan = panning > 0;
+        bool leftPan = panning < 0, rightPan = panning > 0;//clamp pan?
         float l = v * leftVolume, r = v * rightVolume, pan = leftPan ? -panning : panning, reversePan = 1 - pan;
-
-        //Debug.Console.QueueMessage(Speakers.SamplesPerFrame * Engine.TimeOfLastFrame);
-
-        for (int i = 0; i < waveShape.Length; i++)
+        //how to skip this when v = 0, but still advance playback?
+        for (int i = 0; i < channel.samples.Length && waveShapeIndex < waveShape.Length; i++, waveShapeIndex++)
         {
-            int addedLength = waveShape.Length - channel.samples.length;
-            if (addedLength > 0) channel.samples.AddLength(addedLength);
-
-            Sample sample = waveShape[i], channelSample = channel.samples.elements[i];//does channel need a different index?
+            Sample sample = waveShape[waveShapeIndex];
             float left = sample.left * l, right = sample.right * r;
 
-            if (leftPan)
+            if (mono)
             {
-                left += right * pan;
-                right *= reversePan;
+                left += right;
+                right = left;
             }
-            else if (rightPan)
+            else//could this be simplified?
             {
-                right += left * pan;
-                left *= reversePan;
+                if (leftPan)
+                {
+                    left += right * pan;
+                    right *= reversePan;
+                }
+                else if (rightPan)
+                {
+                    right += left * pan;
+                    left *= reversePan;
+                }
+
+                if (swapStereo)
+                {
+                    float f = left;
+                    left = right;
+                    right = f;
+                }
             }
 
             if (!channel.monophonic)
             {
+                Sample channelSample = channel.samples[i];
                 left += channelSample.left;
                 right += channelSample.right;
             }
             
-            channel.samples.elements[i] = new(//could the double clamp be abbreviated?
+            channel.samples[i] = new(//could the double clamp be abbreviated?
                 (short)(Math.Clamp(left, short.MinValue, short.MaxValue)),
                 (short)(Math.Clamp(right, short.MinValue, short.MaxValue)));
         }
 
-        if (!repeat) audible = false;
+        if (waveShapeIndex >= waveShape.Length)
+        {
+            waveShapeIndex = 0;
+            if (!loop) audible = false;
+        }
     }
 }
 
-public class SampleSource : AudioSource
+public class SampleSource : AudioSource//move to own file?
 {
     public SampleSource(NameID name) : base(name) { }
 
