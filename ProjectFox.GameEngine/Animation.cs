@@ -6,6 +6,13 @@ namespace ProjectFox.GameEngine;
 
 public abstract class Animation//,ICopy?
 {
+    public enum PlaybackMode//move to own file?
+    {
+        Normal,
+        Reverse,
+        PingPong
+    }
+
     public abstract class Frame
     {
         public int delay = 0;
@@ -13,16 +20,15 @@ public abstract class Animation//,ICopy?
 
     private static readonly NameID name = new("Anmtion", 0);
 
+    private bool back = false;//rename?
+
     private int time = 0;
+    
     internal int frameIndex = 0;
 
-    public bool play = false, loop = false, reverse = false;//pingpong?
-    /*
-    enum playback mode
-      normal
-      reverse
-      pingpong
-    */
+    public bool play = false, loop = false;
+
+    public PlaybackMode playbackMode = PlaybackMode.Normal;
 
     public abstract int FrameCount { get; }
 
@@ -52,12 +58,34 @@ public abstract class Animation//,ICopy?
             if (++time >= frame.delay)
             {
                 time = 0;
-                if (reverse)
+                switch (playbackMode)
                 {
-                    if (--frameIndex < 0)
-                        frameIndex = loop ? length - 1 : frameIndex + 1;
+                    case PlaybackMode.Normal:
+                        if (++frameIndex >= length) frameIndex = loop ? 0 : length - 1;
+                        back = false;
+                        break;
+                    case PlaybackMode.Reverse:
+                        if (--frameIndex < 0) frameIndex = loop ? length - 1 : 0;
+                        back = true;
+                        break;
+                    case PlaybackMode.PingPong:
+                        frameIndex += back ? -1 : 1;
+                        if (frameIndex >= length)
+                        {
+                            frameIndex = length - 2;
+                            back = true;
+                        }
+                        else if (frameIndex < 0)
+                        {
+                            frameIndex = loop ? 1 : 0;
+                            back = !loop;
+                        }
+                        break;
+                    default:
+                        Engine.SendError(ErrorCodes.BadEnumValue, name, nameof(playbackMode));
+                        playbackMode = PlaybackMode.Normal;
+                        break;
                 }
-                else if(++frameIndex >= length) frameIndex = loop ? 0 : frameIndex - 1;
             }
         }
     }
