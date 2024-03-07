@@ -126,7 +126,7 @@ internal sealed class Array<T> : ICollection<T>
         length = newLength;
     }
 
-    internal void AddLength(int addedLength)
+    [Obsolete] internal void AddLength(int addedLength)
     {
         int newLength = length + addedLength;
         if (newLength >= elements.Length)
@@ -450,7 +450,7 @@ internal sealed class Array<T> : ICollection<T>
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public T[] ToArray() => length == 0 ? new T[0] : elements[0..length];
+    public T[] ToArray() => length == 0 ? new T[0] : elements[..length];
 }
 
 internal sealed class HashArray<T> : IHashTable<NameID, T>
