@@ -79,17 +79,17 @@ public static class Engine
 
     /// <summary> procresses a single frame callstack, the engine's main entry point </summary>
     /// <param name="millisecondsOfLastFrame"> the number of milliseconds the previous frame took to complete </param>
-    public static void Frame(float millisecondsOfLastFrame = float.NaN)
+    public static void Frame(float millisecondsOfLastFrame = -1f)
     {
         FrameBegin?.Invoke();
 
 #if DEBUG
-        Debug.debugLayer.Clear();
+        Debug.debugLayer.Clear();//should these go in scene?
 #endif
         //where should ports.process go?
-        timeOfLastFrameInTicks = millisecondsOfLastFrame == float.NaN ? ticksPerFrame
+        timeOfLastFrameInTicks = millisecondsOfLastFrame == -1f ? ticksPerFrame//should this go above frame begin?
             : (ulong)(Math.Clamp(millisecondsOfLastFrame, 0f, float.MaxValue) * Math.ticksPerMillisecond);
-
+        
         SceneList.activeScene?._frame();
 
 #if DEBUG
