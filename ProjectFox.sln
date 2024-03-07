@@ -22,6 +22,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectFox.NAudio", "ProjectFox.NAudio\ProjectFox.NAudio.csproj", "{80814731-FF0D-4E2C-9444-E0330FC7F09E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectFox.HidApi", "ProjectFox.HidApi\ProjectFox.HidApi.csproj", "{EFE5D36D-7DC2-4EE4-A614-DC56BDB2D078}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +56,14 @@ Global
 		{3D74692E-8D49-4160-873B-79FCE4772DDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D74692E-8D49-4160-873B-79FCE4772DDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D74692E-8D49-4160-873B-79FCE4772DDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80814731-FF0D-4E2C-9444-E0330FC7F09E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80814731-FF0D-4E2C-9444-E0330FC7F09E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80814731-FF0D-4E2C-9444-E0330FC7F09E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80814731-FF0D-4E2C-9444-E0330FC7F09E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFE5D36D-7DC2-4EE4-A614-DC56BDB2D078}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFE5D36D-7DC2-4EE4-A614-DC56BDB2D078}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFE5D36D-7DC2-4EE4-A614-DC56BDB2D078}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFE5D36D-7DC2-4EE4-A614-DC56BDB2D078}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
