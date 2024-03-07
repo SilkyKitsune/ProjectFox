@@ -7,6 +7,9 @@
 CookieBot/
 ReactiveAvatar/
 EngineNotes.txt
+ProjectFox.HidApi/
+ProjectFox.TestBed/HIDTest.cs
+ProjectFox.TestBed/GamepadMapper.cs
 ProjectFox.TestBed/SNESColor.cs
 
 # User-specific files
