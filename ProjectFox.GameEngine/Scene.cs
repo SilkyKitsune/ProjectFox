@@ -81,7 +81,7 @@ public class Scene : NamedType
                 break;
         }
 
-        Speakers.speakersChannel.samples.Clear();//temp
+        Speakers.speakersChannel.Clear();
 
         for (int i = 0; i < visualLayers.codes.length; i++)
             visualLayers.values.elements[i].Clear();
@@ -94,7 +94,7 @@ public class Scene : NamedType
         for (int i = 0; i < objects.codes.length; i++)
         {
             Object obj = objects.values.elements[i];
-            if (obj.enabled)//store object?
+            if (obj.enabled)//store object? isn't it already being stored?
             {
                 obj._frame();
                 obj._draw();
@@ -305,7 +305,7 @@ public class Scene : NamedType
             channel.scene?.RemoveAudioChannel(channel.name);
             audioChannels.AddDirect(channel.name, channel);
             channel.scene = this;
-            //channel.Clear()?
+            channel.Clear();
         }
     }
 
@@ -330,7 +330,7 @@ public class Scene : NamedType
                 channel.scene?.RemoveAudioChannel(channel.name);
                 audioChannels.AddDirect(channel.name, channel);
                 channel.scene = this;
-                //channel.Clear()?
+                channel.Clear();
             }
     }
 
