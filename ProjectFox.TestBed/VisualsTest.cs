@@ -191,32 +191,32 @@ public static partial class GameEngineTest
         TextureAnimation anim = new()
         {
             play = true,
-            loop = true,
-            reverse = true,
+            //loop = true,
+            playbackMode = Animation.PlaybackMode.PingPong,
             //palette = FourColors(),
         };
         anim.frames.Add(
             new TextureAnimation.TextureFrame()
             {
-                delay = 5,
+                delay = 10,//5,
                 texture = Gradient(),
                 offset = new(0, 0),
             },
             new TextureAnimation.TextureFrame()
             {
-                delay = 5,
+                delay = 10,//5,
                 texture = Corners(),
                 offset = new(5, 0),
             },
             new TextureAnimation.TextureFrame()
             {
-                delay = 5,
+                delay = 10,//5,
                 texture = AlphaGradient(),
                 offset = new(0, 5),
             },
             new TextureAnimation.TextureFrame()
             {
-                delay = 5,
+                delay = 10,//5,
                 texture = FourByFour(),
                 palette = FourColors(),
                 offset = new(-5, 0),
@@ -253,7 +253,8 @@ public static partial class GameEngineTest
         {
             play = true,
             loop = true,
-            reverse = true,
+            //reverse = true,
+            playbackMode = Animation.PlaybackMode.Reverse,
         };
         anim.frames.Add(
             new PaletteAnimation.PaletteFrame()
