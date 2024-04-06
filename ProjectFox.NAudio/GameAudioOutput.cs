@@ -12,7 +12,7 @@ public sealed class GameAudioOutput//GameAudioPlayback? GameAudioPlayer?
     {
         private readonly WaveFormat format = new(Speakers.SampleRate, 16, 2);
 
-        internal readonly AutoSizedArray<Sample> frames = new(Speakers.SampleRate);
+        internal readonly AutoSizedArray<Sample> frames = new(Speakers.SampleRate);//rename?
         
         public WaveFormat WaveFormat => format;
 
@@ -27,7 +27,7 @@ public sealed class GameAudioOutput//GameAudioPlayback? GameAudioPlayer?
 
             if (count > data.Length) count = data.Length;
 
-            if (buffer == null) buffer = new byte[count];//should this be earlier?
+            buffer ??= new byte[count];//should this be earlier?
 
             for (int i = 0, l = offset + count; i < count && offset < l; i++, offset++)
                 buffer[offset] = data[i];
