@@ -300,16 +300,16 @@ public static partial class GameEngineTest
             //audible = false,
             //monophonic = true,
             //blendAll = false,
-            //volume = 0.1f,
+            //volume = -1f,
             //leftVolume = 0f,
-            //rightVolume = 0f,
+            //rightVolume = -1f,
             //panning = 0.5f,
         };
 
         new DebugController(window)
         {
             Scene = scene,
-            printFrameInfo = true,
+            //printFrameInfo = true,
         };
 
         new SampleSourceTest()
@@ -322,20 +322,20 @@ public static partial class GameEngineTest
             //exceedMaxVolume = true,
             //mono = true,
             //swapStereo = true,
-            //volume = 100f,
-            //leftVolume = 0f,
-            //rightVolume = 0.25f,
-            //panning = -0.75f,
-            maxVolumeDistance = 20f,
-            minVolumeDistance = 50f,
+            //volume = 10f,
+            //leftVolume = -1f,
+            //rightVolume = 10f,
+            //panning = 2f,
+            maxVolumeDistance = 5f,
+            minVolumeDistance = 10f,
             waveShape = TestShape3,
-        }.listeners.Add(new DebugSetPiece(new("SetPiec", 0))
+        }/*.listeners.Add(new DebugSetPiece(new("SetPiec", 0))
         {
             Scene = scene,
             drawPosition = true,
             positionColor = DebugColors.Cyan,
             visible = false,
-        });
+        })*/;
         
         return scene;
     }
@@ -349,10 +349,13 @@ public static partial class GameEngineTest
         protected override void PreFrame()
         {
             KeyboardMouseDevice kbm = window.kbdMouse;
-            if (kbm.P.ChangedTrue) audible = true;
+            if (kbm.P.ChangedTrue) audible = !audible;
             else if (kbm.E.ChangedTrue) exceedMaxVolume = !exceedMaxVolume;
+            else if (kbm.Shift && kbm.M.ChangedTrue) channel.monophonic = !channel.monophonic;
             else if (kbm.M.ChangedTrue) mono = !mono;
             else if (kbm.S.ChangedTrue) swapStereo = !swapStereo;
+            else if (kbm.C.ChangedTrue) channel.volume = channel.volume == 0f ? 1f : 0f;
+            else if (kbm.V.ChangedTrue) volume = volume == 0f ? 1f : 0f;
             else if (kbm.L.ChangedTrue) leftVolume = leftVolume == 0f ? 1f : 0f;
             else if (kbm.R.ChangedTrue) rightVolume = rightVolume == 0f ? 1f : 0f;
         }
