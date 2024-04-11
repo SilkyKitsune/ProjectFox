@@ -57,7 +57,9 @@ public abstract class PhysicsShape : Object2D
 
     internal PhysicsShape(NameID name, params PhysicsEvent[] detectedEvents) : base(name)
     {
+#if DEBUG
         shapeColor = DefaultShapeColor;
+#endif
         if (detectedEvents != null && detectedEvents.Length > 0)
             foreach (PhysicsEvent detectedEvent in detectedEvents)
                 detected += detectedEvent;
@@ -100,7 +102,7 @@ public abstract class PhysicsShape : Object2D
     /// <summary> Controls whether the shape transforms with respect to other shapes based on it's velocity </summary>
     public bool applyVelocity = false;//rename move?
 
-    public bool keepMoving = false; //true? //rename //remove?
+    public bool keepMoving = true; //rename //remove?
     public bool preferY = false; //rename?
     //push on diagonals
 
