@@ -151,8 +151,7 @@ internal sealed class Array<T> : ICollection<T>
         if (length == 0) return string.Empty;
 
         string s = "";
-        for (int i = 0; i < length; i++)
-            s += elements[i].ToString();
+        for (int i = 0; i < length; i++) s += elements[i].ToString();
         return s;
     }
 
@@ -189,8 +188,7 @@ internal sealed class Array<T> : ICollection<T>
 
         T[] array = new T[indices.Length];
         for (int i = 0; i < indices.Length; i++)
-            if (indices[i] >= 0 && indices[i] < length)
-                array[i] = elements[indices[i]];
+            if (indices[i] >= 0 && indices[i] < length) array[i] = elements[indices[i]];
         return array;
     }
 
@@ -300,8 +298,7 @@ internal sealed class Array<T> : ICollection<T>
         if (length == 0) return string.Empty;
 
         string s = "";
-        for (int i = 0; i < length; i++)
-            s += elements[i].ToString() + separator;
+        for (int i = 0; i < length; i++) s += elements[i].ToString() + separator;
         return s;
     }
 
@@ -311,8 +308,7 @@ internal sealed class Array<T> : ICollection<T>
         if (length == 0) return string.Empty;
 
         string s = "";
-        for (int i = 0; i < length; i++)
-            s += elements[i].ToString() + separator;
+        for (int i = 0; i < length; i++) s += elements[i].ToString() + separator;
         return s;
     }
 
