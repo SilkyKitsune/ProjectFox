@@ -9,9 +9,6 @@ public abstract class NamedType
 
     /// <summary> ID given to this instance </summary>
     public NameID Name => name;
-
-    //register all names?
-    //remove name from register in destructor?
 }
 
 ///
