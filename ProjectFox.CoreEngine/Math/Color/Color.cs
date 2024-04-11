@@ -56,15 +56,15 @@ public partial struct Color : IVector<Color, byte, Color>
 
     public Color(byte r, byte g, byte b)
     {
-        hex = 0;
+        //hex = 0;
         this.r = r;
         this.g = g;
         this.b = b;
         a = byte.MaxValue;
     }
-    public Color(byte r, byte g, byte b, byte a)
+    public Color(byte r, byte g, byte b, byte a)//a could just have a default value
     {
-        hex = 0;
+        //hex = 0;
         this.r = r;
         this.g = g;
         this.b = b;
@@ -72,10 +72,10 @@ public partial struct Color : IVector<Color, byte, Color>
     }
     private Color(uint hex)
     {
-        r = 0;
-        g = 0;
-        b = 0;
-        a = 0;
+        //r = 0;
+        //g = 0;
+        //b = 0;
+        //a = 0;
         this.hex = hex;
     }
 
@@ -166,38 +166,92 @@ public partial struct Color : IVector<Color, byte, Color>
     #region Vector Methods
     public float Distance(Color value)
     {
-        if (EqualsColor(value)) return 0f;
+        if (Equals(value)) return 0f;
 
-        int rDelta = r - value.r, gDelta = g - value.g, bDelta = b - value.b;
+        int rDelta = r - value.r, gDelta = g - value.g, bDelta = b - value.b, aDelta = a - value.a;
 
         if (rDelta < 0) rDelta = -rDelta;
         if (gDelta < 0) gDelta = -gDelta;
         if (bDelta < 0) bDelta = -bDelta;
+        if (aDelta < 0) aDelta = -aDelta;
 
-        return Math.SqrRoot((rDelta * rDelta) + (gDelta * gDelta) + (bDelta * bDelta));
+        return Math.SqrRoot((rDelta * rDelta) + (gDelta * gDelta) + (bDelta * bDelta) + (aDelta * aDelta));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public float DistanceFromZero() => IsBlack() ? 0f : Math.SqrRoot((r * r) + (g * g) + (b * b));
+    public float DistanceFromZero() => IsZero() ? 0f : Math.SqrRoot((r * r) + (g * g) + (b * b) + (a * a));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public float DistanceFromZeroSquared() => IsBlack() ? 0f : (r * r) + (g * g) + (b * b);
+    public float DistanceFromZeroSquared() => IsZero() ? 0f : (r * r) + (g * g) + (b * b) + (a * a);
 
     public float DistanceSquared(Color value)
     {
-        if (EqualsColor(value)) return 0f;
+        if (Equals(value)) return 0f;
 
-        int rDelta = r - value.r, gDelta = g - value.g, bDelta = b - value.b;
+        int rDelta = r - value.r, gDelta = g - value.g, bDelta = b - value.b, aDelta = a - value.a;
 
         if (rDelta < 0) rDelta = -rDelta;
         if (gDelta < 0) gDelta = -gDelta;
         if (bDelta < 0) bDelta = -bDelta;
+        if (aDelta < 0) aDelta = -aDelta;
 
-        return (rDelta * rDelta) + (gDelta * gDelta) + (bDelta * bDelta);
+        return (rDelta * rDelta) + (gDelta * gDelta) + (bDelta * bDelta) + (aDelta * aDelta);
     }
     #endregion
 
     #region Color Methods
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Color ClosestColor(Color a, Color b) => DistanceColorSquared(a) < DistanceColorSquared(b) ? a : b;
+    
+    public Color ClosestColor(params Color[] values)
+    {
+        if (values.Length == 0) throw new ArgumentNullException(nameof(values));
+        if (values.Length == 1) return values[0];
+
+        float delta = float.MaxValue, newDelta;
+
+        Color closest = values[0];
+        foreach (Color c in values)
+        {
+            if (EqualsColor(c)) return c;
+            if (!closest.EqualsColor(c))
+            {
+                newDelta = DistanceColorSquared(c);
+                if (newDelta < delta)
+                {
+                    closest = c;
+                    delta = newDelta;
+                }
+            }
+        }
+        return closest;
+    }
+
+    public int ClosestColorIndex(Color[] values)
+    {
+        if (values == null || values.Length == 0) throw new ArgumentNullException(nameof(values));
+        if (values.Length == 1) return 0;
+
+        float delta = float.MaxValue, newDelta;
+
+        int closest = 0;
+        for (int i = 0; i < values.Length; i++)
+        {
+            Color current = values[i];
+            if (EqualsColor(current)) return i;
+            if (!values[closest].EqualsColor(current))
+            {
+                newDelta = DistanceColorSquared(current);
+                if (newDelta < delta)
+                {
+                    closest = i;
+                    delta = newDelta;
+                }
+            }
+        }
+        return closest;
+    }
+
     public int Convert(int channelDepth, bool alpha)
     {
         if (channelDepth < 1) throw new ArgumentException($"Invalid channelDepth! '{channelDepth}'");
@@ -222,11 +276,91 @@ public partial struct Color : IVector<Color, byte, Color>
             (int)(b / MaxByteF * maxF);
     }
 
+    public float DistanceColor(Color value)
+    {
+        if (EqualsColor(value)) return 0f;
+
+        int rDelta = r - value.r, gDelta = g - value.g, bDelta = b - value.b;
+
+        if (rDelta < 0) rDelta = -rDelta;
+        if (gDelta < 0) gDelta = -gDelta;
+        if (bDelta < 0) bDelta = -bDelta;
+
+        return Math.SqrRoot((rDelta * rDelta) + (gDelta * gDelta) + (bDelta * bDelta));
+    }
+
+    public float DistanceColorSquared(Color value)
+    {
+        if (EqualsColor(value)) return 0f;
+
+        int rDelta = r - value.r, gDelta = g - value.g, bDelta = b - value.b;
+
+        if (rDelta < 0) rDelta = -rDelta;
+        if (gDelta < 0) gDelta = -gDelta;
+        if (bDelta < 0) bDelta = -bDelta;
+
+        return (rDelta * rDelta) + (gDelta * gDelta) + (bDelta * bDelta);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public float DistanceFromBlack() => IsBlack() ? 0f : Math.SqrRoot((r * r) + (g * g) + (b * b));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public float DistanceFromBlackSquared() => IsBlack() ? 0f : (r * r) + (g * g) + (b * b);
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool EqualsColor(Color c) => r == c.r && g == c.g && b == c.b;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool EqualsColor(byte value) => r == value && g == value && b == value;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Color FarthestColor(Color a, Color b) => DistanceColorSquared(a) > DistanceColorSquared(b) ? a : b;
+
+    public Color FarthestColor(params Color[] values)
+    {
+        if (values.Length == 0) throw new ArgumentNullException(nameof(values));
+        if (values.Length == 1) return values[0];
+
+        float delta = float.MaxValue, newDelta;
+
+        Color farthest = values[0];
+        foreach (Color c in values)
+            if (!farthest.EqualsColor(c))
+            {
+                newDelta = DistanceColorSquared(c);
+                if (newDelta > delta)
+                {
+                    farthest = c;
+                    delta = newDelta;
+                }
+            }
+        return farthest;
+    }
+
+    public int FarthestColorIndex(Color[] values)
+    {
+        if (values == null || values.Length == 0) throw new ArgumentNullException(nameof(values));
+        if (values.Length == 1) return 0;
+
+        float delta = 0f, newDelta;
+
+        int farthest = 0;
+        for (int i = 0; i < values.Length; i++)
+        {
+            Color current = values[i];
+            if (!values[farthest].EqualsColor(current))
+            {
+                newDelta = DistanceColorSquared(current);
+                if (newDelta > delta)
+                {
+                    farthest = i;
+                    delta = newDelta;
+                }
+            }
+        }
+        return farthest;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsBlack() => r == 0 && g == 0 && b == 0;

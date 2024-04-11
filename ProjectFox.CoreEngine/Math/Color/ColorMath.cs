@@ -65,7 +65,8 @@ public partial struct Color
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Color Clamp(Color min, Color max) =>
         new(Math.Clamp(r, min.r, max.r), Math.Clamp(g, min.g, max.g), Math.Clamp(b, min.b, max.b), a);
-
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Color Closest(Color a, Color b) => DistanceSquared(a) < DistanceSquared(b) ? a : b;
 
     public Color Closest(params Color[] values)
@@ -78,8 +79,8 @@ public partial struct Color
         Color closest = values[0];
         foreach (Color c in values)
         {
-            if (EqualsColor(c)) return c;
-            if (!closest.EqualsColor(c))
+            if (Equals(c)) return c;
+            if (!closest.Equals(c))
             {
                 newDelta = DistanceSquared(c);
                 if (newDelta < delta)
@@ -103,8 +104,8 @@ public partial struct Color
         for (int i = 0; i < values.Length; i++)
         {
             Color current = values[i];
-            if (EqualsColor(current)) return i;
-            if (!values[closest].EqualsColor(current))
+            if (Equals(current)) return i;
+            if (!values[closest].Equals(current))
             {
                 newDelta = DistanceSquared(current);
                 if (newDelta < delta)
@@ -142,6 +143,7 @@ public partial struct Color
     public bool Equals(byte value) => r == value && g == value && b == value && a == value;
     #endregion
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Color Farthest(Color a, Color b) => DistanceSquared(a) > DistanceSquared(b) ? a : b;
 
     public Color Farthest(params Color[] values)
@@ -153,7 +155,7 @@ public partial struct Color
 
         Color farthest = values[0];
         foreach (Color c in values)
-            if (!farthest.EqualsColor(c))
+            if (!farthest.Equals(c))
             {
                 newDelta = DistanceSquared(c);
                 if (newDelta > delta)
