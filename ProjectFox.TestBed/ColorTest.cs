@@ -22,7 +22,7 @@ public static partial class CoreEngineTest
         {
             C.WriteLine(Color.Convert(0b11111_11111__00000_11111__00000_00000, 10, true));
         }
-        catch (ArgumentException e)
+        catch (Exception e)
         {
             C.WriteLine(e.Message);
         }
@@ -71,10 +71,26 @@ public static partial class CoreEngineTest
         C.WriteLine(c.IsBlack());
         C.WriteLine(c.IsGrey());
 
+        C.WriteLine($"{c.DistanceColor(cBigger)}^2 = {c.DistanceColorSquared(cBigger)}");
+        C.WriteLine($"{c.DistanceColor(cSmaller)}^2 = {c.DistanceColorSquared(cSmaller)}");
+        C.WriteLine($"{c.DistanceFromBlack()}^2 = {c.DistanceFromBlackSquared()}");
+
+        C.WriteLine(c.ClosestColor(cBigger, cSmaller));
+        C.WriteLine(c.ClosestColor(cBigger, cSmaller, cBigger));
+        C.WriteLine(c.ClosestColorIndex(new Color[] { cBigger, cSmaller }));
+        C.WriteLine(c.ClosestColorIndex(new Color[] { cBigger, cSmaller, cBigger }));
+
+        C.WriteLine(c.FarthestColor(cBigger, cSmaller));
+        C.WriteLine(c.FarthestColor(cBigger, cSmaller, cBigger));
+        C.WriteLine(c.FarthestColorIndex(new Color[] { cBigger, cSmaller }));//this returns 1?
+        C.WriteLine(c.FarthestColorIndex(new Color[] { cBigger, cSmaller, cBigger }));//this returns 2?
+
         c.MoveToZero(1);
         C.WriteLine(c);
         c.MoveToZero(cBigger);
         C.WriteLine(c);
+
+        //move to black test?
 
         C.WriteLine("-Blend-");
         Color top = new(0, 128, 64, 128), btm = new(200, 100, 50, 128);

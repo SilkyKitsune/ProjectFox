@@ -81,13 +81,13 @@ public static partial class CoreEngineTest
 
         C.WriteLine(iMath.Max(bigger));
         C.WriteLine(iMath.Max(bigger, smaller, bigger));
-        //C.WriteLine(iMath.MaxIndex(new T[] { bigger }));
-        //C.WriteLine(iMath.MaxIndex(new T[] { bigger, smaller, bigger }));
+        C.WriteLine(iMath.MaxIndex(new T[] { bigger }));
+        C.WriteLine(iMath.MaxIndex(new T[] { bigger, smaller, bigger }));
 
         C.WriteLine(iMath.Min(bigger));
         C.WriteLine(iMath.Min(bigger, smaller, bigger));
-        //C.WriteLine(iMath.MinIndex(new T[] { bigger }));
-        //C.WriteLine(iMath.MinIndex(new T[] { bigger, smaller, bigger }));
+        C.WriteLine(iMath.MinIndex(new T[] { bigger }));
+        C.WriteLine(iMath.MinIndex(new T[] { bigger, smaller, bigger }));
 
         C.WriteLine(iMath.Pow(2));
         C.WriteLine(iMath.Pow(3));
@@ -183,20 +183,14 @@ public static partial class CoreEngineTest
         C.WriteLine(iRotate2D.Rotate(rotation1));
         C.WriteLine(iRotate2D.Rotate(rotation1, biggerF));
 
-        C.WriteLine(iRotate2D.RotateByRadians(rotation1));
-        C.WriteLine(iRotate2D.RotateByRadians(rotation1, biggerF));
-
-        C.WriteLine(iRotate2D.RotateByDegrees(rotation1));
-        C.WriteLine(iRotate2D.RotateByDegrees(rotation1, biggerF));
-
-        C.WriteLine(iRotate2D.RotateByRightAngles(0));
+        /*C.WriteLine(iRotate2D.RotateByRightAngles(0));
         C.WriteLine(iRotate2D.RotateByRightAngles(1));
         C.WriteLine(iRotate2D.RotateByRightAngles(2));
         C.WriteLine(iRotate2D.RotateByRightAngles(3));
         C.WriteLine(iRotate2D.RotateByRightAngles(4));
 
         C.WriteLine(iRotate2D.RotateByRightAngles(bigger, 1));
-        C.WriteLine(iRotate2D.RotateByRightAngles(biggerF, 2));
+        C.WriteLine(iRotate2D.RotateByRightAngles(biggerF, 2));*/
     }
 
     private static void IPolytopeTest<V, P>(IPolytope<V, P> iPolytope)

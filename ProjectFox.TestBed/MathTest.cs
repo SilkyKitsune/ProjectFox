@@ -12,7 +12,7 @@ namespace ProjectFox.TestBed;
 
 public static partial class CoreEngineTest
 {
-    internal static void MathTest()
+    public static void MathTest()
     {
         #region Abs
         C.WriteLine("---Abs---");
@@ -1385,67 +1385,13 @@ public static partial class CoreEngineTest
         #endregion
     }
 
-    internal static void MathSineTest()
+    public static void MathSineTest()
     {
-        #region Sine
-        C.WriteLine("---Sine---");
+        #region SineFirstQuarter
+        C.WriteLine("---SineFirstQuarter---");
 
-        C.WriteLine(Sine(0f));
-        C.WriteLine(SineRadians(0f));
-        C.WriteLine(SineDegrees(0f));
-
-        C.WriteLine(Sine(0.5f));
-        C.WriteLine(SineRadians(Pi));
-        C.WriteLine(SineDegrees(180f));
-
-        C.WriteLine(Sine(1f));
-        C.WriteLine(SineRadians(Tau));
-        C.WriteLine(SineDegrees(360f));
-
-        C.WriteLine(Sine(0.25f));
-        C.WriteLine(SineRadians(HalfPi));
-        C.WriteLine(SineDegrees(90f));
-
-        C.WriteLine(Sine(0.75f));
-        C.WriteLine(SineRadians(ThreeQuartersTau));
-        C.WriteLine(SineDegrees(270f));
-
-        C.WriteLine(Sine(0.1f));
-        C.WriteLine(Sine(2f));
-        C.WriteLine(Sine(1.00001f));//wrapped arguments arent' always right
-        C.WriteLine(Sine(1.56464658f));
-        C.WriteLine(SineRadians(3f));
-        C.WriteLine(SineDegrees(25f));
-
-        C.WriteLine("-----\n");
-        #endregion
-
-        #region Cosine
-        C.WriteLine("---Cosine---");
-
-        C.WriteLine(Cosine(0f));
-        C.WriteLine(CosineRadians(0f));
-        C.WriteLine(CosineDegrees(0f));
-
-        C.WriteLine(Cosine(0.5f));
-        C.WriteLine(CosineRadians(Pi));
-        C.WriteLine(CosineDegrees(180f));
-
-        C.WriteLine(Cosine(1f));
-        C.WriteLine(CosineRadians(Tau));
-        C.WriteLine(CosineDegrees(360f));
-
-        C.WriteLine(Cosine(0.25f));
-        C.WriteLine(CosineRadians(HalfPi));
-        C.WriteLine(CosineDegrees(90f));
-
-        C.WriteLine(Cosine(0.75f));
-        C.WriteLine(CosineRadians(ThreeQuartersTau));
-        C.WriteLine(CosineDegrees(270f));
-
-        C.WriteLine(Cosine(0.1f));
-        C.WriteLine(CosineRadians(3f));
-        C.WriteLine(CosineDegrees(25f));
+        for (float f = 0f; f <= 1f; f += 0.01f) C.WriteLine($"{f} => {SineFirstQuarter(f)}");
+        C.WriteLine(SineFirstQuarter(1f));
 
         C.WriteLine("-----\n");
         #endregion
@@ -1453,58 +1399,34 @@ public static partial class CoreEngineTest
         #region SineCosine
         C.WriteLine("---SineCosine---");
 
-        SineCosine(0f, out float sine, out float cosine);
-        C.WriteLine($"{sine}, {cosine}");
-        SineCosineRadians(0f, out sine, out cosine);
-        C.WriteLine($"{sine}, {cosine}");
-        SineCosineDegrees(0f, out sine, out cosine);
-        C.WriteLine($"{sine}, {cosine}");
-
-        SineCosine(0.5f, out sine, out cosine);
-        C.WriteLine($"{sine}, {cosine}");
-        SineCosineRadians(Pi, out sine, out cosine);
-        C.WriteLine($"{sine}, {cosine}");
-        SineCosineDegrees(180f, out sine, out cosine);
-        C.WriteLine($"{sine}, {cosine}");
-
-        SineCosine(1f, out sine, out cosine);
-        C.WriteLine($"{sine}, {cosine}");
-        SineCosineRadians(Tau, out sine, out cosine);
-        C.WriteLine($"{sine}, {cosine}");
-        SineCosineDegrees(360f, out sine, out cosine);
-        C.WriteLine($"{sine}, {cosine}");
-
-        SineCosine(0.25f, out sine, out cosine);
-        C.WriteLine($"{sine}, {cosine}");
-        SineCosineRadians(HalfPi, out sine, out cosine);
-        C.WriteLine($"{sine}, {cosine}");
-        SineCosineDegrees(90f, out sine, out cosine);
-        C.WriteLine($"{sine}, {cosine}");
-
-        SineCosine(0.75f, out sine, out cosine);
-        C.WriteLine($"{sine}, {cosine}");
-        SineCosineRadians(ThreeQuartersTau, out sine, out cosine);
-        C.WriteLine($"{sine}, {cosine}");
-        SineCosineDegrees(270f, out sine, out cosine);
-        C.WriteLine($"{sine}, {cosine}");
-
-        SineCosine(0.1f, out sine, out cosine);
-        C.WriteLine($"{sine}, {cosine}");
-        SineCosineRadians(3f, out sine, out cosine);
-        C.WriteLine($"{sine}, {cosine}");
-        SineCosineDegrees(25f, out sine, out cosine);
-        C.WriteLine($"{sine}, {cosine}");
+        SinePrint(0f);
+        SinePrint(0.5f);
+        SinePrint(1f);
+        SinePrint(0.25f);
+        SinePrint(0.75f);
+        SinePrint(0.1f);
+        SinePrint(2f);
+        SinePrint(1.00001f);
+        SinePrint(1.56464658f);
+        SinePrint(-1f);
+        SinePrint(-0.1f);
 
         C.WriteLine("-----\n");
         #endregion
     }
 
-    internal static void FloatStepInterpolateTest()
+    private static void SinePrint(float amount)
+    {
+        SineCosine(amount, out float sine, out float cosine);
+        C.WriteLine($"Sine = {sine}, Cosine = {cosine}");
+    }
+
+    public static void FloatStepInterpolateTest()
     {
 
     }
 
-    internal static void VectorStepInterpolateTest()
+    public static void VectorStepInterpolateTest()
     {
         string s = C.ReadLine();
         int comma = s.IndexOf(',');
