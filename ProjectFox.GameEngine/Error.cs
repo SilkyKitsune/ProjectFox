@@ -10,6 +10,7 @@ public enum ErrorCodes
     BadArgument,
     /// <summary> Enum value outside of intended values </summary>
     BadEnumValue,
+    MinGreaterThanMax,
 
     /// <summary> Argument was null </summary>
     NullArgument,
@@ -26,6 +27,7 @@ public enum ErrorCodes
     /// <summary> RasterObject attempted to draw with a null texture </summary>
     NullTexture,
     NullAnimation,
+    /// <summary> AudioSource attempted to draw with a null wave shape </summary>
     NullWaveShape,
 
     EmptyPalette,
@@ -81,6 +83,7 @@ public class ErrorMessage
 
             ErrorCodes.BadArgument => ErrorSeverity.Error,
             ErrorCodes.BadEnumValue => ErrorSeverity.Error,
+            ErrorCodes.MinGreaterThanMax => ErrorSeverity.Error,
 
             ErrorCodes.NullArgument => ErrorSeverity.Error,
             ErrorCodes.NullPet => ErrorSeverity.Error,
