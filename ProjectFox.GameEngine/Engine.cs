@@ -1,7 +1,9 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Threading;
 using ProjectFox.CoreEngine.Math;
+#if DEBUG
 using ProjectFox.CoreEngine.Utility;
+#endif
 using ProjectFox.GameEngine.Visuals;
 
 namespace ProjectFox.GameEngine;
@@ -83,10 +85,12 @@ public static class Engine
     {
         FrameBegin?.Invoke();
 
+        //where should ports.process go?
+
 #if DEBUG
         Debug.debugLayer.Clear();//should these go in scene?
 #endif
-        //where should ports.process go?
+        
         timeOfLastFrameInTicks = millisecondsOfLastFrame == -1f ? ticksPerFrame//should this go above frame begin?
             : (ulong)(Math.Clamp(millisecondsOfLastFrame, 0f, float.MaxValue) * Math.ticksPerMillisecond);
         
