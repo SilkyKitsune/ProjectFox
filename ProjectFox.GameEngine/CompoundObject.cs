@@ -25,8 +25,11 @@ public abstract class CompoundObject : Object
     internal VectorZ position = new(0, 0, 0);
 
 #if DEBUG
-    //draw position
-    //position color
+    /// <summary> Not Yet Implemented </summary>
+    public bool drawPosition = false, intersectingLines = false;
+
+    /// <summary> Not Yet Implemented </summary>
+    public Color positionColor = new(byte.MaxValue, 0, 0);
 #endif
 
     /// <summary> readonly number of Objects owned by this CompoundObject </summary>
@@ -58,7 +61,7 @@ public abstract class CompoundObject : Object
         }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]//why is this here?
     internal override void _frame()
     {
         if (!paused || pauseWalks)
@@ -187,19 +190,49 @@ protected? virtual? object[] compoundobject.releasepets()
             //3d
     }
 
+    public void PetPositionsIntersectingLines(bool value)
+    {
+        foreach (Object2D obj in objects)
+            if (obj is Object2D obj2D)
+                obj2D.intersectingLines = value;
+    }
+
+    public void PetPositionsColor(Color color)
+    {
+        foreach (Object obj in objects)
+            if (obj is Object2D obj2D)
+                obj2D.positionColor = color;
+            //3d
+    }
+
     public void DrawPhysicsObjects(bool value)
     {
         foreach (Object obj in objects)
             if (obj is PhysicsShape shape)
                 shape.drawShape = value;
-            //forms
+            //PhysicForm
     }
 
-    public void DrawRasterObjectBounds(bool value)
+    public void PhysicsObjectsColor(Color color)
+    {
+        foreach (Object obj in objects)
+            if (obj is PhysicsShape shape)
+                shape.shapeColor = color;
+            //PhysicForm
+    }
+
+    public void DrawTextureBounds(bool value)
     {
         foreach (Object obj in objects)
             if (obj is RasterObject raster)
                 raster.drawTextureBounds = value;
+    }
+
+    public void TextureBoundsColor(Color color)
+    {
+        foreach (Object obj in objects)
+            if (obj is RasterObject raster)
+                raster.boundsColor = color;
     }
 #endif
 }
