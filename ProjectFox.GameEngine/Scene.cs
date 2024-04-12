@@ -15,7 +15,7 @@ public class Scene : NamedType
 
     private readonly HashArray<Object> objects = new(0x100);
     internal readonly HashArray<VisualLayer> visualLayers = new(0x40);
-    private readonly HashArray<AudioChannel> audioChannels = new(0x40);//chunksize?, internal?
+    private readonly HashArray<AudioChannel> audioChannels = new(0x40);
 
     private ClearModes clearMode = Clear;
     private SetPiece bg = new(new("_BGDraw", 0)) { parallaxFactor = new(0f, 0f) };
@@ -56,9 +56,6 @@ public class Scene : NamedType
     public bool BGVerticalFlip { get => bg.verticalFlipTexture; set => bg.verticalFlipTexture = value; }
 
     public bool BGHorizontalFlip { get => bg.horizontalFlipTexture; set => bg.horizontalFlipTexture = value; }
-
-    //bg audio?
-    //bg volume?
 
     internal void _frame()
     {
@@ -112,7 +109,7 @@ public class Scene : NamedType
         for (int i = 0; i < audioChannels.codes.length; i++)
         {
             AudioChannel channel = audioChannels.values.elements[i];
-            if (channel.audible && channel.volume > 0f && (channel.leftVolume > 0f || channel.rightVolume > 0f))
+            if (channel.audible && channel.volume != 0f && (channel.leftVolume != 0f || channel.rightVolume != 0f))
                 channel.Blend();
         }
     }
