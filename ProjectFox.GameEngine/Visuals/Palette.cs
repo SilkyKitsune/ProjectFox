@@ -8,22 +8,29 @@ public interface IPalette : ICopy<IPalette>
 {
     public abstract Color this[byte index] { get; }
 
-    public abstract Color[] GetColors();
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal virtual void _animate() { }
+
+    public abstract Color[] GetColors();
 }
 
 public class ColorPalette : IPalette, IColorGroup
 {
+    private static readonly NameID Name = new("ClrPltt", 0);
+
     public ColorPalette(params Color[] colors) => this.colors.Add(colors);
 
     public readonly ICollection<Color> colors = new Array<Color>(0x10);
     
     public Color this[byte index]
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ((Array<Color>)colors).elements[index];//index error?
+        get
+        {
+            Array<Color> colors = (Array<Color>)this.colors;
+            return index >= colors.length ?
+                Engine.SendError<Color>(ErrorCodes.BadArgument, Name, nameof(index), "Invalid index in ColorPalette") :
+                colors.elements[index];
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -61,25 +68,48 @@ public class ColorPalette : IPalette, IColorGroup
     {
         Array<Color> colors = (Array<Color>)this.colors;
         for (int i = 0; i < colors.length; i++)
-            colors.elements[i].Highest = (byte)(colors.elements[i].Highest * modifier);
+            colors.elements[i].Velocity *= modifier;//colors.elements[i].Highest = (byte)(colors.elements[i].Highest * modifier);
     }
 }
 
 public abstract class IndexPalette : IPalette
 {
+    private static readonly NameID Name = new("IndxPlt", 0);
+
     public IndexPalette(params byte[] indices) => this.indices.Add(indices);
 
     public readonly ICollection<byte> indices = new Array<byte>(0x10);
     
-    public abstract Color this[byte index] { get; }
+    public Color this[byte index]
+    {
+        get
+        {
+            Array<byte> indices = (Array<byte>)this.indices;
+            return index >= indices.length ?
+                Engine.SendError<Color>(ErrorCodes.BadArgument, Name, nameof(index), "Invalid index in IndexPalette") :
+                GetColor(indices.elements[index]);
+        }
+    }
+
+    public byte this[int index]
+    {
+        get
+        {
+            Array<byte> indices = (Array<byte>)this.indices;
+            return index >= indices.length ?
+                Engine.SendError<byte>(ErrorCodes.BadArgument, Name, nameof(index), "Invalid index in IndexPalette") :
+                indices.elements[index];
+        }
+    }
+
+    protected abstract Color GetColor(byte index);
 
     public Color[] GetColors()
     {
         Array<byte> indices = (Array<byte>)this.indices;
         Color[] colors = new Color[indices.length];
-
-        for (int i = 0; i < indices.length; i++)//can this throw exceptions?
-            colors[i] = this[indices.elements[i]];//could this be inlined somehow?
+        
+        for (int i = 0; i < indices.length; i++) colors[i] = GetColor(indices.elements[i]);
 
         return colors;
     }
@@ -122,8 +152,11 @@ public sealed class PaletteAnimation : Animation, IPalette
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Color[] GetColors() => FrameCount <= 0 ? null ://is this okay?
-        ((Array<PaletteFrame>)frames).elements[frameIndex].palette.GetColors();
+    public Color[] GetColors()
+    {
+        Array<PaletteFrame> frames = (Array<PaletteFrame>)this.frames;
+        return frames.length <= 0 ? null : frames.elements[frameIndex].palette.GetColors();
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     void IPalette._animate() => _animate();//is this okay?
