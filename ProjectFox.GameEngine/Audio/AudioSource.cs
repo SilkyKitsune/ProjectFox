@@ -26,7 +26,7 @@ public abstract class AudioSource : Object2D
         base._draw();
 #endif
         
-        if (!audible || volume <= 0f || (leftVolume <= 0f && rightVolume <= 0)) return;
+        if (!audible) return;
 
         if (channel == null)
         {
@@ -34,13 +34,13 @@ public abstract class AudioSource : Object2D
             return;
         }
 
-        if (!channel.audible || channel.volume <= 0 || (channel.leftVolume <= 0f && rightVolume <= 0f)) return;
+        if (!channel.audible) return;
 
         if (scene != channel.scene || (owner != null && owner.scene != channel.scene))
             Engine.SendError(ErrorCodes.AudioChannelNotInScene, name, channel.name.ToString(),
                 $"AudioSource '{name}' drew to channel from a null/different scene");
 
-        Sample[] waveShape = GetDrawInfo();
+        Sample[] waveShape = GetDrawInfo();//if waveShape is changed between frames waveShapeIndex could be invalid, for loop condition covers that but will skip playback on first frame
 
         if (waveShape == null)
         {
@@ -48,68 +48,73 @@ public abstract class AudioSource : Object2D
             return;
         }
 
+        bool noVol = volume == 0f || (leftVolume == 0f && rightVolume == 0) ||
+            channel.volume == 0 || (channel.leftVolume == 0f && rightVolume == 0f);
+
         float v = volume;
 
         Array<Object2D> listeners = (Array<Object2D>)this.listeners;
-        if (listeners.length > 0)
+        if (!noVol && listeners.length > 0)
         {
-            //clamp distances?
-
-            //overload for awway<>?
-            float dist = Closest(listeners.ToArray()).position.Distance(position),
-                f = 1 - ((dist - maxVolumeDistance) / (minVolumeDistance - maxVolumeDistance));
-            v *= f;
-            //clean up later
-            //Debug.Console.QueueMessage($"{dist} : {f}");//remove
+            if (minVolumeDistance < maxVolumeDistance)
+                Engine.SendError(ErrorCodes.MinGreaterThanMax, name, nameof(minVolumeDistance));
+            else
+            {
+                float distance = Closest(listeners.ToArray()).position.Distance(position);//overload for awway<>?
+                if (distance >= minVolumeDistance) v = 0f;
+                else if (exceedMaxVolume || distance > maxVolumeDistance)
+                    v *= 1 - ((distance - maxVolumeDistance) / (minVolumeDistance - maxVolumeDistance));
+            }
         }
 
-        if (v <= 0f) v = 0f;
-        else if (!exceedMaxVolume && v > 1f) v = 1f;//should l/r vol be clamped?
-
-        bool leftPan = panning < 0, rightPan = panning > 0;//clamp pan?
-        float l = v * leftVolume, r = v * rightVolume, pan = leftPan ? -panning : panning, reversePan = 1 - pan;
-        //how to skip this when v = 0, but still advance playback?
-        for (int i = 0; i < channel.samples.Length && waveShapeIndex < waveShape.Length; i++, waveShapeIndex++)
+        if (noVol || v == 0f) waveShapeIndex += channel.samples.Length;
+        else
         {
-            Sample sample = waveShape[waveShapeIndex];
-            float left = sample.left * l, right = sample.right * r;
+            bool leftPan = panning < 0, rightPan = panning > 0;//clamp pan? what happens if it's not?
+            float l = v * leftVolume, r = v * rightVolume, pan = leftPan ? -panning : panning, reversePan = 1 - pan;
 
-            if (mono)
+            for (int i = 0; i < channel.samples.Length && waveShapeIndex < waveShape.Length; i++, waveShapeIndex++)
             {
-                left += right;
-                right = left;
-            }
-            else//could this be simplified?
-            {
-                if (leftPan)
+                Sample sample = waveShape[waveShapeIndex];//move waveShapeIndex < waveShape.Length here? or maybe wrap it? this might be where the click on loop comes from
+                float left = sample.left * l, right = sample.right * r;
+
+                if (mono)
                 {
-                    left += right * pan;
-                    right *= reversePan;
+                    left += right;
+                    right = left;
                 }
-                else if (rightPan)
+                else//could this be simplified?
                 {
-                    right += left * pan;
-                    left *= reversePan;
+                    if (leftPan)
+                    {
+                        left += right * pan;
+                        right *= reversePan;
+                    }
+                    else if (rightPan)
+                    {
+                        right += left * pan;
+                        left *= reversePan;
+                    }
+
+                    if (swapStereo)
+                    {
+                        float f = left;
+                        left = right;
+                        right = f;
+                    }
                 }
 
-                if (swapStereo)
+                if (!channel.monophonic)
                 {
-                    float f = left;
-                    left = right;
-                    right = f;
+                    Sample channelSample = channel.samples[i];
+                    left += channelSample.left;
+                    right += channelSample.right;
                 }
-            }
 
-            if (!channel.monophonic)
-            {
-                Sample channelSample = channel.samples[i];
-                left += channelSample.left;
-                right += channelSample.right;
+                channel.samples[i] = new(
+                    (short)(Math.Clamp(left, short.MinValue, short.MaxValue)),
+                    (short)(Math.Clamp(right, short.MinValue, short.MaxValue)));
             }
-            
-            channel.samples[i] = new(//could the double clamp be abbreviated?
-                (short)(Math.Clamp(left, short.MinValue, short.MaxValue)),
-                (short)(Math.Clamp(right, short.MinValue, short.MaxValue)));
         }
 
         if (waveShapeIndex >= waveShape.Length)
@@ -130,7 +135,7 @@ public class SampleSource : AudioSource//move to own file?
 }
 
 #if DEBUG
-public class OSCSource : AudioSource
+internal class OSCSource : AudioSource
 {
     public enum InterpolationMode
     {
@@ -141,18 +146,18 @@ public class OSCSource : AudioSource
 
     public enum Note
     {
-        CNatural,
-        CSharp,
-        DNatural,
-        DSharp,
-        ENatural,
-        FNatural,
-        FSharp,
-        GNatural,
-        GSharp,
-        ANatural,
-        ASharp,
-        BNatural,
+        CNatural = 0,
+        CSharp = 1,
+        DNatural = 2,
+        DSharp = 3,
+        ENatural = 4,
+        FNatural = 5,
+        FSharp = 6,
+        GNatural = 7,
+        GSharp = 8,
+        ANatural = 9,
+        ASharp = 10,
+        BNatural = 11,
 
         DFlat = CSharp,
         EFlat = DSharp,
@@ -161,6 +166,24 @@ public class OSCSource : AudioSource
         BFlat = ASharp,
     }
 
+    private static readonly float[] freqs =
+    {
+        16.35160f, //C
+        17.32391f, //C#
+        18.35405f, //D
+        19.44544f, //D#
+        20.60172f, //E
+        21.82676f, //F
+        23.12465f, //F#
+        24.49971f, //G
+        25.95654f, //G#
+        27.50000f, //A
+        29.13524f, //A#
+        30.86771f, //B
+    };
+
+    //public OSCSource(NameID name) default to sine?
+
     public OSCSource(NameID name, Sample[] waveShape/*, int octave?*/) : base(name) { }//input an A4 note 440hz?
 
     //Sample[][] single cycle waveforms, each Sample[] is an A note, octaves 0-9
@@ -168,19 +191,56 @@ public class OSCSource : AudioSource
 
     public InterpolationMode mode = InterpolationMode.Up;
 
-    public bool repeat = true;//?
+    public bool repeat = true;//rename? oneShot?
 
-    public Note note = Note.ANatural;
+    public Note note = Note.ANatural;//should note/oct be properties to reset wave offset?
 
     public int octave = 4;
 
-    public float pitchOffest = 0f;
+    public float pitchOffest = 0f;//, phase = 0f?
 
     //samplerate?
 
     //polyphony?
 
-    protected override Sample[] GetDrawInfo() => Engine.SendError<Sample[]>(ErrorCodes.NotImplemented, name);
+    protected override Sample[] GetDrawInfo()
+    {
+        bool down = note < Note.ANatural, up = note > Note.ANatural;
+
+        int oct = 0;//temp
+        
+        //how to tell if note is above or below A?
+        Sample[] baseNote = waveShapes[oct], output = new Sample[channel.samples.Length];
+        //float freq = freqs[(int)note] * Math.Pow(2, octave);
+        if (note != Note.ANatural)//down || up
+        {
+            Sample[] newNote = new Sample[0];//temp length
+
+            switch (mode)
+            {
+                case InterpolationMode.Up:
+                    for (int i = 0; i < newNote.Length; i++)
+                    {
+                        float f = (float)i / newNote.Length * baseNote.Length;
+                        //newNote[i] = (baseNote[((int)f) + 1] - baseNote[(int)f]) * Math.fraction(f) + baseNote[(int)f];
+                        newNote[i] = baseNote[(int)f];//temp
+                    }
+                    break;
+                case InterpolationMode.Down:
+                    break;
+                case InterpolationMode.Both:
+                    break;
+            }
+
+            baseNote = newNote;
+        }
+
+        int offset = 0;//make member
+        for (int i = 0; i < output.Length; i++, offset++)//copy until waveShape ends, leave empty zeros after, this is for oneShot waveShapes
+            output[i] = baseNote[Math.Wrap(offset, 0, baseNote.Length)];
+
+        return Engine.SendError<Sample[]>(ErrorCodes.NotImplemented, name);
+    }
 
     //public void SetNote(int octave, Note note, float pitchOffest = 0f) { }//?
 
