@@ -1,7 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using ProjectFox.CoreEngine.Math;
 using ProjectFox.CoreEngine.Collections;
-using static ProjectFox.GameEngine.Visuals.PaletteAnimation;
 
 namespace ProjectFox.GameEngine.Visuals;
 
@@ -51,8 +50,7 @@ public sealed class ColorTexture : Texture, IColorGroup
         for (int i = 0; i < pixels.Length; i++)
         {
             pixels[i].GetHSV(out float hue, out float sat, out float vel, out float a);
-            pixels[i] = Color.FromHSV(
-                hue + hueModifier, sat * saturationModifier, vel * velocityModifier, a);
+            pixels[i] = Color.FromHSV(hue + hueModifier, sat * saturationModifier, vel * velocityModifier, a);
         }
     }
 
@@ -71,7 +69,7 @@ public sealed class ColorTexture : Texture, IColorGroup
     public void VelocityMultiply(float modifier)
     {
         for (int i = 0; i < pixels.Length; i++)
-            pixels[i].Highest = (byte)(pixels[i].Highest * modifier);
+            pixels[i].Velocity *= modifier;//pixels[i].Highest = (byte)(pixels[i].Highest * modifier);
     }
 }
 
@@ -87,23 +85,43 @@ public sealed class PalettizedTexture : Texture
 
     public PalettizedTexture(int width, int height, byte[] pixels = null) : this(new(width, height), pixels) { }
 
-#if DEBUG
-    public PalettizedTexture(Vector dimensions, Color[] pixels, /*ref?*/ ColorPalette palette) : base(dimensions, true)
+    public PalettizedTexture(Vector dimensions, Color[] pixels, ref ColorPalette palette, bool rampToPalette) : base(dimensions, true)
+    {
+        palette ??= new();
+        int length = dimensions.x * dimensions.y;
+        this.pixels = new byte[length];
+        if (pixels != null && pixels.Length == length) for (int i = 0; i < length; i++)
+            {
+                Color c = pixels[i];
+                Color[] colors = palette.colors.ToArray();
+                int index = palette.colors.IndexOf(c);
+
+                if (index > -1) this.pixels[i] = (byte)index;
+                else if (rampToPalette) this.pixels[i] = (byte)c.ClosestIndex(colors);
+                else
+                {
+                    this.pixels[i] = (byte)palette.colors.Length;
+                    palette.colors.Add(c);
+                }
+            }
+    }
+
+    public PalettizedTexture(int width, int height, Color[] pixels, ref ColorPalette palette, bool rampToPalette) : this(new(width, height), pixels, ref palette, rampToPalette) { }
+
+    public PalettizedTexture(Vector dimensions, Color[] pixels, IndexPalette palette/*, rampToGlobal?*/) : base(dimensions, true)
     {
         int length = dimensions.x * dimensions.y;
-        if (pixels == null || pixels.Length != length)
+        this.pixels = new byte[length];
+        if (pixels != null && pixels.Length == length && palette != null && palette.indices.Length > 0)
         {
-            Engine.SendError(ErrorCodes.BadArgument, new("PltTxtr", 0), nameof(pixels));
-            this.pixels = new byte[length];
-        }
-        else
-        {
-
+            Color[] colors = palette.GetColors();
+            for (int i = 0; i < length; i++) this.pixels[i] = (byte)pixels[i].ClosestIndex(colors);
         }
     }
 
-    public PalettizedTexture(int width, int height, Color[] pixels, ColorPalette palette) : this(new(width, height), pixels, palette) { }
-#endif
+    public PalettizedTexture(int width, int height, Color[] pixels, IndexPalette palette) : this(new(width, height), pixels, palette) { }
+
+    //public PalettizedTexture(Vector dimensions, Color[] pixels, IPalette palette)?
 
     internal readonly byte[] pixels;
 
@@ -126,7 +144,7 @@ public sealed class PalettizedTexture : Texture
         for (int i = 0; i < pixels.Length; i++)
             colorPixels[i] = colors[Math.Clamp(pixels[i], 0, colors.Length)];
 
-        return new ColorTexture(dimensions, colorPixels);
+        return new(dimensions, colorPixels);
     }
 }
 
