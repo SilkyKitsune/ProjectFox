@@ -21,15 +21,15 @@ public partial struct Color
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Color FromBytes(byte[] bytes, bool littleEndian) =>
-        (bytes == null || bytes.Length < 4) ? throw new ArgumentException() : new(bytes[0], bytes[1], bytes[2], bytes[3]);
+        (bytes == null || bytes.Length < 4) ? throw new ArgumentNullException() : new(bytes[0], bytes[1], bytes[2], bytes[3]);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Color FromBytes24(byte[] bytes) =>
-        (bytes == null || bytes.Length < 3) ? throw new ArgumentException() : new(bytes[0], bytes[1], bytes[2]);
+        (bytes == null || bytes.Length < 3) ? throw new ArgumentNullException() : new(bytes[0], bytes[1], bytes[2]);
 
     public static Color[] FromBytesMultiple(byte[] bytes, bool littleEndian)
     {
-        if (bytes == null || bytes.Length < 4) throw new ArgumentException();
+        if (bytes == null || bytes.Length < 4) throw new ArgumentNullException();
 
         Color[] values = new Color[bytes.Length / 4];
         for (int i = 0, j = 0; i < values.Length; i++)
@@ -39,7 +39,7 @@ public partial struct Color
 
     public static Color[] FromBytesMultiple24(byte[] bytes)
     {
-        if (bytes == null || bytes.Length < 3) throw new ArgumentException();
+        if (bytes == null || bytes.Length < 3) throw new ArgumentNullException();
 
         Color[] values = new Color[bytes.Length / 3];
         for (int i = 0, j = 0; i < values.Length; i++)
@@ -80,7 +80,7 @@ public partial struct Color
 
     public static byte[] GetBytes(Color[] values, bool littleEndian)//bgr overload?
     {
-        if (values == null || values.Length == 0) throw new ArgumentException();
+        if (values == null || values.Length == 0) throw new ArgumentNullException();
 
         byte[] bytes = new byte[values.Length * 4];
         for (int i = 0, j = 0; i < values.Length; i++)
@@ -96,7 +96,7 @@ public partial struct Color
 
     public static byte[] GetBytes24(Color[] values)//bgr overload?
     {
-        if (values == null || values.Length == 0) throw new ArgumentException();
+        if (values == null || values.Length == 0) throw new ArgumentNullException();
 
         byte[] bytes = new byte[values.Length * 3];
         for (int i = 0, j = 0; i < values.Length; i++)
