@@ -183,14 +183,17 @@ public static partial class CoreEngineTest
         C.WriteLine(iRotate2D.Rotate(rotation1));
         C.WriteLine(iRotate2D.Rotate(rotation1, biggerF));
 
-        /*C.WriteLine(iRotate2D.RotateByRightAngles(0));
+        C.WriteLine(iRotate2D.RotateByRightAngles(0));
         C.WriteLine(iRotate2D.RotateByRightAngles(1));
         C.WriteLine(iRotate2D.RotateByRightAngles(2));
         C.WriteLine(iRotate2D.RotateByRightAngles(3));
         C.WriteLine(iRotate2D.RotateByRightAngles(4));
 
-        C.WriteLine(iRotate2D.RotateByRightAngles(bigger, 1));
-        C.WriteLine(iRotate2D.RotateByRightAngles(biggerF, 2));*/
+        C.WriteLine(iRotate2D.RotateByRightAngles(0, biggerF));
+        C.WriteLine(iRotate2D.RotateByRightAngles(1, biggerF));
+        C.WriteLine(iRotate2D.RotateByRightAngles(2, biggerF));
+        C.WriteLine(iRotate2D.RotateByRightAngles(3, biggerF));
+        C.WriteLine(iRotate2D.RotateByRightAngles(4, biggerF));
     }
 
     private static void IPolytopeTest<V, P>(IPolytope<V, P> iPolytope)

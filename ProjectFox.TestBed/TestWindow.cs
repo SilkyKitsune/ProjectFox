@@ -13,9 +13,9 @@ using static ProjectFox.Windows.WM;
 
 namespace ProjectFox.TestBed;
 
-internal sealed class TestWindow : DrawingWindow
+public sealed class TestWindow : DrawingWindow
 {
-    internal static void GameWindowTest()
+    public static void GameWindowTest()
     {
         Engine.Frequency = 5;
         Screen.position = new(0, 0);
@@ -113,8 +113,8 @@ internal sealed class TestWindow : DrawingWindow
                     (byte)M.Clamp(scene.bgColor.b + 1, byte.MinValue, byte.MaxValue));*/
         }
     }
-    
-    internal TestWindow() : base("Test Window",
+
+    public TestWindow() : base("Test Window",
         CS.VRedraw | CS.HRedraw | CS.DblClks, WindowColors.ScrollBar,
         WS.OverlappedWindow, 50, 100, 500, 300) { }
 
@@ -138,12 +138,12 @@ internal sealed class TestWindow : DrawingWindow
                 break;
 
             case Move:
-                SeparateParam(longParam.ToInt32(), out high, out low);
-                D.WriteLine($"{message} ({(short)low}, {(short)high})");
+                SeparateParam(longParam, out high, out low);
+                D.WriteLine($"{message} ({(short)low}, {(short)high}) {Region}");
                 break;
             case WM.Size:
-                SeparateParam(longParam.ToInt32(), out high, out low);
-                D.WriteLine($"{message} ({low}, {high})");
+                SeparateParam(longParam, out high, out low);
+                D.WriteLine($"{message} ({low}, {high}) {Region}");
                 break;
 
             case EraseBkgnd:
@@ -197,7 +197,7 @@ internal sealed class TestWindow : DrawingWindow
                 //D.WriteLine($"{message} wide={wideParam}, long=({x}, {y})");
                 break;
             case MouseWheel:
-                SeparateParam((int)wideParam.ToUInt32(), out high, out low);
+                SeparateParam(/*(int)*/wideParam/*.ToUInt32()*/, out high, out low);
                 D.WriteLine($"{message} wide=({(short)high}, {low}), long={longParam}");
                 break;
 
@@ -240,7 +240,11 @@ internal sealed class TestWindow : DrawingWindow
             case MButtonDblClk:
                 D.WriteLine($"{message} wide={wideParam}, long={longParam}");
                 break;
-                #endregion
+            #endregion
+
+            /*default:
+                D.WriteLine(message);
+                break;*/
         }
         return base.WindowProc(windowHandle, message, wideParam, longParam);
     }
