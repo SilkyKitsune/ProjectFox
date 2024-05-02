@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Runtime.InteropServices;
-using System.Runtime.CompilerServices;
-using ProjectFox.CoreEngine.Collections;
-using ProjectFox.CoreEngine.Data;
 
 namespace ProjectFox.CoreEngine.Math;
 
-[StructLayout(LayoutKind.Explicit, Size = 4)]
-public struct Sample : IData<Sample>//other interfaces?
+public partial struct Sample
 {
     public static string ConcatHex(bool littleEndian, bool leadingText, params Sample[] values)
     {
@@ -193,38 +188,6 @@ public struct Sample : IData<Sample>//other interfaces?
         return str;
     }
 
-    //these aren't giving errors for not fully assigning
-    public Sample(short sample)
-    {
-        //this.sample = 0u;
-        left = sample;
-        right = sample;
-    }
-    public Sample(short left, short right)
-    {
-        //this.sample = 0u;
-        this.left = left;
-        this.right = right;
-    }
-    private Sample(uint sample)
-    {
-        //left = 0;
-        //right = 0;
-        this.sample = sample;
-    }
-
-    [FieldOffset(2)] public short left;
-    [FieldOffset(0)] public short right;
-    [FieldOffset(0)] public uint sample;
-
-    public override string ToString() => $"(L: {left}, R: {right})";
-
-    public string ToHexString(bool littleEndian = false, bool leadingText = false) =>
-        $"(L: {Strings.ToHexString(left, littleEndian, leadingText)}, R: {Strings.ToHexString(right, littleEndian, leadingText)})";
-
-    public string ToBinString(bool littleEndian = false, bool leadingText = false, char byteSeparator = '|', char nibbleSeparator = '_') =>
-        $"(L: {Strings.ToBinString(left, littleEndian, leadingText, byteSeparator, nibbleSeparator)}, R: {Strings.ToBinString(right, littleEndian, leadingText, byteSeparator, nibbleSeparator)})";
-
     public unsafe byte[] GetBytes(bool littleEndian)
     {
         byte[] bytes = new byte[sizeof(Sample)];
@@ -248,10 +211,4 @@ public struct Sample : IData<Sample>//other interfaces?
         }
         return bytes;
     }
-
-    public static implicit operator Sample(uint i) => new(i);
-
-    public static implicit operator Sample(int i) => new((uint)i);
-
-    //operators?
 }
