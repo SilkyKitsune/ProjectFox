@@ -47,6 +47,37 @@ public partial struct Color
         return values;
     }
 
+    public static Color[] FromBytesMultipleGrayScale(byte[] bytes)//test
+    {
+        if (bytes == null || bytes.Length == 0) throw new ArgumentNullException();
+
+        Color[] values = new Color[bytes.Length];
+        for (int i = 0; i < values.Length; i++) values[i] = new(bytes[i], bytes[i], bytes[i]);
+        return values;
+    }
+
+    public static Color[] FromBytesMultipleGrayScaleWithAlpha(byte[] bytes)//test, rename?
+    {
+        if (bytes == null || bytes.Length == 0) throw new ArgumentNullException();
+
+        Color[] values = new Color[bytes.Length / 2];
+        for (int i = 0, j = 0; i < values.Length; i++)
+        {
+            byte c = bytes[j++];
+            values[i] = new(c, c, c, bytes[j++]);
+        }
+        return values;
+    }
+
+    public static byte[] GetAlphaBytes(Color[] values)//test
+    {
+        if (values == null || values.Length == 0) throw new ArgumentNullException();
+
+        byte[] bytes = new byte[values.Length];
+        for (int i = 0; i < values.Length; i++) bytes[i] = values[i].a;
+        return bytes;
+    }
+
     public static byte[] GetBytes(Color[] values, bool littleEndian)//bgr overload?
     {
         if (values == null || values.Length == 0) throw new ArgumentException();
@@ -74,6 +105,29 @@ public partial struct Color
             bytes[j++] = c.r;
             bytes[j++] = c.g;
             bytes[j++] = c.b;
+        }
+        return bytes;
+    }
+
+    public static byte[] GetBytesGrayscale(Color[] values)//test
+    {
+        if (values == null || values.Length == 0) throw new ArgumentNullException();
+
+        byte[] bytes = new byte[values.Length];
+        for (int i = 0; i < values.Length; i++) bytes[i] = values[i].Highest;
+        return bytes;
+    }
+
+    public static byte[] GetBytesGrayscaleWithAlpha(Color[] values)//test, rename?
+    {
+        if (values == null || values.Length == 0) throw new ArgumentNullException();
+
+        byte[] bytes = new byte[values.Length * 2];
+        for (int i = 0, j = 0; i < values.Length; i++)
+        {
+            Color c = values[i];
+            bytes[j++] = c.Highest;
+            bytes[j++] = c.a;
         }
         return bytes;
     }
