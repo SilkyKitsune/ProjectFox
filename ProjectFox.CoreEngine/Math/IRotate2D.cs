@@ -7,27 +7,15 @@
 /// <typeparam name="Vf"></typeparam>
 public interface IRotate2D<S, V, F, Vf>
 {
+    public abstract float Angle(V value, V pivot = default);//should pivot be vf for both?
+
+    public abstract float Angle(Vf value, Vf pivot = default);//could these be combined?
+
     public abstract float AngleFromRotationOrigin();
 
-    //public abstract float Angle(V value);
-    //public abstract float Angle(Vf value);
-
-    public abstract float Angle(V value, V pivot = default);///////////////
-    public abstract float Angle(Vf value, Vf pivot = default);
-
-    //public abstract F Rotate(float amount);//combine?
-    //public abstract F Rotate(float amount, V pivot = default);//combine?
     public abstract F Rotate(float amount, Vf pivot = default);
 
-    //public abstract F RotateByRadians(float radians);
-    //public abstract F RotateByRadians(V pivot, float radians);
-    public abstract F RotateByRadians(float radians, Vf pivot = default);
-
-    //public abstract F RotateByDegrees(float degrees);
-    //public abstract F RotateByDegrees(V pivot, float degrees);
-    public abstract F RotateByDegrees(float degrees, Vf pivot = default);
-
     public abstract S RotateByRightAngles(int rightAngles);
-    public abstract S RotateByRightAngles(V pivot, int rightAngles);
-    public abstract S/*F?*/ RotateByRightAngles(Vf pivot, int rightAngles);
+
+    public abstract F RotateByRightAngles(int rightAngles, Vf pivot = default);
 }
