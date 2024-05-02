@@ -2,6 +2,8 @@
 
 public interface IColorGroup
 {
+    public abstract bool Grayscale();
+    
     public abstract void ModifyHSV(float hueModifier, float saturationModifier, float velocityModifier);
     //ignored colors?
     public abstract void HueShift(float modifier);
@@ -14,4 +16,6 @@ public interface IColorGroup
     //saturation hsl
 
     //gamma?
+
+    public abstract bool UniformAlpha();
 }
