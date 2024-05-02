@@ -8,15 +8,39 @@ public partial struct Vector
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static VectorF PointFromRotationOrigin(float angle)
     {
-#if DEBUG
         Math.SineCosine(angle, out float sin, out float cos);
         return new(sin, -cos);
+    }
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public float Angle(Vector value, Vector pivot = default)
+    {
+#if DEBUG
+        //check for if arguments are equal at all
+
+        Vector v = this;
+        
+        if (!pivot.IsZero())
+        {
+            this -= pivot;//inline
+            value -= pivot;
+        }
+
+        float a = v.AngleFromRotationOrigin(), b = value.AngleFromRotationOrigin();
+
+        if (a < b) return b - a;
+        if (a > b) return a - b;
+        return a;
 #else
         return default;
 #endif
     }
 
-    #region Angle
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public float Angle(VectorF value, VectorF pivot = default) => default;
+
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
     public float AngleFromRotationOrigin()
@@ -80,89 +104,33 @@ angleorigin()
         */
     }
 
-    public float Angle(Vector value, Vector pivot = default)
-    {
-        //check for if arguments are equal at all
-        
-        Vector v = this;
-        
-        if (!pivot.IsZero())
-        {
-            this -= pivot;//inline
-            value -= pivot;
-        }
-
-        float a = v.AngleFromRotationOrigin(), b = value.AngleFromRotationOrigin();
-
-        if (a < b) return b - a;
-        if (a > b) return a - b;
-        return a;
-    }
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public float Angle(VectorF value, VectorF pivot = default) => default;
-    #endregion
-
-    #region Rotate
-    /*[MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public VectorF Rotate(float amount)
-    {
-        if (IsZero()) return this;
-
-        //change to clamp
-        //float angle = (float)Math.Wrap((decimal)amount, 0m, 1m);//might remove this
-        amount = Math.Clamp(amount, -1f, 1f);//inline clamp?
-        switch (amount)
-        {
-            case 0f:
-                return new(x, y);
-            case 0.25f:
-                return new(y, -x);
-            case 0.5f:
-                return new(-x, -y);
-            case 0.75f:
-                return new(-y, x);
-            case 1f:
-                return new(x, y);
-            default:
-                Math.SineCosine(amount < 0f ? 1f + amount : amount, out float sin, out float cos);
-                return new VectorF((x * cos) - (y - sin), (y * cos) + (x * sin));
-        }
-    }*/
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public VectorF Rotate(float amount, VectorF pivot = default)
+    public VectorF Rotate(float amount, VectorF pivot = default)//test
     {
 #if DEBUG
-        if (amount == 0f || Equals(pivot)) return new(x, y);
+        amount -= (int)amount;
 
-        bool noPivot = pivot.IsZero();//vectorf.rotate needs same fixes
+        if (amount == 0f || Equals(pivot)) return this;
+
+        bool noPivot = pivot.IsZero();
         VectorF vf = noPivot ? new(x, y) : new(x - pivot.x, y - pivot.y);
-        //didn't account for amount = -1 || 1
-        amount = Math.Clamp(amount, -1f, 1f);//inline clamp?
+        
         switch (amount)
         {
             case 0.25f:
-                vf = new(vf.y, -vf.x);
-                break;
-            case 0.5f:
-                vf = new(-vf.x, -vf.y);
-                break;
-            case 0.75f:
-                vf = new(-vf.y, vf.x);
-                break;
-            case -0.25f:
-                vf = new(-vf.y, vf.x);
-                break;
-            case -0.5f:
-                vf = new(-vf.x, -vf.y);
-                break;
             case -0.75f:
                 vf = new(vf.y, -vf.x);
                 break;
+            case 0.5f:
+            case -0.5f:
+                vf = new(-vf.x, -vf.y);
+                break;
+            case 0.75f:
+            case -0.25f:
+                vf = new(-vf.y, vf.x);
+                break;
             default:
-                Math.SineCosine(amount < 0f ? 1f + amount : amount, out float sin, out float cos);
+                //why is this checking amount < 0?
+                Math.SineCosine(/*amount < 0f ? 1f + amount :*/ amount, out float sin, out float cos);
                 vf = new((vf.x * cos) - (vf.y - sin), (vf.y * cos) + (vf.x * sin));
                 break;
         }
@@ -172,94 +140,6 @@ angleorigin()
 #endif
     }
 
-    /*[MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public VectorF Rotate(VectorF pivot, float amount)
-    {
-        if (Equals(pivot)) return new(x, y);
-
-        VectorF vf = new VectorF(x - pivot.x, y - pivot.y).Rotate(amount);
-        return new(vf.x + pivot.x, vf.y + pivot.y);
-    }*/
-
-    /*[MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public VectorF RotateByRadians(float radians)
-    {
-        if (IsZero()) return this;
-
-        float angle = (float)Math.Wrap((decimal)(radians / Math.Tau), 0m, 1m);//might remove this
-        switch (angle)
-        {
-            case 0f:
-                return new(x, y);
-            case 0.25f:
-                return new(y, -x);
-            case 0.5f:
-                return new(-x, -y);
-            case 0.75f:
-                return new(-y, x);
-            case 1f:
-                return new(x, y);
-            default:
-                //check for simpler rotation?
-                Math.SineCosine(angle, out float sin, out float cos);
-                return new VectorF((x * cos) - (y - sin), (y * cos) + (x * sin));
-        }
-    }*/
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#if DEBUG
-    public VectorF RotateByRadians(float radians, VectorF pivot = default) => Rotate(radians / Math.Tau, pivot);
-#else
-    public VectorF RotateByRadians(float radians, VectorF pivot = default) => default;
-#endif
-
-    /*[MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public VectorF RotateByRadians(VectorF pivot, float radians)
-    {
-        if (Equals(pivot)) return new(x, y);
-
-        VectorF vf = new VectorF(x - pivot.x, y - pivot.y).RotateByRadians(radians);
-        return new(vf.x + pivot.x, vf.y + pivot.y);
-    }*/
-
-    /*[MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public VectorF RotateByDegrees(float degrees)
-    {
-        if (IsZero()) return this;
-
-        float angle = (float)Math.Wrap((decimal)(degrees / 360f), 0m, 1m);//might remove this
-        switch (angle)
-        {
-            case 0f:
-                return new(x, y);
-            case 0.25f:
-                return new(y, -x);
-            case 0.5f:
-                return new(-x, -y);
-            case 0.75f:
-                return new(-y, x);
-            case 1f:
-                return new(x, y);
-            default:
-                //check for simpler rotation?
-                Math.SineCosine(angle, out float sin, out float cos);
-                return new VectorF((x * cos) - (y - sin), (y * cos) + (x * sin));
-        }
-    }*/
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public VectorF RotateByDegrees(float degrees, VectorF pivot = default) => Rotate(degrees / 360f, pivot);
-
-    /*[MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public VectorF RotateByDegrees(VectorF pivot, float degrees)
-    {
-        if (Equals(pivot)) return new(x, y);
-
-        VectorF vf = new VectorF(x - pivot.x, y - pivot.y).RotateByDegrees(degrees);
-        return new(vf.x + pivot.x, vf.y + pivot.y);
-    }*/
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Vector RotateByRightAngles(int rightAngles) =>
         Math.Wrap(rightAngles, 0, 3) switch
         {
@@ -270,22 +150,27 @@ angleorigin()
             _ => throw new Exception("Unexpected Value!")
         };
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Vector RotateByRightAngles(Vector pivot, int rightAngles)
+    public VectorF RotateByRightAngles(int rightAngles, VectorF pivot = default)
     {
-        if (Equals(pivot)) return this;
+        rightAngles = Math.Wrap(rightAngles, 0, 3);
 
-        Vector v = new Vector(x - pivot.x, y - pivot.y).RotateByRightAngles(rightAngles);
-        return new(v.x + pivot.x, v.y + pivot.y);
+        if (rightAngles == 0 || Equals(pivot)) return this;
+
+        bool noPivot = pivot.IsZero();
+        VectorF vf = noPivot ? new(x, y) : new(x - pivot.x, y - pivot.y);
+
+        switch (rightAngles)
+        {
+            case 1:
+                vf = new(vf.y, -vf.x);
+                break;
+            case 2:
+                vf = new(-vf.x, -vf.y);
+                break;
+            case 3:
+                vf = new(-vf.y, vf.x);
+                break;
+        };
+        return noPivot ? vf : new(vf.x + pivot.x, vf.y + pivot.y);
     }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Vector RotateByRightAngles(VectorF pivot, int rightAngles)
-    {
-        if (Equals(pivot)) return this;
-
-        VectorF vf = new VectorF(x - pivot.x, y - pivot.y).RotateByRightAngles(rightAngles);
-        return new((int)(vf.x + pivot.x), (int)(vf.y + pivot.y));
-    }
-    #endregion
 }
