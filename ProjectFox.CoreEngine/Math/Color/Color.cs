@@ -54,30 +54,15 @@ public partial struct Color : IVector<Color, byte, Color>
         return colors;
     }
 
-    public Color(byte r, byte g, byte b)
+    public Color(byte r, byte g, byte b, byte a = byte.MaxValue)
     {
-        //hex = 0;
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        a = byte.MaxValue;
-    }
-    public Color(byte r, byte g, byte b, byte a)//a could just have a default value
-    {
-        //hex = 0;
         this.r = r;
         this.g = g;
         this.b = b;
         this.a = a;
     }
-    private Color(uint hex)
-    {
-        //r = 0;
-        //g = 0;
-        //b = 0;
-        //a = 0;
-        this.hex = hex;
-    }
+
+    private Color(uint hex) => this.hex = hex;
 
     //are these backwards? do they change with endianess?
     /// <summary> Red channel </summary>
