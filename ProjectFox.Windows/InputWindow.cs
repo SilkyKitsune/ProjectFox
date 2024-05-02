@@ -30,7 +30,7 @@ public abstract class InputWindow : Window
             case KeyDown:
                 //use longparam here?
                 keyboardMouseState.UpdateKey((VK)wideParam.ToUInt32(), true);
-                break;
+                break;//will these throw exceptions?
             case KeyUp:
                 keyboardMouseState.UpdateKey((VK)wideParam.ToUInt32(), false);
                 break;
@@ -40,13 +40,13 @@ public abstract class InputWindow : Window
 
             #region Mouse
             case MouseMove:
-                SeparateParam(longParam.ToInt32(),
+                SeparateParam(longParam,
                     out keyboardMouseState.mousePosition.y,
                     out keyboardMouseState.mousePosition.x);
                 break;
 
             case MouseWheel:
-                SeparateParam((int)wideParam.ToUInt32(), out int high, out _);
+                SeparateParam(wideParam, out int high, out _);
                 keyboardMouseState.mouseWheel += (short)high / 120;
                 break;
 

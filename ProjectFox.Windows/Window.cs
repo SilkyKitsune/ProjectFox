@@ -5,17 +5,22 @@ using static ProjectFox.Windows.WinUser;
 
 namespace ProjectFox.Windows;
 
-//minimizing throws exception from IntPtr
-
 /// <summary> Base class for building a window using WinUser/WinGDI </summary>
 public abstract class Window
 {
     private const string ClassName = "ProjectFoxWindow";
 
-    protected static void SeparateParam(int param, out int high, out int low)
+    protected static void SeparateParam(IntPtr param, out int high, out int low)
     {
-        high = (int)((param & 0xFFFF0000) >> 0x10);
-        low = param & 0x0000FFFF;
+        long l = param.ToInt64();
+        high = (int)((l & 0xFFFF0000) >> 0x10);
+        low = (int)(l & 0x0000FFFF);
+    }//anyway to combine these?
+    protected static void SeparateParam(UIntPtr param, out int high, out int low)
+    {
+        ulong l = param.ToUInt64();
+        high = (int)((l & 0xFFFF0000) >> 0x10);
+        low = (int)(l & 0x0000FFFF);
     }
 
     /// <param name="windowName"> Name displayed on the window </param>
@@ -85,7 +90,7 @@ public abstract class Window
     private protected readonly IntPtr windowHandle;
     private WS windowStyle;
     private Rectangle region;
-    private bool started = false;
+    private bool started = false;//minimized
 
     //bool topmost
 
@@ -219,11 +224,11 @@ public abstract class Window
     {
         switch (message)
         {
-            case WM.Move:
-                SeparateParam(longParam.ToInt32(), out region.position.y, out region.position.x);
+            case WM.Move://I think minimize sets region to zero
+                SeparateParam(longParam, out region.position.y, out region.position.x);//does this make sense to do?
                 break;
             case WM.Size:
-                SeparateParam(longParam.ToInt32(), out region.size.y, out region.size.x);
+                SeparateParam(longParam, out region.size.y, out region.size.x);//does this make sense to do?
                 break;
             case WM.Close:
                 OnClose();
