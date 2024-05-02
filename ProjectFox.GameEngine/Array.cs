@@ -569,6 +569,16 @@ internal sealed class HashArray<T> : IHashTable<NameID, T>
             "IHashTable.CopyTo() is not implemented for this type");
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public NameID GetCode(T value)
+    {
+        int index = values.IndexOf(value);
+        if (index < 0) return Engine.SendError<NameID>(
+            ErrorCodes.BadArgument, HashArrayName, nameof(value),
+            $"'{value}' could not be found in IHashTable<{typeof(T)}>");
+        return codes.elements[index];
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public NameID[] GetCodes() => codes.ToArray();
 
     public T[] GetMultiple(params NameID[] codes)
@@ -591,7 +601,7 @@ internal sealed class HashArray<T> : IHashTable<NameID, T>
     public int IndexOf(T value) => values.IndexOf(value);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public int IndexOf(NameID code) => codes.IndexOf(code);
+    public int IndexOfCode(NameID code) => codes.IndexOf(code);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsEmpty() => codes.length == 0;
@@ -632,16 +642,6 @@ internal sealed class HashArray<T> : IHashTable<NameID, T>
     public int LastIndexOf(T value) => values.LastIndexOf(value);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool Remove(T value)
-    {
-        int index = values.IndexOf(value);
-        if (index < 0) return false;
-        codes.RemoveAt(index);
-        values.RemoveAt(index);
-        return true;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Remove(NameID code)
     {
         int index = codes.IndexOf(code);
@@ -657,6 +657,40 @@ internal sealed class HashArray<T> : IHashTable<NameID, T>
         if (index >= codes.length || index < 0) return false;
         codes.RemoveAt(index);
         values.RemoveAt(index);
+        return true;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool RemoveValue(T value)
+    {
+        int index = values.IndexOf(value);
+        if (index < 0) return false;
+        codes.RemoveAt(index);
+        values.RemoveAt(index);
+        return true;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool TryGet(NameID code, out T value)
+    {
+        value = default;
+
+        int index = codes.IndexOf(code);
+        if (index < 0) return false;
+
+        value = values.elements[index];
+        return true;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool TryGetCode(T value, out NameID code)
+    {
+        code = default;
+
+        int index = values.IndexOf(value);
+        if (index < 0) return false;
+
+        code = codes.elements[index];
         return true;
     }
 }

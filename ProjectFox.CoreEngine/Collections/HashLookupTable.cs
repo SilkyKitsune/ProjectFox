@@ -126,6 +126,14 @@ public sealed class HashLookupTable<H, T> : IHashTable<H, T>, ICopy<HashLookupTa
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public H GetCode(T value)
+    {
+        int index = values.IndexOf(value);
+        if (index < 0) throw new ArgumentException($"Value not found '{value}'");
+        return codes[index];
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public H[] GetCodes() => codes.ToArray();
 
     public T[] GetMultiple(params H[] codes)
@@ -148,7 +156,7 @@ public sealed class HashLookupTable<H, T> : IHashTable<H, T>, ICopy<HashLookupTa
     public int IndexOf(T value) => values.IndexOf(value);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public int IndexOf(H code) => codes.IndexOf(code);
+    public int IndexOfCode(H code) => codes.IndexOf(code);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsEmpty() => codes.IsEmpty();
@@ -196,15 +204,6 @@ public sealed class HashLookupTable<H, T> : IHashTable<H, T>, ICopy<HashLookupTa
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int LastIndexOf(T value) => values.LastIndexOf(value);
 
-    public bool Remove(T value)
-    {
-        int index = values.IndexOf(value);
-        if (index < 0) return false;
-        codes.RemoveAt(index);
-        values.RemoveAt(index);
-        return true;
-    }
-
     public bool Remove(H code)
     {
         int index = codes.IndexOf(code);
@@ -219,6 +218,37 @@ public sealed class HashLookupTable<H, T> : IHashTable<H, T>, ICopy<HashLookupTa
         if (index >= codes.Length || index < 0) return false;
         codes.RemoveAt(index);
         values.RemoveAt(index);
+        return true;
+    }
+
+    public bool RemoveValue(T value)
+    {
+        int index = values.IndexOf(value);
+        if (index < 0) return false;
+        codes.RemoveAt(index);
+        values.RemoveAt(index);
+        return true;
+    }
+
+    public bool TryGet(H code, out T value)
+    {
+        value = default;
+
+        int index = codes.IndexOf(code);
+        if (index < 0) return false;
+
+        value = values[index];
+        return true;
+    }
+
+    public bool TryGetCode(T value, out H code)
+    {
+        code = default;
+
+        int index = values.IndexOf(value);
+        if (index < 0) return false;
+
+        code = codes[index];
         return true;
     }
 }
