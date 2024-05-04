@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using ProjectFox.CoreEngine.Collections;
 using ProjectFox.CoreEngine.Data;
+using D = ProjectFox.CoreEngine.Data.Data;
 
 namespace ProjectFox.CoreEngine.Math;
 
@@ -28,11 +29,11 @@ public partial struct Sample : IData<Sample>//other interfaces?
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ToHexString(bool littleEndian = false, bool leadingText = false) =>
-        $"(L: {Strings.ToHexString(left, littleEndian, leadingText)}, R: {Strings.ToHexString(right, littleEndian, leadingText)})";
+        $"(L: {D.ToHexString(left, littleEndian, leadingText)}, R: {D.ToHexString(right, littleEndian, leadingText)})";
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ToBinString(bool littleEndian = false, bool leadingText = false, char byteSeparator = '|', char nibbleSeparator = '_') =>
-        $"(L: {Strings.ToBinString(left, littleEndian, leadingText, byteSeparator, nibbleSeparator)}, R: {Strings.ToBinString(right, littleEndian, leadingText, byteSeparator, nibbleSeparator)})";
+        $"(L: {D.ToBinString(left, littleEndian, leadingText, byteSeparator, nibbleSeparator)}, R: {D.ToBinString(right, littleEndian, leadingText, byteSeparator, nibbleSeparator)})";
 
     #region Sample Methods
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

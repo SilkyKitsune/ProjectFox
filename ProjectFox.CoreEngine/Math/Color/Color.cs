@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
-using ProjectFox.CoreEngine.Collections;
+using D = ProjectFox.CoreEngine.Data.Data;
 
 namespace ProjectFox.CoreEngine.Math;
 
@@ -138,15 +138,15 @@ public partial struct Color : IVector<Color, byte, Color>
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ToHexString(bool littleEndian = false, bool leadingText = false) =>
-        $"(R: {Strings.ToHexString(r, littleEndian, leadingText)}, G: {Strings.ToHexString(g, littleEndian, leadingText)}, " +
-        $"B: {Strings.ToHexString(b, littleEndian, leadingText)}, A: {Strings.ToHexString(a, littleEndian, leadingText)}, " +
-        $"Hex: {Strings.ToHexString((int)hex, littleEndian, leadingText)})";
+        $"(R: {D.ToHexString(r, littleEndian, leadingText)}, G: {D.ToHexString(g, littleEndian, leadingText)}, " +
+        $"B: {D.ToHexString(b, littleEndian, leadingText)}, A: {D.ToHexString(a, littleEndian, leadingText)}, " +
+        $"Hex: {D.ToHexString((int)hex, littleEndian, leadingText)})";
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ToBinString(bool littleEndian = false, bool leadingText = false, char byteSeparator = '|', char nibbleSeparator = '_') =>
-        $"(R: {Strings.ToBinString(r, littleEndian, leadingText, nibbleSeparator)}, G: {Strings.ToBinString(g, littleEndian, leadingText, nibbleSeparator)}, " +
-        $"B: {Strings.ToBinString(b, littleEndian, leadingText, nibbleSeparator)}, A: {Strings.ToBinString(a, littleEndian, leadingText, nibbleSeparator)}, " +
-        $"Hex: {Strings.ToBinString((int)hex, littleEndian, leadingText, byteSeparator, nibbleSeparator)})";
+        $"(R: {D.ToBinString(r, littleEndian, leadingText, nibbleSeparator)}, G: {D.ToBinString(g, littleEndian, leadingText, nibbleSeparator)}, " +
+        $"B: {D.ToBinString(b, littleEndian, leadingText, nibbleSeparator)}, A: {D.ToBinString(a, littleEndian, leadingText, nibbleSeparator)}, " +
+        $"Hex: {D.ToBinString((int)hex, littleEndian, leadingText, byteSeparator, nibbleSeparator)})";
 
     #region Vector Methods
     public float Distance(Color value)

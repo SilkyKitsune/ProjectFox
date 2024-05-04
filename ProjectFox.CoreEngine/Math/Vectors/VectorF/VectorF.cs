@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
-using ProjectFox.CoreEngine.Collections;
+using D = ProjectFox.CoreEngine.Data.Data;
 
 namespace ProjectFox.CoreEngine.Math;
 
@@ -30,11 +30,11 @@ public partial struct VectorF : IVector<VectorF, float, VectorF>, IDirection<Vec
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ToHexString(bool littleEndian = false, bool leadingText = false) =>
-        $"(X: {Strings.ToHexString(x, littleEndian, leadingText)}, Y: {Strings.ToHexString(y, littleEndian, leadingText)})";
+        $"(X: {D.ToHexString(x, littleEndian, leadingText)}, Y: {D.ToHexString(y, littleEndian, leadingText)})";
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ToBinString(bool littleEndian = false, bool leadingText = false, char byteSeparator = '|', char nibbleSeparator = '_') =>
-        $"(X: {Strings.ToBinString(x, littleEndian, leadingText, byteSeparator, nibbleSeparator)}, Y: {Strings.ToBinString(y, littleEndian, leadingText, byteSeparator, nibbleSeparator)})";
+        $"(X: {D.ToBinString(x, littleEndian, leadingText, byteSeparator, nibbleSeparator)}, Y: {D.ToBinString(y, littleEndian, leadingText, byteSeparator, nibbleSeparator)})";
 
     #region Vector Methods
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
