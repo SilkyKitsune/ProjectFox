@@ -29,106 +29,6 @@ public static partial class CoreEngineTest
         C.WriteLine("-----\n");
         #endregion
 
-        #region Hex
-        C.WriteLine("---Hex---");
-
-        C.WriteLine(Strings.ToHexString((byte)0x01, false, false));
-        C.WriteLine(Strings.ToHexString((byte)0x01, true, false));
-        C.WriteLine(Strings.ToHexString((byte)0x01, false, true));
-        C.WriteLine(Strings.ToHexString((byte)0x01, true, true));
-
-        C.WriteLine(Strings.ToHexString((short)0x0123, false, false));
-        C.WriteLine(Strings.ToHexString((short)0x0123, true, false));
-        C.WriteLine(Strings.ToHexString((short)0x0123, false, true));
-        C.WriteLine(Strings.ToHexString((short)0x0123, true, true));
-
-        C.WriteLine(Strings.ToHexString(0x01234567, false, false));
-        C.WriteLine(Strings.ToHexString(0x01234567, true, false));
-        C.WriteLine(Strings.ToHexString(0x01234567, false, true));
-        C.WriteLine(Strings.ToHexString(0x01234567, true, true));
-
-        C.WriteLine(Strings.ToHexString(0x0123456789ABCDEF, false, false));
-        C.WriteLine(Strings.ToHexString(0x0123456789ABCDEF, true, false));
-        C.WriteLine(Strings.ToHexString(0x0123456789ABCDEF, false, true));
-        C.WriteLine(Strings.ToHexString(0x0123456789ABCDEF, true, true));
-
-        unsafe
-        {
-            int f = 0x01234567;
-            C.WriteLine(Strings.ToHexString(*(float*)&f, false, false));
-            C.WriteLine(Strings.ToHexString(*(float*)&f, true, false));
-            C.WriteLine(Strings.ToHexString(*(float*)&f, false, true));
-            C.WriteLine(Strings.ToHexString(*(float*)&f, true, true));
-
-            long d = 0x0123456789ABCDEF;
-            C.WriteLine(Strings.ToHexString(*(double*)&d, false, false));
-            C.WriteLine(Strings.ToHexString(*(double*)&d, true, false));
-            C.WriteLine(Strings.ToHexString(*(double*)&d, false, true));
-            C.WriteLine(Strings.ToHexString(*(double*)&d, true, true));
-        }
-
-        C.WriteLine("-----\n");
-        #endregion
-
-        #region ConcatHex
-        #endregion
-
-        #region JoinHex
-        #endregion
-
-        #region Bin
-        C.WriteLine("---Bin---");
-
-        C.WriteLine(Strings.ToBinString((byte)0b0101_0101, false, false));
-        C.WriteLine(Strings.ToBinString((byte)0b0101_0101, false, false, '@'));
-        C.WriteLine(Strings.ToBinString((byte)0b0101_0101, true, false));
-        C.WriteLine(Strings.ToBinString((byte)0b0101_0101, false, true));
-        C.WriteLine(Strings.ToBinString((byte)0b0101_0101, true, true));
-
-        C.WriteLine(Strings.ToBinString((short)0b0101_0101__0101_0101, false, false));
-        C.WriteLine(Strings.ToBinString((short)0b0101_0101__0101_0101, false, false, '#', '@'));
-        C.WriteLine(Strings.ToBinString((short)0b0101_0101__0101_0101, true, false));
-        C.WriteLine(Strings.ToBinString((short)0b0101_0101__0101_0101, false, true));
-        C.WriteLine(Strings.ToBinString((short)0b0101_0101__0101_0101, true, true));
-
-        C.WriteLine(Strings.ToBinString(0b0101_0101__0101_0101____0101_0101__0101_0101, false, false));
-        C.WriteLine(Strings.ToBinString(0b0101_0101__0101_0101____0101_0101__0101_0101, false, false, '#', '@'));
-        C.WriteLine(Strings.ToBinString(0b0101_0101__0101_0101____0101_0101__0101_0101, true, false));
-        C.WriteLine(Strings.ToBinString(0b0101_0101__0101_0101____0101_0101__0101_0101, false, true));
-        C.WriteLine(Strings.ToBinString(0b0101_0101__0101_0101____0101_0101__0101_0101, true, true));
-
-        C.WriteLine(Strings.ToBinString(0b0101_0101__0101_0101____0101_0101__0101_0101____0101_0101__0101_0101____0101_0101__0101_0101, false, false));
-        C.WriteLine(Strings.ToBinString(0b0101_0101__0101_0101____0101_0101__0101_0101____0101_0101__0101_0101____0101_0101__0101_0101, false, false, '#', '@'));
-        C.WriteLine(Strings.ToBinString(0b0101_0101__0101_0101____0101_0101__0101_0101____0101_0101__0101_0101____0101_0101__0101_0101, true, false));
-        C.WriteLine(Strings.ToBinString(0b0101_0101__0101_0101____0101_0101__0101_0101____0101_0101__0101_0101____0101_0101__0101_0101, false, true));
-        C.WriteLine(Strings.ToBinString(0b0101_0101__0101_0101____0101_0101__0101_0101____0101_0101__0101_0101____0101_0101__0101_0101, true, true));
-
-        unsafe
-        {
-            int f = 0b0101_0101__0101_0101____0101_0101__0101_0101;
-            C.WriteLine(Strings.ToBinString(*(float*)&f, false, false));
-            C.WriteLine(Strings.ToBinString(*(float*)&f, false, false, '#', '@'));
-            C.WriteLine(Strings.ToBinString(*(float*)&f, true, false));
-            C.WriteLine(Strings.ToBinString(*(float*)&f, false, true));
-            C.WriteLine(Strings.ToBinString(*(float*)&f, true, true));
-
-            long d = 0b0101_0101__0101_0101____0101_0101__0101_0101____0101_0101__0101_0101____0101_0101__0101_0101;
-            C.WriteLine(Strings.ToBinString(*(double*)&d, false, false));
-            C.WriteLine(Strings.ToBinString(*(double*)&d, false, false, '#', '@'));
-            C.WriteLine(Strings.ToBinString(*(double*)&d, true, false));
-            C.WriteLine(Strings.ToBinString(*(double*)&d, false, true));
-            C.WriteLine(Strings.ToBinString(*(double*)&d, true, true));
-        }
-
-        C.WriteLine("-----\n");
-        #endregion
-
-        #region ConcatBin
-        #endregion
-
-        #region JoinBin
-        #endregion
-
         #region AutoSizedArray
         C.WriteLine("---AutoSizedArray---");
 
@@ -571,7 +471,7 @@ public static partial class CoreEngineTest
         C.WriteLine(iHashTable.ContainsCode(newCode1));
         C.WriteLine(iHashTable.Join(", "));
 
-        iHashTable.Remove(value);
+        iHashTable.RemoveValue(value);
         C.WriteLine(iHashTable.Join(", "));
 
         iHashTable.Add(newCode1, value);
