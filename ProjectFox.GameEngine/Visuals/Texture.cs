@@ -45,6 +45,14 @@ public sealed class ColorTexture : Texture, IColorGroup
 
     //palettized copy?
 
+    public bool Grayscale()
+    {
+        if (pixels.Length == 0) return false;
+        
+        foreach (Color pixel in pixels) if (!pixel.IsGrey()) return false;
+        return true;
+    }
+
     public void ModifyHSV(float hueModifier, float saturationModifier, float velocityModifier)
     {
         for (int i = 0; i < pixels.Length; i++)
@@ -70,6 +78,15 @@ public sealed class ColorTexture : Texture, IColorGroup
     {
         for (int i = 0; i < pixels.Length; i++)
             pixels[i].Velocity *= modifier;//pixels[i].Highest = (byte)(pixels[i].Highest * modifier);
+    }
+
+    public bool UniformAlpha()
+    {
+        if (pixels.Length == 0) return false;
+        
+        byte a = pixels[0].a;
+        foreach (Color pixel in pixels) if (pixel.a != a) return false;
+        return true;
     }
 }
 
@@ -180,4 +197,6 @@ public sealed class TextureAnimation : Animation//named type?
         frame = frames.elements[frameIndex];
         frameCount = frames.length;
     }
+
+    //public override Animation Copy() => Engine.SendError<Animation>(ErrorCodes.NotImplemented, default);
 }

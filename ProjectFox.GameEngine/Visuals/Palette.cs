@@ -39,6 +39,16 @@ public class ColorPalette : IPalette, IColorGroup
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public IPalette Copy() => new ColorPalette(colors.ToArray());
 
+    public bool Grayscale()
+    {
+        Array<Color> colors = (Array<Color>)this.colors;
+
+        if (colors.length == 0) return false;
+
+        for (int i = 0; i < colors.length; i++) if (!colors.elements[i].IsGrey()) return false;
+        return true;
+    }
+
     public void ModifyHSV(float hueModifier, float saturationModifier, float velocityModifier)
     {
         Array<Color> colors = (Array<Color>)this.colors;
@@ -69,6 +79,17 @@ public class ColorPalette : IPalette, IColorGroup
         Array<Color> colors = (Array<Color>)this.colors;
         for (int i = 0; i < colors.length; i++)
             colors.elements[i].Velocity *= modifier;//colors.elements[i].Highest = (byte)(colors.elements[i].Highest * modifier);
+    }
+
+    public bool UniformAlpha()
+    {
+        Array<Color> colors = (Array<Color>)this.colors;
+
+        if (colors.length == 0) return false;
+
+        byte a = colors.elements[0].a;
+        for (int i = 1; i < colors.length; i++) if (colors.elements[i].a != a) return false;
+        return true;
     }
 }
 
@@ -162,4 +183,6 @@ public sealed class PaletteAnimation : Animation, IPalette
     void IPalette._animate() => _animate();//is this okay?
 
     public IPalette Copy() => Engine.SendError<IPalette>(ErrorCodes.NotImplemented, new("PalAnim", 0));
+
+    //public override Animation Copy() => Engine.SendError<Animation>(ErrorCodes.NotImplemented, default);
 }
