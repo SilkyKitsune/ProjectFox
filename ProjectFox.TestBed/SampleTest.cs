@@ -2,7 +2,7 @@
 using C = System.Console;
 
 using ProjectFox.CoreEngine.Math;
-using static ProjectFox.CoreEngine.Collections.Strings;
+using static ProjectFox.CoreEngine.Data.Data;
 
 namespace ProjectFox.TestBed;
 

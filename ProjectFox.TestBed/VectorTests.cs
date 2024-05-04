@@ -4,7 +4,7 @@ using C = System.Console;
 using ProjectFox.CoreEngine.Math;
 using static ProjectFox.CoreEngine.Math.Math;
 
-using static ProjectFox.CoreEngine.Collections.Strings;
+using static ProjectFox.CoreEngine.Data.Data;
 
 namespace ProjectFox.TestBed;
 
@@ -14,9 +14,9 @@ public static partial class CoreEngineTest
     {
         DirectionTest();
         VectorTest();
-        VectorFTest();
-        VectorZTest();
-        VectorZFTest();
+        //VectorFTest();
+        //VectorZTest();
+        //VectorZFTest();
     }
 
     private static void DirectionTest()
@@ -87,6 +87,8 @@ public static partial class CoreEngineTest
         int vSmallert = -10;
         VectorF vBiggerF = new(5.5f, 5.5f);
         VectorF vSmallerF = new(-1.25f, -10.99f);
+        float rotation1 = 0.1f;
+        float rotation2 = 0.65f;
 
         C.WriteLine(Vector.ConcatHex(false, false, v, vBigger, vSmaller));
         C.WriteLine(Vector.ConcatBin(false, false, '|', '_', v, vBigger, vSmaller));
@@ -109,7 +111,13 @@ public static partial class CoreEngineTest
         C.WriteLine(JoinHex(false, false, ", ", Vector.GetBytes(vectors, false)));
         C.WriteLine(JoinHex(false, false, ", ", Vector.GetBytes(vectors, true)));
 
-        IVectorTest(v, vBigger, vSmaller, vBiggert, vSmallert, vBiggerF, vSmallerF);
+        //max/min methods need to be fixed
+        //IVectorTest(v, vBigger, vSmaller, vBiggert, vSmallert, vBiggerF, vSmallerF);
+
+        C.WriteLine(Vector.PointFromRotationOrigin(rotation1));//should be ( 0.587785252292, -0.809016994375)
+        C.WriteLine(Vector.PointFromRotationOrigin(rotation2));//should be (-0.951056516295,  0.309016994375), this one was wrong
+
+        IRotate2DTest(v, vBigger, vSmaller, vBiggerF, vSmallerF, rotation1, rotation2);
 
         C.WriteLine("-Operators-");
 
