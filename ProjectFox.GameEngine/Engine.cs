@@ -4,6 +4,7 @@ using ProjectFox.CoreEngine.Math;
 #if DEBUG
 using ProjectFox.CoreEngine.Utility;
 #endif
+using ProjectFox.GameEngine.Input;
 using ProjectFox.GameEngine.Visuals;
 
 namespace ProjectFox.GameEngine;
@@ -85,7 +86,7 @@ public static class Engine
     {
         FrameBegin?.Invoke();
 
-        //where should ports.process go?
+        Ports.ProcessDevices();//where should ports.process go?
 
 #if DEBUG
         Debug.debugLayer.Clear();//should these go in scene?
