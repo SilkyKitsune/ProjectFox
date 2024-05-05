@@ -170,25 +170,23 @@ public static partial class GameEngineTest
             {
                 layer = layer,
                 //visible = false,
-                drawTextureBounds = true
+                drawTextureBounds = true,
+                animation = new(
+                    new TextureAnimation.TextureFrame()
+                    {
+                        delay = 5,
+                        texture = AlphaGradient()
+                    },
+                    new TextureAnimation.TextureFrame()
+                    {
+                        delay = 5,
+                        texture = Gradient()
+                    })
+                {
+                    play = true,
+                    loop = true,
+                }
             };
-            NameID anim = new("TestAnm", 0);
-            sprite.animations.Add(anim, new(
-                new TextureAnimation.TextureFrame()
-                {
-                    delay = 5,
-                    texture = AlphaGradient()
-                },
-                new TextureAnimation.TextureFrame()
-                {
-                    delay = 5,
-                    texture = Gradient()
-                })
-            {
-                play = true,
-                loop = true,
-            });
-            sprite.Animation = anim;
             SetObject(5, sprite, new(20, 20, 0));
         }
  

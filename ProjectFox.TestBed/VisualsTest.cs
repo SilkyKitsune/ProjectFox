@@ -104,13 +104,9 @@ public static partial class GameEngineTest
             Position = new(25, 25),
             //visible = false,
             layer = layer,
+            animation = TexAnim(),
             //palette = FourColors(),
         };
-        NameID animName = new("animate", 0);
-        NameID animName1 = new("animate", 1);
-        sprite.animations.Add(animName, TexAnim());
-        sprite.animations.Add(animName1, TexAnim2());
-        sprite.Animation = animName;
 
         return scene;
     }
