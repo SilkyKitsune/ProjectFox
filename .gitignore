@@ -5,11 +5,16 @@
 
 # Project folders
 CookieBot/
+GamepadMapper/
 ReactiveAvatar/
+VSNoodleKNight/
+
 EngineNotes.txt
+
 ProjectFox.HidApi/
+
 ProjectFox.TestBed/HIDTest.cs
-ProjectFox.TestBed/GamepadMapper.cs
+ProjectFox.TestBed/Instruction.cs
 ProjectFox.TestBed/SNESColor.cs
 
 # User-specific files
