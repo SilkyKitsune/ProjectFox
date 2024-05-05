@@ -39,7 +39,8 @@ public abstract class RasterObject : Object2D
 
         if (!layer.visible) return;
 
-        if (scene != layer.scene || (owner != null && owner.scene != layer.scene))
+        bool isPet = owner != null;
+        if ((!isPet && scene != layer.scene) || (isPet && owner.scene != layer.scene))
             Engine.SendError(ErrorCodes.VisualLayerNotInScene, name, layer.name.ToString(),
                 $"RasterObject '{name}' drew to a layer from a null/different scene");
 
@@ -166,7 +167,10 @@ public abstract class RasterObject : Object2D
             PalettizedTexture palettizedTexture = (PalettizedTexture)texture;
             while (s > -1 && s < palettizedTexture.pixels.Length && d < layer.pixels.Length)
             {
-                Color pixel = colors[palettizedTexture.pixels[horizontalFlipTexture ? s-- : s++]];
+                byte index = palettizedTexture.pixels[horizontalFlipTexture ? s-- : s++];
+                Color pixel = index < colors.Length ? colors[index] : new(0, 0, 0, 0);
+                //send out of range error?
+
                 if (pixel.a == byte.MaxValue) layer.pixels[d] = pixel;
                 else if (pixel.a > byte.MinValue) layer.pixels[d] = layer.pixels[d].Blend(pixel);
                 d++;
