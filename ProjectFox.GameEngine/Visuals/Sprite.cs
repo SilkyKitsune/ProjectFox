@@ -6,39 +6,22 @@ namespace ProjectFox.GameEngine.Visuals;
 
 public class Sprite : RasterObject
 {
+    public enum PalettePriority
+    {
+        Frame,
+        Animation,
+        Sprite
+    }
+    
     public Sprite(NameID name) : base(name) { }
 
-    private int animIndex = 0;
-    private NameID animation = new(0);
-
-    public readonly IHashTable<NameID, TextureAnimation> animations = new HashArray<TextureAnimation>(0x20);
+    public TextureAnimation animation = null;
 
     public IPalette palette = null;
 
     public Vector offset = new(0, 0);
 
-    public NameID Animation
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => animation;
-        set
-        {
-            if (animation.Equals(value)) return;
-
-            HashArray<TextureAnimation> anims = (HashArray<TextureAnimation>)animations;
-            int index = anims.codes.IndexOf(value);
-
-            if (index < 0)
-            {
-                Engine.SendError(ErrorCodes.BadArgument, name, nameof(value),
-                    $"'{value}' could not be found in {nameof(animations)}");
-                return;
-            }
-            animation = value;
-            animIndex = index;
-            anims.values.elements[animIndex].frameIndex = 0;
-        }
-    }
+    public PalettePriority palettePriority = PalettePriority.Frame;
 
     protected override void GetDrawInfo(out Texture texture, out IPalette palette, out Vector offset)
     {
@@ -46,31 +29,42 @@ public class Sprite : RasterObject
         palette = null;
         offset = new(0, 0);
 
-        HashArray<TextureAnimation> anims = (HashArray<TextureAnimation>)animations;
-        NameID anim = anims.codes.elements[animIndex];
-
-        if (animIndex >= anims.codes.length || !animation.Equals(anim))
+        if (animation == null)
         {
-            Engine.SendError(ErrorCodes.MissingAnimation, name, animation.ToString());
+            Engine.SendError(ErrorCodes.NullAnimation, name);
             return;
         }
 
-        TextureAnimation texAnim = anims.values.elements[animIndex];
-        Array<TextureAnimation.TextureFrame> frames = (Array<TextureAnimation.TextureFrame>)texAnim.frames;
+        Array<TextureAnimation.TextureFrame> frames = (Array<TextureAnimation.TextureFrame>)animation.frames;
 
         if (frames.length == 0)
         {
-            Engine.SendError(ErrorCodes.EmptyAnimation, name, anim.ToString());
+            Engine.SendError(ErrorCodes.EmptyAnimation, name);
             return;
         }
-
-        TextureAnimation.TextureFrame frame = frames.elements[texAnim.frameIndex];
+        
+        TextureAnimation.TextureFrame frame = frames.elements[animation.frameIndex];
         
         texture = frame.texture;
-        palette = frame.palette == null ? (texAnim.palette == null ? this.palette : texAnim.palette) : frame.palette;
+        switch (palettePriority)
+        {
+            case PalettePriority.Frame:
+                palette = frame.palette != null ? frame.palette : (animation.palette != null ? animation.palette : this.palette);
+                break;
+            case PalettePriority.Animation:
+                palette = animation.palette != null ? animation.palette : (frame.palette != null ? frame.palette : this.palette);
+                break;
+            case PalettePriority.Sprite:
+                palette = this.palette != null ? this.palette : (frame.palette != null ? frame.palette : animation.palette);
+                break;
+            default:
+                Engine.SendError(ErrorCodes.BadEnumValue, name, nameof(palettePriority));
+                palettePriority = PalettePriority.Frame;
+                goto case PalettePriority.Frame;
+        }
         offset = new(
-            this.offset.x + texAnim.offset.x + frame.offset.x,
-            this.offset.y + texAnim.offset.y + frame.offset.y);
+            this.offset.x + animation.offset.x + frame.offset.x,
+            this.offset.y + animation.offset.y + frame.offset.y);
         //textureframe/anim flip should invert rasterobject flip
     }
 
@@ -80,7 +74,7 @@ public class Sprite : RasterObject
         if (!paused || pauseWalks)
         {
             PreFrame();
-            ((HashArray<TextureAnimation>)animations).values.elements[animIndex]?._animate();
+            animation?._animate();
             PostFrame();
         }
     }
