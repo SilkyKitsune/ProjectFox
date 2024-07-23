@@ -98,9 +98,7 @@ public class Scene : NamedType
             }
         }
 
-        //pause change event?
-
-        for (int i = 0; i < visualLayers.codes.length; i++)
+        if (Screen.visible) for (int i = 0; i < visualLayers.codes.length; i++)
         {
             VisualLayer layer = visualLayers.values.elements[i];
             if (layer.visible) layer.Blend(layer.pixels, screenLayer.pixels);

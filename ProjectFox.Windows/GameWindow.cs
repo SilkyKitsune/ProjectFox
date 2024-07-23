@@ -32,7 +32,10 @@ public sealed class GameWindow : DrawingWindow
 
     public readonly KeyboardMouseDevice kbdMouse = new();//rename?
 
-    private void FrameBegin()
+    //bool matchScreenScale, updateScreenVisibility;
+    //vector screenOffset, could this go in screen?
+
+    private void FrameBegin()//update screen.visible with minimized?
     {
         KeyboardMouseState kbm = KeyboardMouseState;
         kbdMouse.UpdateValues(new bool[]
@@ -75,9 +78,14 @@ public sealed class GameWindow : DrawingWindow
                 kbm.Add, kbm.Subtract, kbm.Multiply, kbm.Divide,
                 kbm.Decimal, kbm.Separator
             }, null, null, new Vector[] { new(0, kbm.mouseWheel) }, new Vector[] { kbm.mousePosition });
+
+        //if (updateScreenVisibility) Screen.visible = !Minimized;
     }
 
-    private void FrameComplete() => SendRedrawMessage(Screen.GetFrame(), Screen.Size);
+    private void FrameComplete()
+    {
+        if (Screen.visible) SendRedrawMessage(Screen.GetFrame(), Screen.Size);
+    }
 
     private void SizeChanged() => Size = Screen.GetScaledSize();
 

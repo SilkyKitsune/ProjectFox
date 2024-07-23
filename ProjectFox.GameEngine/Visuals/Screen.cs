@@ -22,7 +22,9 @@ public static class Screen
 
     internal static Vector size = new(100, 100);//this default value prevents layers from initializing right
     internal static VisualLayer screenLayer = new(new("ScrLayr", 0));
-    
+
+    public static bool visible = true;
+
     public static Vector position = new(0, 0);
 
     public static event EngineEvent sizeChanged, scaleChanged, oneToOneChanged, fullScreenChanged;
@@ -67,7 +69,7 @@ public static class Screen
         }
     }
 
-    public static bool OneToOne
+    public static bool OneToOne//rename
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => oneToOne;
@@ -79,7 +81,7 @@ public static class Screen
                 oneToOneChanged?.Invoke();
             }
         }
-    }//rename
+    }
 
     public static bool FullScreen
     {

@@ -29,7 +29,7 @@ public abstract class RasterObject : Object2D
 
         if (layer == null) layer = this.layer;
 
-        if (!visible) return;
+        if (!Screen.visible || !visible) return;
 
         if (layer == null)
         {
