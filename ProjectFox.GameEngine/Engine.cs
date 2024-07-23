@@ -86,14 +86,14 @@ public static class Engine
     {
         FrameBegin?.Invoke();
 
+        timeOfLastFrameInTicks = millisecondsOfLastFrame == -1f ? ticksPerFrame//should this go above frame begin?
+            : (ulong)(Math.Clamp(millisecondsOfLastFrame, 0f, float.MaxValue) * Math.ticksPerMillisecond);
+        
         Ports.ProcessDevices();//where should ports.process go?
 
 #if DEBUG
         Debug.debugLayer.Clear();//should these go in scene?
 #endif
-        
-        timeOfLastFrameInTicks = millisecondsOfLastFrame == -1f ? ticksPerFrame//should this go above frame begin?
-            : (ulong)(Math.Clamp(millisecondsOfLastFrame, 0f, float.MaxValue) * Math.ticksPerMillisecond);
         
         SceneList.activeScene?._frame();
 
@@ -164,7 +164,7 @@ public static class Engine
     {
         ErrorMessage message = new ErrorMessage(error, frameCount,
             $"  Location: {source}" +
-            (string.IsNullOrEmpty(parameterName) ? string.Empty : $"\n  Paramerter: {parameterName}") +
+            (string.IsNullOrEmpty(parameterName) ? string.Empty : $"\n  Parameter: {parameterName}") +
             (string.IsNullOrEmpty(additionalMessage) ? string.Empty : $"\n  {additionalMessage}"));
         storedErrors.AddDirect(message);
 #if DEBUG
