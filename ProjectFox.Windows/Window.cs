@@ -90,9 +90,11 @@ public abstract class Window
     private protected readonly IntPtr windowHandle;
     private WS windowStyle;
     private Rectangle region;
-    private bool started = false;//minimized
+    private bool started = false, minimized = false;//can it be minimized at start?
 
     //bool topmost
+
+    public bool Minimized => minimized;
 
     public Rectangle Region
     {
@@ -199,7 +201,7 @@ public abstract class Window
     /// <summary> Sends a message telling the window to begin closing </summary>
     protected void SendCloseMessage() => PostMessage(windowHandle, (uint)WM.Close, UIntPtr.Zero, IntPtr.Zero);
 
-    protected void SetWindowStyle(WS style)
+    protected void SetWindowStyle(WS style/*, bool topMost*/)
     {
         windowStyle = style;
         SetWindowLongPtr(windowHandle, -16, new((uint)(style | WS.Visible)));
@@ -224,11 +226,12 @@ public abstract class Window
     {
         switch (message)
         {
-            case WM.Move://I think minimize sets region to zero
+            case WM.Move:
                 SeparateParam(longParam, out region.position.y, out region.position.x);//does this make sense to do?
                 break;
-            case WM.Size:
-                SeparateParam(longParam, out region.size.y, out region.size.x);//does this make sense to do?
+            case WM.Size://I think minimize sets region to zero
+                minimized = wideParam.ToUInt64() == 1uL;
+                SeparateParam(longParam, out region.size.y, out region.size.x);//does this make sense to do? maybe it shouldn't happen when minimized
                 break;
             case WM.Close:
                 OnClose();

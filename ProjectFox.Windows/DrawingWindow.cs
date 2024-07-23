@@ -14,9 +14,9 @@ public abstract class DrawingWindow : InputWindow
     private Color[] buffer = null;
     private Vector bufferDimensions = default;
 
-    protected void SendRedrawMessage(Color[] pixels, Vector dimensions)
+    protected void SendRedrawMessage(Color[] pixels, Vector dimensions)//should this have a control bool for minimized?
     {
-        if (pixels == null || pixels.Length == 0 || dimensions.x <= 0 || dimensions.y <= 0) return;
+        if (Minimized || pixels == null || pixels.Length == 0 || dimensions.x <= 0 || dimensions.y <= 0) return;
 
         buffer = pixels;
         bufferDimensions = dimensions;
