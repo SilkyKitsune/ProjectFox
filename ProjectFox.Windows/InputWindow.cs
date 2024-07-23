@@ -29,10 +29,10 @@ public abstract class InputWindow : Window
             #region Keyboard
             case KeyDown:
                 //use longparam here?
-                keyboardMouseState.UpdateKey((VK)wideParam.ToUInt32(), true);
-                break;//will these throw exceptions?
+                keyboardMouseState.UpdateKey((VK)wideParam.ToUInt64(), true);
+                break;
             case KeyUp:
-                keyboardMouseState.UpdateKey((VK)wideParam.ToUInt32(), false);
+                keyboardMouseState.UpdateKey((VK)wideParam.ToUInt64(), false);
                 break;
 
             //syskey?
