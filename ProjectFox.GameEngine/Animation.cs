@@ -4,7 +4,7 @@ using ProjectFox.CoreEngine.Math;
 
 namespace ProjectFox.GameEngine;
 
-public abstract class Animation//,ICopy?
+public abstract class Animation : ICopy<Animation>
 {
     public enum PlaybackMode//move to own file?
     {
@@ -89,6 +89,8 @@ public abstract class Animation//,ICopy?
             }
         }
     }
+
+    public abstract void Copy(out Animation copy);
 }
 
 public sealed class DelegateAnimation : Animation
@@ -133,5 +135,11 @@ public sealed class DelegateAnimation : Animation
         _animate();
         if (prevFrameIndex != frameIndex) hasDoneOperation = false;//what if frame index is changed manually?
         //would moving it to start fix that?
+    }
+
+    public override void Copy(out Animation copy)
+    {
+        copy = null;
+        Engine.SendError(ErrorCodes.NotImplemented, default);
     }
 }

@@ -94,7 +94,12 @@ public sealed class HashLookupTable<H, T> : IHashTable<H, T>, ICopy<HashLookupTa
     public bool ContainsCode(H code) => codes.Contains(code);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public HashLookupTable<H, T> Copy() => new(codes.Copy(), values.Copy());
+    public void Copy(out HashLookupTable<H, T> copy)
+    {
+        this.codes.Copy(out AutoSizedArray<H> codes);
+        this.values.Copy(out AutoSizedArray<T> values);
+        copy = new(codes, values);
+    }
 
     public void CopyTo(IHashTable<H, T> table)
     {

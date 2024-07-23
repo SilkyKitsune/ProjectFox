@@ -118,7 +118,7 @@ public sealed class AutoSizedArray<T> : ICollection<T>, ICopy<AutoSizedArray<T>>
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public AutoSizedArray<T> Copy() => new(this);
+    public void Copy(out AutoSizedArray<T> copy) => copy = new(this);
 
     public void CopyTo(ICollection<T> collection)
     {

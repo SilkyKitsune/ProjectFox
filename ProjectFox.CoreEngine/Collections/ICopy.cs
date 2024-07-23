@@ -5,6 +5,6 @@
 public interface ICopy<T>
 {
     /// <summary></summary>
-    /// <returns></returns>
-    public abstract T Copy();
+    /// <param name="copy"></param>
+    public abstract void Copy(out T copy);
 }

@@ -17,7 +17,7 @@ public abstract class Texture : ICopy<Texture>
 
     public Vector Dimensions => dimensions;
     
-    public abstract Texture Copy();
+    public abstract void Copy(out Texture copy);
 
     //rotated copy? 1 clockwise right angle
 }
@@ -36,11 +36,11 @@ public sealed class ColorTexture : Texture, IColorGroup
 
     internal readonly Color[] pixels;
 
-    public override Texture Copy()
+    public override void Copy(out Texture copy)
     {
         Color[] newPixels = new Color[pixels.Length];
         pixels.CopyTo(newPixels, 0);
-        return new ColorTexture(dimensions, newPixels);
+        copy = new ColorTexture(dimensions, newPixels);
     }
 
     //palettized copy?
@@ -142,11 +142,11 @@ public sealed class PalettizedTexture : Texture
 
     internal readonly byte[] pixels;
 
-    public override Texture Copy()
+    public override void Copy(out Texture copy)
     {
         byte[] newPixels = new byte[pixels.Length];
         pixels.CopyTo(newPixels, 0);
-        return new PalettizedTexture(dimensions, newPixels);
+        copy = new PalettizedTexture(dimensions, newPixels);
     }
 
     public ColorTexture ColorCopy(IPalette palette)
@@ -198,5 +198,9 @@ public sealed class TextureAnimation : Animation//named type?
         frameCount = frames.length;
     }
 
-    //public override Animation Copy() => Engine.SendError<Animation>(ErrorCodes.NotImplemented, default);
+    public override void Copy(out Animation copy)
+    {
+        copy = null;
+        Engine.SendError(ErrorCodes.NotImplemented, default);
+    }
 }

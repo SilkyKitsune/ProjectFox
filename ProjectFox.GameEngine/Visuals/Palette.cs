@@ -37,7 +37,7 @@ public class ColorPalette : IPalette, IColorGroup
     public Color[] GetColors() => colors.ToArray();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public IPalette Copy() => new ColorPalette(colors.ToArray());
+    public void Copy(out IPalette copy) => copy = new ColorPalette(colors.ToArray());
 
     public bool Grayscale()
     {
@@ -138,7 +138,7 @@ public abstract class IndexPalette : IPalette
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ColorPalette ColorCopy() => new(GetColors());
 
-    public abstract IPalette Copy();
+    public abstract void Copy(out IPalette copy);
 }
 
 public sealed class PaletteAnimation : Animation, IPalette
@@ -182,7 +182,15 @@ public sealed class PaletteAnimation : Animation, IPalette
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     void IPalette._animate() => _animate();//is this okay?
 
-    public IPalette Copy() => Engine.SendError<IPalette>(ErrorCodes.NotImplemented, new("PalAnim", 0));
+    public void Copy(out IPalette copy)
+    {
+        copy = null;
+        Engine.SendError(ErrorCodes.NotImplemented, new("PalAnim", 0));
+    }
 
-    //public override Animation Copy() => Engine.SendError<Animation>(ErrorCodes.NotImplemented, default);
+    public override void Copy(out Animation copy)
+    {
+        copy = null;
+        Engine.SendError(ErrorCodes.NotImplemented, default);
+    }
 }
