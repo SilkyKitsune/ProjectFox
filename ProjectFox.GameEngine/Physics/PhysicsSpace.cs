@@ -6,7 +6,7 @@ public sealed class PhysicsSpace : NamedType
 
     internal readonly HashArray<PhysicsSpace> scanSpaces = new HashArray<PhysicsSpace>(0x20);
     //do these need to be hash array?
-    internal readonly HashArray<KinematicScannerRectangle> rectangles = new HashArray<KinematicScannerRectangle>(0x100);
+    internal readonly HashArray<PhysicsRectangle> rectangles = new HashArray<PhysicsRectangle>(0x100);
     //polygons
     //circles
     //rays
@@ -100,7 +100,7 @@ public sealed class PhysicsSpace : NamedType
     #endregion
 
     #region Rectangles
-    public void AddRectangle(KinematicScannerRectangle rectangle)
+    public void AddRectangle(PhysicsRectangle rectangle)
     {
         if (rectangle == null)
             Engine.SendError(ErrorCodes.NullArgument, name, nameof(rectangle));
@@ -117,7 +117,7 @@ public sealed class PhysicsSpace : NamedType
         }
     }
 
-    public void AddRectangles(params KinematicScannerRectangle[] rectangles)
+    public void AddRectangles(params PhysicsRectangle[] rectangles)
     {
         if (rectangles == null || rectangles.Length == 0)
         {
@@ -125,7 +125,7 @@ public sealed class PhysicsSpace : NamedType
             return;
         }
         
-        foreach (KinematicScannerRectangle rectangle in rectangles)
+        foreach (PhysicsRectangle rectangle in rectangles)
             if (rectangle == null)
                 Engine.SendError(ErrorCodes.NullArgument, name, nameof(rectangle));
             else if (this.rectangles.ContainsCode(rectangle.name))
@@ -141,7 +141,7 @@ public sealed class PhysicsSpace : NamedType
             }
     }
 
-    public KinematicScannerRectangle GetRectangle(NameID name)
+    public PhysicsRectangle GetRectangle(NameID name)
     {
         int index = rectangles.codes.IndexOf(name);
         if (index < 0)
@@ -155,7 +155,7 @@ public sealed class PhysicsSpace : NamedType
         return rectangles.values.elements[index];
     }
 
-    public KinematicScannerRectangle[] GetRectangles() => rectangles.GetValues();
+    public PhysicsRectangle[] GetRectangles() => rectangles.GetValues();
 
     public void RemoveRectangle(NameID name)
     {

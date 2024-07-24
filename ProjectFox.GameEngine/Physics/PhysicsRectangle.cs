@@ -4,17 +4,16 @@ using ProjectFox.CoreEngine.Math;
 using static ProjectFox.CoreEngine.Math.Math;
 #if DEBUG
 using ProjectFox.GameEngine.Visuals;
-using C = ProjectFox.GameEngine.Debug.Console;
 #endif
 
 namespace ProjectFox.GameEngine.Physics;
 
 /// <summary> Basic rectangle object that can scan other PhysicsShapes for different kinds of interactions </summary>
-public class KinematicScannerRectangle : PhysicsShape
+public class PhysicsRectangle : PhysicsShape
 {
     /// <param name="name"> the object's ID </param>
     /// <param name="detectedEvents"> delegates called when a shaped is detected </param>
-    public KinematicScannerRectangle(NameID name, params PhysicsEvent[] detectedEvents) : base(name, detectedEvents) { }//color = new(128, 0, 255);
+    public PhysicsRectangle(NameID name, params PhysicsEvent[] detectedEvents) : base(name, detectedEvents) { }//color = new(128, 0, 255);
     //implement these
     private bool touchingTop = false, touchingBottom = false, touchingLeft = false, touchingRight = false;
 
@@ -92,7 +91,7 @@ public class KinematicScannerRectangle : PhysicsShape
             {
                 if (scanRectangles && j < scanSpace.rectangles.codes.length)
                 {
-                    KinematicScannerRectangle rectangle = scanSpace.rectangles.values.elements[j];
+                    PhysicsRectangle rectangle = scanSpace.rectangles.values.elements[j];
 
                     Scene shapeScene = rectangle.owner == null ? rectangle.scene : (rectangle.owner.owner == null ? rectangle.owner.scene : rectangle.owner.Scene);
                     
@@ -695,7 +694,7 @@ public class KinematicScannerRectangle : PhysicsShape
                                 }
 
                             default:
-                                throw new Exception($"ScanMode error in {typeof(KinematicScannerRectangle)} {nameof(scanMode)}=[{scanMode} : {(int)scanMode}");
+                                throw new Exception($"ScanMode error in {typeof(PhysicsRectangle)} {nameof(scanMode)}=[{scanMode} : {(int)scanMode}");
                         }
                     }
                 }
@@ -763,7 +762,7 @@ public class KinematicScannerRectangle : PhysicsShape
                 {
                     if (collideWithRectangles && j < scanSpace.rectangles.codes.length)
                     {
-                        KinematicScannerRectangle rectangle = scanSpace.rectangles.values.elements[j];
+                        PhysicsRectangle rectangle = scanSpace.rectangles.values.elements[j];
 
                         Scene shapeScene = rectangle.owner == null ? rectangle.scene : (rectangle.owner.owner == null ? rectangle.owner.scene : rectangle.owner.Scene);
 
@@ -776,6 +775,14 @@ public class KinematicScannerRectangle : PhysicsShape
                             Rectangle rect2 = rectangle.Rectangle/*inline*/, area = rect.IntersectionArea(rect2);
 
                             //if (rectangle.soft)//? //use lines for soft?
+
+                            /*
+                            if (shape.soft)
+                              if (shape.top && velocity.y > 0) ?
+                              if (shape.bottom && velocity.y < 0) ?
+                              if (shape.left && velocity.x > 0) ?
+                              if (shape.right && velocity.x < 0) ?
+                            */
 
                             bool xPos = area.size.x > 0, yPos = area.size.y > 0, xZero = area.size.x == 0, yZero = area.size.y == 0;
 
@@ -815,6 +822,11 @@ public class KinematicScannerRectangle : PhysicsShape
         End:
         //if (!velocity.Equals(corrected)) C.QueueMessage($"{velocity} != {corrected}\n   {string.Join(',', steps)}");
         position = new(position.x + corrected.x, position.y + corrected.y);
+
+        /*
+        this is fixed I believe
+        kinematic pushing down-right into two rectangles stacked on top of each other, kinematic.preferY = false and it touches the corner of the lower rectangle
+        */
     }
 
 #if DEBUG
