@@ -305,7 +305,7 @@ public static partial class CoreEngineTest
     {
         C.WriteLine("-ICopy-");
 
-        copy = iCopy.Copy();
+        iCopy.Copy(out copy);
 
         C.WriteLine(iCopy.GetType());
         C.WriteLine(typeof(ICopy<T>));

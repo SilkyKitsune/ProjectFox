@@ -34,7 +34,7 @@ public static partial class GameEngineTest
 
         window = new(WindowName, 50, 50, true);
 
-        Scene scene = KinematicTest();
+        Scene scene = ScannerTest();
         Engine.SceneList.Add(scene);
         Engine.SceneList.ActiveScene = scene.Name;
 
@@ -93,7 +93,7 @@ public static partial class GameEngineTest
             //ScanForIntersecting = true,
             //ScanForEnveloping = true,//this one doesn't work
             //ScanForWithin = true,//doesn't work either
-            //ScanForTouching = true,
+            ScanForTouching = true,
         };
         new DebugScannerRectangle(new(TestRect, 3))
         {
@@ -172,7 +172,7 @@ public static partial class GameEngineTest
     {
         public IntersectionsController(NameID name, Scene scene) : base(name) => scene.AddObjects(red, blue, green);
 
-        private readonly KinematicScannerRectangle
+        private readonly PhysicsRectangle
             red = new(new(TestRect, 0))
             {
                 paused = true,
@@ -301,7 +301,7 @@ public static partial class GameEngineTest
         }
     }
 
-    private sealed class DebugScannerRectangle : KinematicScannerRectangle
+    private sealed class DebugScannerRectangle : PhysicsRectangle
     {
         internal DebugScannerRectangle(NameID name) : base(name, 
             (scanner, shape) =>
@@ -394,7 +394,7 @@ public static partial class GameEngineTest
         }
     }
 
-    private sealed class DebugKinematicRectangle : KinematicScannerRectangle
+    private sealed class DebugKinematicRectangle : PhysicsRectangle
     {
         public DebugKinematicRectangle(NameID name) : base(name) { }
 

@@ -93,15 +93,25 @@ public static partial class GameEngineTest
             Scene = scene,
             //paused = true,
             Position = new(20, 10),
-            //visible = false,
+            visible = false,
             layer = layer,
             texture = new PalettizedTexture(1, 1),
             palette = PalAnim(),
         };
+        new DebugSetPiece(new("SetPiec", 3))
+        {
+            Scene = scene,
+            //paused = true,
+            Position = new(30, 10),
+            //visible = false,
+            layer = layer,
+            texture = PaletteStrip(),
+            palette = FourColors()
+        };
         Sprite sprite = new Sprite(new("Sprite_", 0))
         {
             Scene = scene,
-            Position = new(25, 25),
+            Position = new(10, 25),
             //visible = false,
             layer = layer,
             animation = TexAnim(),
@@ -182,40 +192,43 @@ public static partial class GameEngineTest
         return new(size, pixels);
     }
 
+    private static PalettizedTexture PaletteStrip() => new(4, 1, new byte[4] { 0, 1, 2, 3 });
+
     private static TextureAnimation TexAnim()
     {
         TextureAnimation anim = new()
         {
             play = true,
-            //loop = true,
+            loop = true,
             playbackMode = Animation.PlaybackMode.PingPong,
             //palette = FourColors(),
         };
         anim.frames.Add(
             new TextureAnimation.TextureFrame()
             {
-                delay = 10,//5,
+                delay = 10,//0?
                 texture = Gradient(),
-                offset = new(0, 0),
+                drawOffset = new(0, 0),
             },
             new TextureAnimation.TextureFrame()
             {
-                delay = 10,//5,
-                texture = Corners(),
-                offset = new(5, 0),
-            },
-            new TextureAnimation.TextureFrame()
-            {
-                delay = 10,//5,
+                delay = 10,
                 texture = AlphaGradient(),
-                offset = new(0, 5),
+                drawOffset = new(5, 3),
+                verticalFlipTexture = true,
             },
             new TextureAnimation.TextureFrame()
             {
-                delay = 10,//5,
+                delay = 10,
+                texture = Corners(),
+                drawOffset = new(10, 6),
+            },
+            new TextureAnimation.TextureFrame()
+            {
+                delay = 10,
                 texture = FourByFour(),
                 palette = FourColors(),
-                offset = new(-5, 0),
+                drawOffset = new(15, 9),
             });
         return anim;
     }
@@ -241,7 +254,110 @@ public static partial class GameEngineTest
         return anim;
     }
 
+    private static TextureAnimation TexAnim3()
+    {
+        return new(
+            new()
+            {
+                delay = 60,
+                texture = Gradient(),
+                drawOffset = new(10, 10),
+                verticalFlipTexture = true,
+                horizontalFlipTexture = true,
+                //verticalFlipOffset = true,
+                //horizontalFlipOffset = true,
+                //palette = null,//
+                //paletteOffset = 0,
+            },
+            new()
+            {
+                delay = 60,
+                texture = Gradient(),
+                drawOffset = new(10, 10),
+                //verticalFlipTexture = true,
+                //horizontalFlipTexture = true,
+                verticalFlipOffset = true,
+                horizontalFlipOffset = true,
+                //palette = null,//
+                //paletteOffset = 0,
+            },
+            new()
+            {
+                delay = 60,
+                texture = FourByFour(),
+                //drawOffset = new(),
+                //verticalFlipTexture = true,
+                //horizontalFlipTexture = true,
+                //verticalFlipOffset = true,
+                //horizontalFlipOffset = true,
+                palette = FourColors(),
+                paletteOffset = -1,
+            },
+            new()
+            {
+                delay = 60,
+                texture = FourByFour(),
+                //drawOffset = new(),
+                //verticalFlipTexture = true,
+                //horizontalFlipTexture = true,
+                //verticalFlipOffset = true,
+                //horizontalFlipOffset = true,
+                palette = FourColors(),
+                paletteOffset = 0,
+            },
+            new()
+            {
+                delay = 60,
+                texture = PaletteStrip(),
+                //drawOffset = new(),
+                //verticalFlipTexture = true,
+                //horizontalFlipTexture = true,
+                //verticalFlipOffset = true,
+                //horizontalFlipOffset = true,
+                palette = FourColors(),
+                //paletteOffset = 0,
+            },
+            new()
+            {
+                delay = 60,
+                texture = PaletteStrip(),
+                //drawOffset = new(),
+                //verticalFlipTexture = true,
+                //horizontalFlipTexture = true,
+                //verticalFlipOffset = true,
+                //horizontalFlipOffset = true,
+                //palette = null,
+                //paletteOffset = 0,
+            }/*,
+            new()
+            {
+                delay = 60,
+                texture = null,//
+                drawOffset = new(),
+                verticalFlipTexture = true,
+                horizontalFlipTexture = true,
+                verticalFlipOffset = true,
+                horizontalFlipOffset = true,
+                palette = null,//
+                paletteOffset = 0,
+            }*/)
+        {
+            drawOffset = new(),
+            //verticalFlipTexture = false,
+            //horizontalFlipTexture = false,
+            //verticalFlipOffset = false,
+            //horizontalFlipOffset = false,
+            palette = FourColors2(),
+            paletteOffset = 1,
+            play = true,
+            loop = true,
+            playbackMode = Animation.PlaybackMode.Normal,
+        };
+    }
+
     private static ColorPalette FourColors() => new(Red, Green, Blue, Yellow);
+
+    private static ColorPalette FourColors2() => new(Cyan, Magenta, Yellow, Orange);
 
     private static PaletteAnimation PalAnim()
     {
@@ -283,6 +399,11 @@ public static partial class GameEngineTest
         protected override void PreFrame()
         {
             KeyboardMouseState kbm = window.KeyboardMouseState;
+
+            if (kbm.Return) visible = !visible;
+
+            if (window.kbdMouse.Minus.ChangedTrue) paletteOffset--;
+            if (window.kbdMouse.Plus.ChangedTrue) paletteOffset++;
 
             Vector pos = Position;
             switch (M.FindSign(kbm.A, kbm.D))
@@ -347,19 +468,19 @@ public static partial class GameEngineTest
             switch (M.FindSign(kbm.Left, kbm.Right))
             {
                 case M.Sign.Neg:
-                    offset.x -= 1;
+                    drawOffset.x -= 1;
                     break;
                 case M.Sign.Pos:
-                    offset.x += 1;
+                    drawOffset.x += 1;
                     break;
             }
             switch (M.FindSign(kbm.Up, kbm.Down))
             {
                 case M.Sign.Neg:
-                    offset.y -= 1;
+                    drawOffset.y -= 1;
                     break;
                 case M.Sign.Pos:
-                    offset.y += 1;
+                    drawOffset.y += 1;
                     break;
             }
         }

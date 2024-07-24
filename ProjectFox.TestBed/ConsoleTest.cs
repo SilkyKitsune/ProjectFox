@@ -442,7 +442,7 @@ public static partial class GameEngineTest
         mainSpace.RemoveSpacesToScan();
         mainSpace.RemoveSpacesToScan(scanSpace.Name, scanSpace.Name);
 
-        KinematicScannerRectangle scanner = new(new("Scanner", 0));
+        PhysicsRectangle scanner = new(new("Scanner", 0));
         QueueMessage(scanner.Space?.Name);
 
         mainSpace.AddRectangle(null);
@@ -476,19 +476,19 @@ public static partial class GameEngineTest
             scanRectangles = true,
             size = new(10, 10)
         };
-        KinematicScannerRectangle identical = new(new("Idnticl", 0))
+        PhysicsRectangle identical = new(new("Idnticl", 0))
         {
             Scene = scene,
             Space = scanSpace,
             size = new(10, 10)
         };
-        KinematicScannerRectangle smaller = new(new("Smaller", 0))
+        PhysicsRectangle smaller = new(new("Smaller", 0))
         {
             Scene = scene,
             Space = scanSpace,
             size = new(5, 5)
         };
-        KinematicScannerRectangle bigger = new(new("Bigger", 0))
+        PhysicsRectangle bigger = new(new("Bigger", 0))
         {
             Scene = scene,
             Space = scanSpace,
@@ -559,8 +559,8 @@ public static partial class GameEngineTest
         QueueMessage(scanner.Touching);
         
         QueueMessage(shape.GetType());
-        QueueMessage(shape is KinematicScannerRectangle);
-        if (shape is KinematicScannerRectangle rectangle)
+        QueueMessage(shape is PhysicsRectangle);
+        if (shape is PhysicsRectangle rectangle)
         {
             QueueMessage(rectangle.Name);
             QueueMessage(rectangle.Scene?.Name);
@@ -573,9 +573,9 @@ public static partial class GameEngineTest
         QueueMessage("---");
     }
 
-    private static void PrintScanMode(KinematicScannerRectangle scanner) { }//=> QueueMessage($"{scanner.scanMode} : {ToBinString((byte)scanner.scanMode)}");
+    private static void PrintScanMode(PhysicsRectangle scanner) { }//=> QueueMessage($"{scanner.scanMode} : {ToBinString((byte)scanner.scanMode)}");
 
-    private static void ScannerTest(KinematicScannerRectangle scanner)
+    private static void ScannerTest(PhysicsRectangle scanner)
     {
         QueueMessage("---Scanner Test---");
         

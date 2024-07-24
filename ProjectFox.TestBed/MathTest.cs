@@ -1423,7 +1423,27 @@ public static partial class CoreEngineTest
 
     public static void FloatStepInterpolateTest()
     {
+        string s = C.ReadLine();
+        if (float.TryParse(s, out float f))
+        {
+            int[] steps = StepInterpolate(f);
 
+            if (steps == null) C.WriteLine("null");
+            else if (steps.Length == 0) C.WriteLine("empty");
+            else
+            {
+                string outPut = "";
+                int dist = default;
+
+                foreach (int step in steps)
+                {
+                    dist += step;
+                    outPut += $"{step},";
+                }
+                C.WriteLine($"{f} => {steps.Length} => {dist} => {outPut}");
+            }
+        }
+        FloatStepInterpolateTest();
     }
 
     public static void VectorStepInterpolateTest()

@@ -47,7 +47,7 @@ public static partial class GameEngineTest
         };
 
         new DebugObject2D(new("TestObj", 0),
-            new KinematicScannerRectangle(new("ScnRect", 0))
+            new PhysicsRectangle(new("ScnRect", 0))
             {
                 Scene = scene,
                 size = new(10, 10),
@@ -56,6 +56,7 @@ public static partial class GameEngineTest
             })
         {
             enabled = false,
+            //pauseWalks = true,
             Scene = scene,
             drawPosition = true,
             intersectingLines = true,
@@ -70,9 +71,9 @@ public static partial class GameEngineTest
 
     private sealed class DebugObject2D : Object2D
     {
-        public DebugObject2D(NameID name, KinematicScannerRectangle rectangle) : base(name) => this.rectangle = rectangle;
+        public DebugObject2D(NameID name, PhysicsRectangle rectangle) : base(name) => this.rectangle = rectangle;
 
-        private readonly KinematicScannerRectangle rectangle;
+        private readonly PhysicsRectangle rectangle;
 
         protected override void PreFrame()
         {
@@ -104,6 +105,8 @@ public static partial class GameEngineTest
         {
             Rectangle r = new(rectangle.Position + rectangle.shapeOffset, rectangle.size);
             rectangle.shapeColor = r.Overlapping(Position) ? Green : Blue;
+
+            if (window.kbdMouse.Enter.ChangedTrue) Scene.paused = !Scene.paused;
         }
     }
 
@@ -132,7 +135,7 @@ public static partial class GameEngineTest
 
             SetObject(2, new DebugObject3D(new("TestPet", 2)), new(0, 0, 0));
 
-            SetObject(3, new KinematicScannerRectangle(new("TestPet", 3))
+            SetObject(3, new PhysicsRectangle(new("TestPet", 3))
             {
                 drawShape = true,
                 size = new(10, 10),

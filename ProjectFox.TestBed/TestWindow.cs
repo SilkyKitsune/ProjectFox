@@ -45,7 +45,7 @@ public sealed class TestWindow : DrawingWindow
         window.Start();
     }
 
-    private class WindowTestObject : KinematicScannerRectangle
+    private class WindowTestObject : PhysicsRectangle
     {
         internal WindowTestObject(NameID name, GameWindow window) : base(name) => this.window = window;
 
@@ -143,11 +143,15 @@ public sealed class TestWindow : DrawingWindow
                 break;
             case WM.Size:
                 SeparateParam(longParam, out high, out low);
-                D.WriteLine($"{message} ({low}, {high}) {Region}");
+                D.WriteLine($"{message} {wideParam} ({low}, {high}) {Region}");
                 break;
 
             case EraseBkgnd:
                 //D.WriteLine(message);
+                break;
+
+            case Enable:
+                D.WriteLine($"Enable: {wideParam}");
                 break;
 
             #region KeyboardMouse
