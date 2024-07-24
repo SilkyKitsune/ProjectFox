@@ -20,6 +20,8 @@ public class Scene : NamedType
     private ClearModes clearMode = Clear;
     private SetPiece bg = new(new("_BGDraw", 0)) { parallaxFactor = new(0f, 0f) };
 
+    public bool paused = false;
+
     /// <summary> the color used when ClearMode == Fill (black by default) </summary>
     public Color bgColor = new(255, 255, 255);
     
@@ -86,14 +88,15 @@ public class Scene : NamedType
         for (int i = 0; i < audioChannels.codes.length; i++)
             audioChannels.values.elements[i].Clear();
 
-        //pause change event?
+        bool paused = this.paused;
 
         for (int i = 0; i < objects.codes.length; i++)
         {
             Object obj = objects.values.elements[i];
-            if (obj.enabled)//store object? isn't it already being stored?
+            if (obj.enabled)
             {
-                obj._frame();
+                bool p = !paused || obj.pauseWalks;
+                if (p) obj._frame();
                 obj._draw();
             }
         }
