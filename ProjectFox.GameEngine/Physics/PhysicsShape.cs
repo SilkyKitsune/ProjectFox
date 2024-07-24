@@ -67,11 +67,7 @@ public abstract class PhysicsShape : Object2D
 
     private protected ScanModes scanMode = ScanModes.None;
 
-    private protected bool equal = false;
-    private protected bool intersecting = false;
-    private protected bool enveloping = false;
-    private protected bool within = false;
-    private protected bool touching = false;
+    private protected bool equal = false, intersecting = false, enveloping = false, within = false, touching = false;
 
     private protected readonly PhysicsEvent detected;
 
@@ -82,7 +78,9 @@ public abstract class PhysicsShape : Object2D
 
     /// <summary> Position of the shape relative to the object </summary>
     public Vector shapeOffset = new(0, 0);
-
+    //test these
+    public bool verticalFlipShape = false, horizontalFlipShape = false, verticalFlipOffset = false, horizontalFlipOffset = false, flipOffsetOnPixel = false;
+    
     /// <summary> Controls whether the shape should scan other shapes </summary>
     public bool scan = false;
 
