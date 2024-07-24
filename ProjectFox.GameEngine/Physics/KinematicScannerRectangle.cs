@@ -73,7 +73,10 @@ public class KinematicScannerRectangle : PhysicsShape
     {
         if (size.x <= 0 || size.y <= 0) return;//size error?
 
-        Rectangle rect = new(position.x + shapeOffset.x, position.y + shapeOffset.y, size);
+        Rectangle rect = Rectangle;//inline
+
+        Scene scene = owner == null ? this.scene : (owner.owner == null ? owner.scene : owner.Scene);
+
         for (int i = scanOwnSpace ? -1 : 0; i < space.scanSpaces.codes.length; i++)
         {
             PhysicsSpace scanSpace = i < 0 ? space : space.scanSpaces.values.elements[i];
@@ -91,7 +94,9 @@ public class KinematicScannerRectangle : PhysicsShape
                 {
                     KinematicScannerRectangle rectangle = scanSpace.rectangles.values.elements[j];
 
-                    if (scene != rectangle.scene)
+                    Scene shapeScene = rectangle.owner == null ? rectangle.scene : (rectangle.owner.owner == null ? rectangle.owner.scene : rectangle.owner.Scene);
+                    
+                    if (scene != shapeScene)//what if rectangle is a pet?
                         Engine.SendError(ErrorCodes.PhysicsShapeNotInScene, name, rectangle.name.ToString(),
                             $"Rectangle '{name}' read a PhysicsShape from a null/different scene");
 
@@ -719,6 +724,8 @@ public class KinematicScannerRectangle : PhysicsShape
             absVel = new(xVelNeg ? -velocity.x : velocity.x, yVelNeg ? -velocity.y : velocity.y);
         Rectangle rect = Rectangle;//inline
 
+        Scene scene = owner == null ? this.scene : (owner.owner == null ? owner.scene : owner.Scene);
+
         bool xBlocked = false, yBlocked = false, corner = false, yGreater = absVel.y > absVel.x,
             preferY = (absVel.x == absVel.y && this.preferY) || yGreater;
 
@@ -758,7 +765,9 @@ public class KinematicScannerRectangle : PhysicsShape
                     {
                         KinematicScannerRectangle rectangle = scanSpace.rectangles.values.elements[j];
 
-                        if (scene != rectangle.scene)
+                        Scene shapeScene = rectangle.owner == null ? rectangle.scene : (rectangle.owner.owner == null ? rectangle.owner.scene : rectangle.owner.Scene);
+
+                        if (scene != shapeScene)
                             Engine.SendError(ErrorCodes.PhysicsShapeNotInScene, name, rectangle.name.ToString(),
                                 $"Rectangle '{name}' read a PhysicsShape from a null/different scene");
 

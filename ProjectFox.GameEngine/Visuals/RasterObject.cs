@@ -45,8 +45,9 @@ public abstract class RasterObject : Object2D
 
         if (!layer.visible) return;
 
-        bool isPet = owner != null;
-        if ((!isPet && scene != layer.scene) || (isPet && owner.scene != layer.scene))
+        Scene scene = owner == null ? this.scene : (owner.owner == null ? owner.scene : owner.Scene);
+        
+        if (scene != layer.scene)
             Engine.SendError(ErrorCodes.VisualLayerNotInScene, name, layer.name.ToString(),
                 $"RasterObject '{name}' drew to a layer from a null/different scene");
 
@@ -55,7 +56,8 @@ public abstract class RasterObject : Object2D
             out Vector drawOffset, out bool verticalFlipOffset, out bool horizontalFlipOffset, out bool flipOffsetOnPixel,
             out IPalette palette, out int paletteOffset);
 
-        if (!paused || pauseWalks) palette?._animate();
+        //add null scene check? how would _draw run if scene/owner was null?
+        if ((!scene.paused && !paused) || pauseWalks) palette?._animate();//this can probably throw exceptions with compound objects as pets
 
         if (texture == null)
         {
