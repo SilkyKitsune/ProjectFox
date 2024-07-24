@@ -19,6 +19,10 @@ public abstract class State
 
     ///
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public virtual void PostDraw() { }
+
+    ///
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public virtual void Exit() { }
 }
 
@@ -48,6 +52,10 @@ public abstract class StateMachine
     /// <summary> calls PostFrame() on the current state </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void CurrentStatePostFrame() => states[currentState].PostFrame();
+
+    /// <summary> calls PostDraw() on the current state </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void CurrentStatePostDraw() => states[currentState].PostDraw();
 
     /// <summary> calls Exit() on the current state </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
