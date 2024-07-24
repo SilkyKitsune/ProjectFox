@@ -53,7 +53,7 @@ public class Scene : NamedType
     public IPalette BGPalette { get => bg.palette; set => bg.palette = value; }
 
     /// <summary> the offset of the background when ClearMode == DrawTexture </summary>
-    public Vector BGOffset { get => bg.offset; set => bg.offset = value; }
+    public Vector BGOffset { get => bg.drawOffset; set => bg.drawOffset = value; }
 
     public bool BGVerticalFlip { get => bg.verticalFlipTexture; set => bg.verticalFlipTexture = value; }
 
@@ -98,6 +98,7 @@ public class Scene : NamedType
                 bool p = !paused || obj.pauseWalks;
                 if (p) obj._frame();
                 obj._draw();
+                if (p) obj.PostDraw();
             }
         }
 

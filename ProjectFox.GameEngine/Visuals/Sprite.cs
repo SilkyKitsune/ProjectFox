@@ -107,13 +107,5 @@ public class Sprite : RasterObject
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal override void _frame()
-    {
-        if (!paused || pauseWalks)
-        {
-            PreFrame();
-            animation?._animate();
-            PostFrame();
-        }
-    }
+    protected internal override void PostDraw() => animation?._animate();
 }

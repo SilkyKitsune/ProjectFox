@@ -107,6 +107,11 @@ public abstract class CompoundObject : Object
 #endif
     }
 
+    protected internal override void PostDraw()
+    {
+        foreach (Object obj in objects) obj?.PostDraw();
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected Object GetObject(int index) => index < 0 || index >= objects.Length
         ? Engine.SendError<Object>(ErrorCodes.BadArgument, name, nameof(index)) : objects[index];

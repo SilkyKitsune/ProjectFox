@@ -4,7 +4,7 @@ using ProjectFox.GameEngine.Visuals;
 namespace ProjectFox.GameEngine;
 
 /// <summary> the most basic type of object inherited by all other objects in the engine </summary>
-public abstract class Object : SceneType//icopy?
+public abstract class Object : SceneType
 {
     /// <param name="name"> the object's ID </param>
     public Object(NameID name) : base(name) { }
@@ -59,4 +59,7 @@ public abstract class Object : SceneType//icopy?
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected virtual void PostFrame() { }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected internal virtual void PostDraw() { }
 }
