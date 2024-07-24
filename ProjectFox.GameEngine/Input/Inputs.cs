@@ -10,6 +10,9 @@ public class DigitalButton
     internal bool value = false, changed = false;
 
     public readonly ICollection<DigitalButton> bindings = new Array<DigitalButton>(0x2);
+    //analog button bindings
+    //dpad bindings?
+    //stick bindings?
 
     public bool Value
     {
@@ -73,10 +76,14 @@ public class DirectionalPad
     public Vector.Direction value = Vector.Direction.Zero;
 
     public readonly ICollection<DirectionalPad> bindings = new Array<DirectionalPad>(0x2);
-    public readonly ICollection<DigitalButton> xNegBindings = new Array<DigitalButton>(0x2);
-    public readonly ICollection<DigitalButton> xPosBindings = new Array<DigitalButton>(0x2);
-    public readonly ICollection<DigitalButton> yNegBindings = new Array<DigitalButton>(0x2);
-    public readonly ICollection<DigitalButton> yPosBindings = new Array<DigitalButton>(0x2);
+    public readonly ICollection<DigitalButton>
+        xNegBindings = new Array<DigitalButton>(0x2),
+        xPosBindings = new Array<DigitalButton>(0x2),
+        yNegBindings = new Array<DigitalButton>(0x2),
+        yPosBindings = new Array<DigitalButton>(0x2);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator Vector.Direction(DirectionalPad directionalPad) => directionalPad.value;
 }
 
 public class Stick//directional stick?
