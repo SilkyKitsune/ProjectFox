@@ -104,9 +104,8 @@ angleorigin()
         */
     }
 
-    public VectorF Rotate(float amount, VectorF pivot = default)//test
+    public VectorF Rotate(float amount, VectorF pivot = default)
     {
-#if DEBUG
         amount -= (int)amount;
 
         if (amount == 0f || Equals(pivot)) return this;
@@ -129,15 +128,11 @@ angleorigin()
                 vf = new(-vf.y, vf.x);
                 break;
             default:
-                //why is this checking amount < 0?
-                Math.SineCosine(/*amount < 0f ? 1f + amount :*/ amount, out float sin, out float cos);
-                vf = new((vf.x * cos) - (vf.y - sin), (vf.y * cos) + (vf.x * sin));
+                Math.SineCosine(amount, out float sin, out float cos);
+                vf = new((vf.x * cos) - (vf.y * sin), (vf.y * cos) + (vf.x * sin));
                 break;
         }
         return noPivot ? vf : new(vf.x + pivot.x, vf.y + pivot.y);
-#else
-        return default;
-#endif
     }
 
     public Vector RotateByRightAngles(int rightAngles) =>
