@@ -811,7 +811,7 @@ public class KinematicScannerRectangle : PhysicsShape
 #if DEBUG
     internal override void _draw(VisualLayer layer = null)
     {
-        if (!Debug.debugLayer.visible || !drawShape || !shapeEnabled || size.x <= 0 || size.y <= 0 || shapeColor.a == 0)
+        if (!Screen.visible || !Debug.debugLayer.visible || !drawShape || !shapeEnabled || size.x <= 0 || size.y <= 0 || shapeColor.a == 0)
         {
             base._draw();
             return;

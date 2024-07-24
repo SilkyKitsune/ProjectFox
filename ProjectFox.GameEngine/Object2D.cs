@@ -40,7 +40,7 @@ public abstract class Object2D : Object
 #if DEBUG
     internal override void _draw(VisualLayer layer = null)
     {
-        if (!Debug.debugLayer.visible || !drawPosition) return;
+        if (!Screen.visible || !Debug.debugLayer.visible || !drawPosition) return;
 
         Rectangle screen = new(Screen.position, Screen.size);
         if (screen.Overlapping(position))

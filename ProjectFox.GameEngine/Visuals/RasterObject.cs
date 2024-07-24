@@ -99,7 +99,7 @@ public abstract class RasterObject : Object2D
             drawArea.position.y - screen.position.y);
 
 #if DEBUG
-        if (drawTextureBounds && Debug.debugLayer.visible)
+        if (Screen.visible && Debug.debugLayer.visible && drawTextureBounds)
         {
             Rectangle boundArea = new(
                 drawArea.position.x - 1, drawArea.position.y - 1,
