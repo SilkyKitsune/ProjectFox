@@ -20,7 +20,7 @@ public abstract class CompoundObject : Object
     private readonly byte[] vs;
     internal readonly VectorZ[] offsets;
 
-    private int followIndex = -1;//leaderIndex, leadingIndex
+    public int followIndex = -1;//leaderIndex, leadingIndex
 
     internal VectorZ position = new(0, 0, 0);
 
