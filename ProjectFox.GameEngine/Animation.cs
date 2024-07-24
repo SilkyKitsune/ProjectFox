@@ -6,11 +6,12 @@ namespace ProjectFox.GameEngine;
 
 public abstract class Animation : ICopy<Animation>
 {
-    public enum PlaybackMode//move to own file?
+    public enum PlaybackMode
     {
         Normal,
         Reverse,
-        PingPong
+        PingPong,
+        ReversePingPong
     }
 
     public abstract class Frame
@@ -20,10 +21,8 @@ public abstract class Animation : ICopy<Animation>
 
     private static readonly NameID name = new("Anmtion", 0);
 
-    private bool back = false;//rename?
+    private int time = 0, playbackIndex = 0;
 
-    private int time = 0;
-    
     internal int frameIndex = 0;
 
     public bool play = false, loop = false;
@@ -36,8 +35,56 @@ public abstract class Animation : ICopy<Animation>
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => frameIndex;
+    }
+
+    public int PlaybackLength
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]//?
+        get
+        {
+            switch (playbackMode)
+            {
+                case PlaybackMode.Normal:
+                case PlaybackMode.Reverse:
+                    return FrameCount;
+                case PlaybackMode.PingPong:
+                case PlaybackMode.ReversePingPong:
+                    return FrameCount * 2 - 1;
+                default:
+                    Engine.SendError(ErrorCodes.BadEnumValue, name, nameof(playbackMode));
+                    playbackMode = PlaybackMode.Normal;
+                    goto case PlaybackMode.Normal;
+            }
+        }
+    }
+
+    public int PlaybackIndex
+    {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        set => frameIndex = Math.Wrap(value, 0, FrameCount - 1);
+        get => playbackIndex;
+        set
+        {
+            int length = FrameCount, lastIndex = length - 1, lastIndexP = lastIndex * 2 + 1;
+            switch (playbackMode)
+            {
+                case PlaybackMode.Normal:
+                    frameIndex = playbackIndex = Math.Wrap(value, 0, lastIndex);
+                    break;
+                case PlaybackMode.Reverse:
+                    frameIndex = lastIndex - (playbackIndex = Math.Wrap(value, 0, lastIndex));
+                    break;
+                case PlaybackMode.PingPong:
+                    frameIndex = (playbackIndex = Math.Wrap(value, 0, lastIndexP)) >= length ? lastIndexP - playbackIndex : playbackIndex;
+                    break;
+                case PlaybackMode.ReversePingPong:
+                    frameIndex = (playbackIndex = Math.Wrap(value, 0, lastIndexP)) >= length ? playbackIndex - lastIndex : lastIndex - playbackIndex;
+                    break;
+                default:
+                    Engine.SendError(ErrorCodes.BadEnumValue, name, nameof(playbackMode));
+                    playbackMode = PlaybackMode.Normal;
+                    break;
+    }
+        }
     }
 
     private protected abstract void GetFrame(out Frame frame, out int frameCount);
@@ -61,26 +108,27 @@ public abstract class Animation : ICopy<Animation>
                 switch (playbackMode)
                 {
                     case PlaybackMode.Normal:
-                        if (++frameIndex >= length) frameIndex = loop ? 0 : length - 1;
-                        back = false;
+                        if (++playbackIndex >= length) playbackIndex = loop ? 0 : length - 1;
+                        frameIndex = playbackIndex;
                         break;
                     case PlaybackMode.Reverse:
-                        if (--frameIndex < 0) frameIndex = loop ? length - 1 : 0;
-                        back = true;
+                        if (++playbackIndex >= length) playbackIndex = loop ? 0 : length - 1;
+                        frameIndex = length - playbackIndex - 1;
                         break;
                     case PlaybackMode.PingPong:
-                        frameIndex += back ? -1 : 1;
-                        if (frameIndex >= length)
                         {
-                            frameIndex = length - 2;
-                            back = true;
+                            int playbackLength = length * 2 - 1;
+                            if (++playbackIndex >= playbackLength) playbackIndex = loop ? 1 : playbackLength - 1;
+                            frameIndex = playbackIndex >= length ? playbackLength - playbackIndex - 1 : playbackIndex;
+                            break;
                         }
-                        else if (frameIndex < 0)
+                    case PlaybackMode.ReversePingPong:
                         {
-                            frameIndex = loop ? 1 : 0;
-                            back = !loop;
+                            int playbackLength = length * 2 - 1, lastIndex = length - 1;
+                            if (++playbackIndex >= playbackLength) playbackIndex = loop ? 1 : playbackLength - 1;
+                            frameIndex = playbackIndex >= length ? playbackIndex - lastIndex : lastIndex - playbackIndex;
+                            break;
                         }
-                        break;
                     default:
                         Engine.SendError(ErrorCodes.BadEnumValue, name, nameof(playbackMode));
                         playbackMode = PlaybackMode.Normal;
