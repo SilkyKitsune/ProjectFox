@@ -87,7 +87,11 @@ public static class Ports
 
             if (device.cursors != null) foreach (Cursor cursor in device.cursors)
                     if (cursor.binding != null)
-                        cursor.Position = cursor.binding.Position;//inline?
+                    {
+                        cursor.nativePos = cursor.binding.nativePos;
+                        cursor.scaledPos = cursor.binding.scaledPos;
+                        cursor.posChanged = cursor.binding.posChanged;
+                    }
         }
     }
 }
