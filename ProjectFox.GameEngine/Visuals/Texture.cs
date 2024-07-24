@@ -26,6 +26,12 @@ public sealed class ColorTexture : Texture, IColorGroup
 {
     public ColorTexture(Vector dimensions, Color[] pixels = null) : base(dimensions, false)
     {
+        if (dimensions.x < 0 || dimensions.y < 0)
+        {
+            Engine.SendError(ErrorCodes.BadArgument, new("ClrTxtr", 0), nameof(dimensions), "Texture dimensions cannot be negative!");
+            dimensions = default;
+        }
+        
         int length = dimensions.x * dimensions.y;
         if (pixels == null || pixels.Length != length)
             pixels = new Color[length];
@@ -94,6 +100,12 @@ public sealed class PalettizedTexture : Texture
 {
     public PalettizedTexture(Vector dimensions, byte[] pixels = null) : base(dimensions, true)
     {
+        if (dimensions.x < 0 || dimensions.y < 0)
+        {
+            Engine.SendError(ErrorCodes.BadArgument, new("PltTxtr", 0), nameof(dimensions), "Texture dimensions cannot be negative!");
+            dimensions = default;
+        }
+
         int length = dimensions.x * dimensions.y;
         if (pixels == null || pixels.Length != length)
             pixels = new byte[length];
@@ -104,6 +116,12 @@ public sealed class PalettizedTexture : Texture
 
     public PalettizedTexture(Vector dimensions, Color[] pixels, ref ColorPalette palette, bool rampToPalette) : base(dimensions, true)
     {
+        if (dimensions.x < 0 || dimensions.y < 0)
+        {
+            Engine.SendError(ErrorCodes.BadArgument, new("PltTxtr", 0), nameof(dimensions), "Texture dimensions cannot be negative!");
+            dimensions = default;
+        }
+
         palette ??= new();
         int length = dimensions.x * dimensions.y;
         this.pixels = new byte[length];
@@ -127,6 +145,12 @@ public sealed class PalettizedTexture : Texture
 
     public PalettizedTexture(Vector dimensions, Color[] pixels, IndexPalette palette/*, rampToGlobal?*/) : base(dimensions, true)
     {
+        if (dimensions.x < 0 || dimensions.y < 0)
+        {
+            Engine.SendError(ErrorCodes.BadArgument, new("PltTxtr", 0), nameof(dimensions), "Texture dimensions cannot be negative!");
+            dimensions = default;
+        }
+
         int length = dimensions.x * dimensions.y;
         this.pixels = new byte[length];
         if (pixels != null && pixels.Length == length && palette != null && palette.indices.Length > 0)
