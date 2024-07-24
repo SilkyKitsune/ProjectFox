@@ -62,11 +62,21 @@ public sealed class DebugController : Object
 {
     private static readonly NameID ID = new("DbgCtrl", 0);
 
-    public DebugController(GameWindow window) : base(ID) => kbm = window.kbdMouse;
+    public DebugController(GameWindow window) : base(ID)
+    {
+        pauseWalks = true;
+        kbm = window.kbdMouse;
+    }
 
     private readonly KeyboardMouseDevice kbm;
 
     public bool printFrameInfo = false;
+
+    private void SetFPS(int value)
+    {
+        Engine.Frequency = value;
+        QueueMessage($"FPS={Engine.Frequency}");
+    }
 
     protected override void PreFrame()
     {
@@ -78,8 +88,9 @@ public sealed class DebugController : Object
 
         if (kbm.Insert.ChangedTrue)
         {
-            DrawDebug = !DrawDebug;
-            QueueMessage($"DrawDebug={DrawDebug}");
+            bool value = !Debug.DrawDebug;
+            DrawDebug = value;
+            QueueMessage($"DrawDebug={value}");
         }
 
         if (kbm.NumpadOne.ChangedTrue) SetFPS(1);
@@ -87,36 +98,24 @@ public sealed class DebugController : Object
         else if (kbm.NumpadThree.ChangedTrue) SetFPS(15);
         else if (kbm.NumpadFour.ChangedTrue) SetFPS(30);
         else if (kbm.NumpadFive.ChangedTrue) SetFPS(60);
+        else if (kbm.NumpadSix.ChangedTrue) SetFPS(120);
 
-        switch (M.FindSign(kbm.Delete, kbm.PageDown))
-        {
-            case M.Sign.Neg:
-                Screen.position.x -= 1;
-                break;
-            case M.Sign.Pos:
-                Screen.position.x += 1;
-                break;
-        }
-        switch (M.FindSign(kbm.Home, kbm.End))
-        {
-            case M.Sign.Neg:
-                Screen.position.y -= 1;
-                break;
-            case M.Sign.Pos:
-                Screen.position.y += 1;
-                break;
-        }
+        int moveSpeed = kbm.Shift ? 4 : 1;
+
+        if (kbm.Delete) Screen.position.x -= moveSpeed;
+        else if (kbm.PageDown) Screen.position.x += moveSpeed;
+
+        if (kbm.Home) Screen.position.y -= moveSpeed;
+        else if (kbm.End) Screen.position.y += moveSpeed;
 
         if (kbm.NumpadZero.ChangedTrue)
         {
             Screen.position = default;
             QueueMessage("Screen pos reset");
         }
-    }
 
-    private void SetFPS(int value)
-    {
-        Engine.Frequency = value;
-        QueueMessage($"FPS={Engine.Frequency}");
+        if (kbm.BackSlash.ChangedTrue) Screen.visible = !Screen.visible;
+
+        //if (kbm.RightBracket.ChangedTrue) Speakers.audible = !Speakers.audible;
     }
 }
