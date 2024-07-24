@@ -15,6 +15,8 @@ public class KinematicScannerRectangle : PhysicsShape
     /// <param name="name"> the object's ID </param>
     /// <param name="detectedEvents"> delegates called when a shaped is detected </param>
     public KinematicScannerRectangle(NameID name, params PhysicsEvent[] detectedEvents) : base(name, detectedEvents) { }//color = new(128, 0, 255);
+    //implement these
+    private bool touchingTop = false, touchingBottom = false, touchingLeft = false, touchingRight = false;
 
     /// <summary> Size of the rectangle </summary>
     public Vector size = new(1, 1);
@@ -32,6 +34,39 @@ public class KinematicScannerRectangle : PhysicsShape
             if (value == null) space?.RemoveRectangle(name);
             else value.AddRectangle(this);
         }
+    }
+
+    public Rectangle Rectangle
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => new(
+            horizontalFlipOffset ? position.x - size.x - shapeOffset.x + (flipOffsetOnPixel ? 1 : 0) : position.x + shapeOffset.x,
+            verticalFlipOffset ? position.y - size.y - shapeOffset.y + (flipOffsetOnPixel ? 1 : 0) : position.y + shapeOffset.y,
+            size);
+    }
+
+    public bool TouchingTop
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => shapeEnabled && touchingTop;
+    }
+
+    public bool TouchingBottom
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => shapeEnabled && touchingBottom;
+    }
+
+    public bool TouchingLeft
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => shapeEnabled && touchingLeft;
+    }
+
+    public bool TouchingRight
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => shapeEnabled && touchingRight;
     }
 
     private protected sealed override void _scan()
@@ -62,10 +97,7 @@ public class KinematicScannerRectangle : PhysicsShape
 
                     if (this != rectangle && rectangle.enabled && rectangle.shapeEnabled && rectangle.size.x > 0 && rectangle.size.y > 0)
                     {
-                        Rectangle rect2 = new(
-                            rectangle.position.x + rectangle.shapeOffset.x,
-                            rectangle.position.y + rectangle.shapeOffset.y,
-                            rectangle.size);
+                        Rectangle rect2 = rectangle.Rectangle;//inline
 
                         switch (scanMode)//test all cases
                         {
@@ -685,7 +717,7 @@ public class KinematicScannerRectangle : PhysicsShape
 
         Vector corrected = new(0, 0), step = corrected,
             absVel = new(xVelNeg ? -velocity.x : velocity.x, yVelNeg ? -velocity.y : velocity.y);
-        Rectangle rect = new(position.x + shapeOffset.x, position.y + shapeOffset.y, size);
+        Rectangle rect = Rectangle;//inline
 
         bool xBlocked = false, yBlocked = false, corner = false, yGreater = absVel.y > absVel.x,
             preferY = (absVel.x == absVel.y && this.preferY) || yGreater;
@@ -732,10 +764,7 @@ public class KinematicScannerRectangle : PhysicsShape
 
                         if (this != rectangle && rectangle.enabled && rectangle.shapeEnabled && rectangle.size.x > 0 && rectangle.size.y > 0)
                         {
-                            Rectangle rect2 = new(
-                                rectangle.position.x + rectangle.shapeOffset.x,
-                                rectangle.position.y + rectangle.shapeOffset.y,
-                                rectangle.size), area = rect.IntersectionArea(rect2);
+                            Rectangle rect2 = rectangle.Rectangle/*inline*/, area = rect.IntersectionArea(rect2);
 
                             //if (rectangle.soft)//? //use lines for soft?
 
@@ -788,7 +817,7 @@ public class KinematicScannerRectangle : PhysicsShape
             return;
         }
 
-        Rectangle rect = new(position.x + shapeOffset.x, position.y + shapeOffset.y, size),
+        Rectangle rect = Rectangle,//inline?
             screen = new(Screen.position, Screen.size), area = screen.IntersectionArea(rect);
 
         if (area.size.x <= 0 || area.size.y <= 0) return;
@@ -818,48 +847,3 @@ public class KinematicScannerRectangle : PhysicsShape
     }
 #endif
 }
-/*
-//this will stop all translation when touching collision
-_move(vector)
-  For (Rect = (pos, size)
-       Vector in stepInterpolate(default, velocity)
-       rect.pos += step)
-    For (ScanSpace in space)
-      For (shape in space)
-        If (rect.intersecting(shape)) return
-    Position = rect.pos*/
-
-/*_move(vector, preferY = false)
-    For (Rect = (pos, size)
-         direction = velocity.dirfromzero()
-         bool x, y
-         Vector in stepInterpolate(default, velocity)
-         rect.pos.x += x ? 0 : step.x
-         rect.pos.y += y ? 0 : step.y)
-      For (ScanSpace in space)
-        For (shape in space)
-          rect.intersectionarea(shape)
-          If (area.size > 0)
-
-            if (shape.soft)
-              if (shape.top && velocity.y > 0) ?
-              if (shape.bottom && velocity.y < 0) ?
-              if (shape.left && velocity.x > 0) ?
-              if (shape.right && velocity.x < 0) ?
-
-            if (!keepmoving || x || y) return
-
-            switch (rect.direction(area))
-Direction wouldn't point diagonal for most intersections
-              Left || Right
-                x = true
-                Rect.x -= step.x
-              Up || Down
-                y = true
-                Rect.y -=step.y
-              Diagonals?
-                Perfect diagonals
-                  If (PreferY) x = true
-                  Else y = true
-
-      Position = rect.pos*/
