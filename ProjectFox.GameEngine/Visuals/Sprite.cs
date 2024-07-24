@@ -17,17 +17,32 @@ public class Sprite : RasterObject
 
     public TextureAnimation animation = null;
 
+    public Vector drawOffset = new(0, 0);
+
+    public bool verticalFlipTexture = false, horizontalFlipTexture = false, verticalFlipOffset = false, horizontalFlipOffset = false, flipOffsetOnPixel = false;
+
     public IPalette palette = null;
 
-    public Vector offset = new(0, 0);
+    public int paletteOffset = 0;
 
     public PalettePriority palettePriority = PalettePriority.Frame;
 
-    protected override void GetDrawInfo(out Texture texture, out IPalette palette, out Vector offset)
+    protected override void GetDrawInfo(
+        out Texture texture, out bool verticalFlipTexture, out bool horizontalFlipTexture,
+        out Vector drawOffset, out bool verticalFlipOffset, out bool horizontalFlipOffset, out bool flipOffsetOnPixel,
+        out IPalette palette, out int paletteOffset)
     {
         texture = null;
+        verticalFlipTexture = false;
+        horizontalFlipTexture = false;
+
+        drawOffset = new(0, 0);
+        verticalFlipOffset = false;
+        horizontalFlipOffset = false;
+        flipOffsetOnPixel = false;
+
         palette = null;
-        offset = new(0, 0);
+        paletteOffset = 0;
 
         if (animation == null)
         {
@@ -46,6 +61,33 @@ public class Sprite : RasterObject
         TextureAnimation.TextureFrame frame = frames.elements[animation.frameIndex];
         
         texture = frame.texture;
+
+        verticalFlipTexture = this.verticalFlipTexture;
+        if (animation.verticalFlipTexture) verticalFlipTexture = !verticalFlipTexture;//is there a better way to do this?
+        if (frame.verticalFlipTexture) verticalFlipTexture = !verticalFlipTexture;
+        
+        horizontalFlipTexture = this.horizontalFlipTexture;
+        if (animation.horizontalFlipTexture) horizontalFlipTexture = !horizontalFlipTexture;
+        if (frame.horizontalFlipTexture) horizontalFlipTexture = !horizontalFlipTexture;
+
+        drawOffset = new(
+            this.drawOffset.x + animation.drawOffset.x + frame.drawOffset.x,
+            this.drawOffset.y + animation.drawOffset.y + frame.drawOffset.y);
+
+        verticalFlipOffset = this.verticalFlipOffset;
+        if (animation.verticalFlipOffset) verticalFlipOffset = !verticalFlipOffset;//is there a better way to do this?
+        if (frame.verticalFlipOffset) verticalFlipOffset = !verticalFlipOffset;
+
+        horizontalFlipOffset = this.horizontalFlipOffset;
+        if (animation.horizontalFlipOffset) horizontalFlipOffset = !horizontalFlipOffset;
+        if (frame.horizontalFlipOffset) horizontalFlipOffset = !horizontalFlipOffset;
+
+        flipOffsetOnPixel = this.flipOffsetOnPixel;
+        if (animation.flipOffsetOnPixel) flipOffsetOnPixel = !flipOffsetOnPixel;
+        if (frame.flipOffsetOnPixel) flipOffsetOnPixel = !flipOffsetOnPixel;
+
+        paletteOffset = this.paletteOffset + animation.paletteOffset + frame.paletteOffset;
+
         switch (palettePriority)
         {
             case PalettePriority.Frame:
@@ -62,10 +104,6 @@ public class Sprite : RasterObject
                 palettePriority = PalettePriority.Frame;
                 goto case PalettePriority.Frame;
         }
-        offset = new(
-            this.offset.x + animation.offset.x + frame.offset.x,
-            this.offset.y + animation.offset.y + frame.offset.y);
-        //textureframe/anim flip should invert rasterobject flip
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

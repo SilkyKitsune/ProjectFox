@@ -165,24 +165,28 @@ public sealed class PalettizedTexture : Texture
     }
 }
 
-public sealed class TextureAnimation : Animation//named type?
+public sealed class TextureAnimation : Animation
 {
     public sealed class TextureFrame : Frame
     {
         public Texture texture = null;
-        public IPalette palette = null;//does _draw animate this?
-        public Vector offset = new(0, 0);
-        //FlipTexture?
-        //flip offset?
+        public Vector drawOffset = new(0, 0);
+        public bool verticalFlipTexture = false, horizontalFlipTexture = false, verticalFlipOffset = false, horizontalFlipOffset = false, flipOffsetOnPixel = false;
+        public IPalette palette = null;//does _draw animate this? should animate call this? how would that work? maybe from get frame?
+        public int paletteOffset = 0;
     }
 
     public TextureAnimation(params TextureFrame[] frames) => this.frames.Add(frames);
 
     public readonly ICollection<TextureFrame> frames = new Array<TextureFrame>(0x20);
 
-    public IPalette palette = null;
+    public Vector drawOffset = new(0, 0);
 
-    public Vector offset = new(0, 0);
+    public bool verticalFlipTexture = false, horizontalFlipTexture = false, verticalFlipOffset = false, horizontalFlipOffset = false, flipOffsetOnPixel = false;
+
+    public IPalette palette = null;//should this also be animated from get frame?
+
+    public int paletteOffset = 0;
 
     public override int FrameCount
     {

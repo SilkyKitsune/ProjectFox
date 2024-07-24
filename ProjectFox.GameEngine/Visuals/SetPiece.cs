@@ -9,15 +9,30 @@ public class SetPiece : RasterObject
 
     public Texture texture = null;
 
+    public Vector drawOffset = new(0, 0);
+
+    public bool verticalFlipTexture = false, horizontalFlipTexture = false, verticalFlipOffset = false, horizontalFlipOffset = false, flipOffsetOnPixel = false;
+
     public IPalette palette = null;
 
-    public Vector offset = new(0, 0);
+    public int paletteOffset = 0;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected override void GetDrawInfo(out Texture texture, out IPalette palette, out Vector offset)
+    protected override void GetDrawInfo(
+        out Texture texture, out bool verticalFlipTexture, out bool horizontalFlipTexture,
+        out Vector drawOffset, out bool verticalFlipOffset, out bool horizontalFlipOffset, out bool flipOffsetOnPixel,
+        out IPalette palette, out int paletteOffset)
     {
         texture = this.texture;
+        verticalFlipTexture = this.verticalFlipTexture;
+        horizontalFlipTexture = this.horizontalFlipTexture;
+
+        drawOffset = this.drawOffset;
+        verticalFlipOffset = this.verticalFlipOffset;
+        horizontalFlipOffset = this.horizontalFlipOffset;
+        flipOffsetOnPixel = this.flipOffsetOnPixel;
+
         palette = this.palette;
-        offset = this.offset;
+        paletteOffset = this.paletteOffset;
     }
 }

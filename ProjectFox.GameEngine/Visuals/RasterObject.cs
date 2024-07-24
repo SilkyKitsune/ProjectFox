@@ -9,7 +9,7 @@ public abstract class RasterObject : Object2D
 
     public VisualLayer layer = null;
 
-    public bool visible = true, verticalFlipTexture = false, horizontalFlipTexture = false, verticalFlipOffset = false, horizontalFlipOffset = false, flipOffsetOnPixel = false;
+    public bool visible = true;
 
     public VectorF parallaxFactor = new(1f, 1f);
 
@@ -19,7 +19,13 @@ public abstract class RasterObject : Object2D
     public Color boundsColor = new(byte.MaxValue, 0, 0);
 #endif
 
-    protected abstract void GetDrawInfo(out Texture texture, out IPalette palette, out Vector offset/*, vflip, hflip*/);
+    //bool wrapPartial?
+    //bool repeatTexture?
+
+    protected abstract void GetDrawInfo(
+        out Texture texture, out bool verticalFlipTexture, out bool horizontalFlipTexture,
+        out Vector drawOffset, out bool verticalFlipOffset, out bool horizontalFlipOffset, out bool flipOffsetOnPixel,
+        out IPalette palette, out int paletteOffset);
 
     internal override void _draw(VisualLayer layer = null)
     {
@@ -44,7 +50,10 @@ public abstract class RasterObject : Object2D
             Engine.SendError(ErrorCodes.VisualLayerNotInScene, name, layer.name.ToString(),
                 $"RasterObject '{name}' drew to a layer from a null/different scene");
 
-        GetDrawInfo(out Texture texture, out IPalette palette, out Vector offset);
+        GetDrawInfo(
+            out Texture texture, out bool verticalFlipTexture, out bool horizontalFlipTexture,
+            out Vector drawOffset, out bool verticalFlipOffset, out bool horizontalFlipOffset, out bool flipOffsetOnPixel,
+            out IPalette palette, out int paletteOffset);
 
         if (!paused || pauseWalks) palette?._animate();
 
@@ -55,8 +64,8 @@ public abstract class RasterObject : Object2D
         }
 
         Rectangle textureArea = new(
-            horizontalFlipOffset ? position.x - texture.dimensions.x - offset.x + (flipOffsetOnPixel ? 1 : 0) : position.x + offset.x,
-            verticalFlipOffset ? position.y - texture.dimensions.y - offset.y + (flipOffsetOnPixel ? 1 : 0) : position.y + offset.y,
+            horizontalFlipOffset ? position.x - texture.dimensions.x - drawOffset.x + (flipOffsetOnPixel ? 1 : 0) : position.x + drawOffset.x,
+            verticalFlipOffset ? position.y - texture.dimensions.y - drawOffset.y + (flipOffsetOnPixel ? 1 : 0) : position.y + drawOffset.y,
             texture.dimensions),
             screen = new(
                 parallaxFactor.x == 1f ? Screen.position.x : (int)(Screen.position.x * parallaxFactor.x),
@@ -164,10 +173,14 @@ public abstract class RasterObject : Object2D
                 return;
             }
 
+            bool usePaletteOffset = paletteOffset != 0;
+            int lastColorIndex = colors.Length - 1;
             PalettizedTexture palettizedTexture = (PalettizedTexture)texture;
             while (s > -1 && s < palettizedTexture.pixels.Length && d < layer.pixels.Length)
             {
                 byte index = palettizedTexture.pixels[horizontalFlipTexture ? s-- : s++];
+                if (usePaletteOffset) index = (byte)Math.Wrap(index + paletteOffset, 0, lastColorIndex);
+
                 Color pixel = index < colors.Length ? colors[index] : new(0, 0, 0, 0);
                 //send out of range error?
 
