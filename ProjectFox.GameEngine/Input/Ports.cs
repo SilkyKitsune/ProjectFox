@@ -55,19 +55,19 @@ public static class Ports
 
                     Array<DigitalButton> xNegBindings = (Array<DigitalButton>)dPad.xNegBindings;
                     for (int j = 0; j < xNegBindings.length; j++)
-                        xNeg = xNeg || xNegBindings.elements[i].value;
+                        xNeg = xNeg || xNegBindings.elements[j].value;
 
                     Array<DigitalButton> xPosBindings = (Array<DigitalButton>)dPad.xPosBindings;
                     for (int j = 0; j < xPosBindings.length; j++)
-                        xPos = xPos || xPosBindings.elements[i].value;
+                        xPos = xPos || xPosBindings.elements[j].value;
 
                     Array<DigitalButton> yNegBindings = (Array<DigitalButton>)dPad.yNegBindings;
                     for (int j = 0; j < yNegBindings.length; j++)
-                        yNeg = yNeg || yNegBindings.elements[i].value;
+                        yNeg = yNeg || yNegBindings.elements[j].value;
 
                     Array<DigitalButton> yPosBindings = (Array<DigitalButton>)dPad.yPosBindings;
                     for (int j = 0; j < yPosBindings.length; j++)
-                        yPos = yPos || yPosBindings.elements[i].value;
+                        yPos = yPos || yPosBindings.elements[j].value;
 
                     dPad.value = dir | Vector.FindDirection(Math.FindSign(xNeg, xPos), Math.FindSign(yNeg, yPos));//could this cause sign to be 0b11?
                 }
