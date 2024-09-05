@@ -10,16 +10,6 @@ namespace ProjectFox.GameEngine;
 [StructLayout(LayoutKind.Explicit, Size = 8)]
 public partial struct NameID
 {
-    [FieldOffset(0)] private readonly ulong l;
-    [FieldOffset(7)] private readonly sbyte c0;
-    [FieldOffset(6)] private readonly sbyte c1;
-    [FieldOffset(5)] private readonly sbyte c2;
-    [FieldOffset(4)] private readonly sbyte c3;
-    [FieldOffset(3)] private readonly sbyte c4;
-    [FieldOffset(2)] private readonly sbyte c5;
-    [FieldOffset(1)] private readonly sbyte c6;
-    [FieldOffset(0)] private readonly byte num;
-
     /// <summary> create an ID from an integer value </summary>
     /// <param name="value"> the ID's 64-bit integer value </param>
     public NameID(ulong value) => l = value;
@@ -31,92 +21,50 @@ public partial struct NameID
     {
         if (chars == null) chars = string.Empty;
 
+        c0 = 0;
+        c1 = 0;
+        c2 = 0;
+        c3 = 0;
+        c4 = 0;
+        c5 = 0;
+        c6 = 0;
+        num = number;
+
         switch (chars.Length)
         {
-            case 0:
-                c0 = 0;//remove these too?
-                c1 = 0;
-                c2 = 0;
-                c3 = 0;
-                c4 = 0;
-                c5 = 0;
-                c6 = 0;
-                num = number;
-                break;
-            case 1:
-                c0 = (sbyte)chars[0];
-                c1 = 0;
-                c2 = 0;
-                c3 = 0;
-                c4 = 0;
-                c5 = 0;
-                c6 = 0;
-                num = number;
-                break;
-            case 2:
-                c0 = (sbyte)chars[0];
-                c1 = (sbyte)chars[1];
-                c2 = 0;
-                c3 = 0;
-                c4 = 0;
-                c5 = 0;
-                c6 = 0;
-                num = number;
-                break;
-            case 3:
-                c0 = (sbyte)chars[0];
-                c1 = (sbyte)chars[1];
-                c2 = (sbyte)chars[2];
-                c3 = 0;
-                c4 = 0;
-                c5 = 0;
-                c6 = 0;
-                num = number;
-                break;
-            case 4:
-                c0 = (sbyte)chars[0];
-                c1 = (sbyte)chars[1];
-                c2 = (sbyte)chars[2];
-                c3 = (sbyte)chars[3];
-                c4 = 0;
-                c5 = 0;
-                c6 = 0;
-                num = number;
-                break;
-            case 5:
-                c0 = (sbyte)chars[0];
-                c1 = (sbyte)chars[1];
-                c2 = (sbyte)chars[2];
-                c3 = (sbyte)chars[3];
-                c4 = (sbyte)chars[4];
-                c5 = 0;
-                c6 = 0;
-                num = number;
-                break;
+            case 7:
+                c6 = (sbyte)(chars[6] & 0x7F);
+                goto case 6;
             case 6:
-                c0 = (sbyte)chars[0];
-                c1 = (sbyte)chars[1];
-                c2 = (sbyte)chars[2];
-                c3 = (sbyte)chars[3];
-                c4 = (sbyte)chars[4];
-                c5 = (sbyte)chars[5];
-                c6 = 0;
-                num = number;
+                c5 = (sbyte)(chars[5] & 0x7F);
+                goto case 5;
+            case 5:
+                c4 = (sbyte)(chars[4] & 0x7F);
+                goto case 4;
+            case 4:
+                c3 = (sbyte)(chars[3] & 0x7F);
+                goto case 3;
+            case 3:
+                c2 = (sbyte)(chars[2] & 0x7F);
+                goto case 2;
+            case 2:
+                c1 = (sbyte)(chars[1] & 0x7F);
+                goto case 1;
+            case 1:
+                c0 = (sbyte)(chars[0] & 0x7F);
                 break;
-            default:
-                {
-                    c0 = (sbyte)chars[0];//& with 7F to clear high bit?
-                    c1 = (sbyte)chars[1];
-                    c2 = (sbyte)chars[2];
-                    c3 = (sbyte)chars[3];
-                    c4 = (sbyte)chars[4];
-                    c5 = (sbyte)chars[5];
-                    c6 = (sbyte)chars[6];
-                    num = number;
-                    break;
-                }
         }
     }
+
+    [FieldOffset(0)] private readonly ulong l;
+    [FieldOffset(7)] private readonly sbyte c0;
+    [FieldOffset(6)] private readonly sbyte c1;
+    [FieldOffset(5)] private readonly sbyte c2;
+    [FieldOffset(4)] private readonly sbyte c3;
+    [FieldOffset(3)] private readonly sbyte c4;
+    [FieldOffset(2)] private readonly sbyte c5;
+    [FieldOffset(1)] private readonly sbyte c6;
+    [FieldOffset(0)] private readonly byte num;
 
     ///
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
