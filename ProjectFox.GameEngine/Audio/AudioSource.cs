@@ -26,7 +26,7 @@ public abstract class AudioSource : Object2D
         base._draw();
 #endif
         
-        if (!audible) return;
+        if (!Speakers.audible || !audible) return;
 
         if (channel == null)
         {

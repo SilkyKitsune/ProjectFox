@@ -9,10 +9,12 @@ public static class Speakers
 
     internal static AudioChannel speakersChannel = new(new("SpkChnl", 0));
 
+    public static bool audible = true;
+
     public static int SamplesPerFrame
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => SampleRate / Engine.Frequency;//inline?
+        get => SampleRate / Engine.Frequency;
     }
 
     public static Sample[] GetFrame() => speakersChannel.samples;

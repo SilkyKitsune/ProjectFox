@@ -103,17 +103,17 @@ public class Scene : NamedType
         }
 
         if (Screen.visible) for (int i = 0; i < visualLayers.codes.length; i++)
-        {
-            VisualLayer layer = visualLayers.values.elements[i];
-            if (layer.visible) layer.Blend(layer.pixels, screenLayer.pixels);
-        }
+            {
+                VisualLayer layer = visualLayers.values.elements[i];
+                if (layer.visible) layer.Blend(layer.pixels, screenLayer.pixels);
+            }
 
-        for (int i = 0; i < audioChannels.codes.length; i++)
-        {
-            AudioChannel channel = audioChannels.values.elements[i];
-            if (channel.audible && channel.volume != 0f && (channel.leftVolume != 0f || channel.rightVolume != 0f))
-                channel.Blend();
-        }
+        if (Speakers.audible) for (int i = 0; i < audioChannels.codes.length; i++)
+            {
+                AudioChannel channel = audioChannels.values.elements[i];
+                if (channel.audible && channel.volume != 0f && (channel.leftVolume != 0f || channel.rightVolume != 0f))
+                    channel.Blend();
+            }
     }
 
     #region Objects
@@ -202,8 +202,6 @@ public class Scene : NamedType
             }
         }
     }
-
-    //Pausing
     #endregion
 
     #region VisualLayers
