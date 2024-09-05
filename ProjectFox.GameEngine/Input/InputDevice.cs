@@ -79,21 +79,3 @@ public abstract class InputDevice
 }
 
 //Debug input type with all keyboard keys gamepad inputs and mouse, was this going to go in debug?
-
-#if DEBUG
-public class NESInputDevice : InputDevice//move to different library later
-{
-    public NESInputDevice() : base(4, 0, 1, 0, 0)
-    {
-        a = digitalButtons[0] = new();
-        b = digitalButtons[1] = new();
-        start = digitalButtons[2] = new();
-        select = digitalButtons[3] = new();
-
-        dPad = directionalPads[0] = new();
-    }
-
-    public readonly DigitalButton a, b, start, select;
-    public readonly DirectionalPad dPad;
-}
-#endif
