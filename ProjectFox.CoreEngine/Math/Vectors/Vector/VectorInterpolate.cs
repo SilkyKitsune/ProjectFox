@@ -3,7 +3,7 @@
 public partial struct Vector
 {
 #if DEBUG
-    [System.Obsolete] public static Vector[] StepInterpolateOld(Vector endPoint, Vector startPoint = default)
+    [System.Obsolete] internal static Vector[] StepInterpolateOld(Vector endPoint, Vector startPoint = default)
     {
         Vector distance = startPoint.IsZero() ? endPoint : new(endPoint.x - startPoint.x, endPoint.y - startPoint.y);
         
@@ -62,7 +62,7 @@ public partial struct Vector
         while (!Math.IsOdd(v.x) && !Math.IsOdd(v.y)) v = new(v.x / 2, v.y / 2);//inline?
         
         int small, big;
-        Vector secondary;
+        Vector primary = sign, secondary;
         if (v.y > v.x)
         {
             small = v.x;
@@ -75,20 +75,30 @@ public partial struct Vector
             big = v.x;
             secondary = signX;
         }
-        
-        if (small * 2 == big) return new Vector[2] { sign, secondary };
+
+        int smallDoubled = small * 2;
+        if (smallDoubled == big) return new Vector[2] { primary, secondary };
+
+        bool upper = smallDoubled >= big;
+        if (!upper)
+        {
+            primary = secondary;
+            secondary = sign;
+        }
 
         Vector[] array = new Vector[big];
-        for (int i = 0, count = 0, nextIndex = 0, interval = Math.Round(array.Length / (float)small);
+        for (int i = 0, count = 0, nextIndex = 0,
+            secondarySteps = upper ? array.Length - small : small,
+            interval = Math.Round(array.Length / (float)secondarySteps);
             i < array.Length; i++)
         {
-            if (count < small && i == nextIndex)
+            if (count < secondarySteps && i == nextIndex)
             {
-                array[i] = sign;
+                array[i] = secondary;
                 nextIndex += interval;
                 count++;
             }
-            else array[i] = secondary;
+            else array[i] = primary;
         }
         return array;
     }
