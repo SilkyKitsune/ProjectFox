@@ -289,65 +289,257 @@ public static partial class Math
     #endregion
 
     #region Clamp
-    /// <returns> min ≤ value ≤ max </returns>
+    /// <returns> min ≤ value ≤ max, unless min &gt; max then the return value will be outside the range </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int Clamp(int value, int min, int max) =>
-        min > max ? throw new ArgumentException($"MinMaxException ({nameof(min)}={min} > {nameof(max)}={max})") :
+    public static int Clamp(int value, int min, int max) => min > max ?
+        (value < min && value > max ? max : value) :
         (value < min ? min : (value > max ? max : value));
 
-    /// <returns> min ≤ value ≤ max </returns>
+    /// <returns> min ≤ value ≤ max, unless min &gt; max then the return value will be outside the range </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static uint Clamp(uint value, uint min, uint max) =>
-        min > max ? throw new ArgumentException($"MinMaxException ({nameof(min)}={min} > {nameof(max)}={max})") :
+    public static uint Clamp(uint value, uint min, uint max) => min > max ?
+        (value < min && value > max ? max : value) :
         (value < min ? min : (value > max ? max : value));
 
-    /// <returns> min ≤ value ≤ max </returns>
+    /// <returns> min ≤ value ≤ max, unless min &gt; max then the return value will be outside the range </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static long Clamp(long value, long min, long max) =>
-        min > max ? throw new ArgumentException($"MinMaxException ({nameof(min)}={min} > {nameof(max)}={max})") :
+    public static long Clamp(long value, long min, long max) => min > max ?
+        (value < min && value > max ? max : value) :
         (value < min ? min : (value > max ? max : value));
 
-    /// <returns> min ≤ value ≤ max </returns>
+    /// <returns> min ≤ value ≤ max, unless min &gt; max then the return value will be outside the range </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ulong Clamp(ulong value, ulong min, ulong max) =>
-        min > max ? throw new ArgumentException($"MinMaxException ({nameof(min)}={min} > {nameof(max)}={max})") :
+    public static ulong Clamp(ulong value, ulong min, ulong max) => min > max ?
+        (value < min && value > max ? max : value) :
         (value < min ? min : (value > max ? max : value));
 
-    /// <returns> min ≤ value ≤ max </returns>
+    /// <returns> min ≤ value ≤ max, unless min &gt; max then the return value will be outside the range </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static short Clamp(short value, short min, short max) =>
-        min > max ? throw new ArgumentException($"MinMaxException ({nameof(min)}={min} > {nameof(max)}={max})") :
+    public static short Clamp(short value, short min, short max) => min > max ?
+        (value < min && value > max ? max : value) :
         (value < min ? min : (value > max ? max : value));
 
-    /// <returns> min ≤ value ≤ max </returns>
+    /// <returns> min ≤ value ≤ max, unless min &gt; max then the return value will be outside the range </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ushort Clamp(ushort value, ushort min, ushort max) =>
-        min > max ? throw new ArgumentException($"MinMaxException ({nameof(min)}={min} > {nameof(max)}={max})") :
+    public static ushort Clamp(ushort value, ushort min, ushort max) => min > max ?
+        (value < min && value > max ? max : value) :
         (value < min ? min : (value > max ? max : value));
 
-    /// <returns> min ≤ value ≤ max </returns>
+    /// <returns> min ≤ value ≤ max, unless min &gt; max then the return value will be outside the range </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static sbyte Clamp(sbyte value, sbyte min, sbyte max) =>
-        min > max ? throw new ArgumentException($"MinMaxException ({nameof(min)}={min} > {nameof(max)}={max})") :
+    public static sbyte Clamp(sbyte value, sbyte min, sbyte max) => min > max ?
+        (value < min && value > max ? max : value) :
         (value < min ? min : (value > max ? max : value));
 
-    /// <returns> min ≤ value ≤ max </returns>
+    /// <returns> min ≤ value ≤ max, unless min &gt; max then the return value will be outside the range </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static byte Clamp(byte value, byte min, byte max) =>
-        min > max ? throw new ArgumentException($"MinMaxException ({nameof(min)}={min} > {nameof(max)}={max})") :
+    public static byte Clamp(byte value, byte min, byte max) => min > max ?
+        (value < min && value > max ? max : value) :
         (value < min ? min : (value > max ? max : value));
 
-    /// <returns> min ≤ value ≤ max </returns>
+    /// <returns> min ≤ value ≤ max, unless min &gt; max then the return value will be outside the range </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static float Clamp(float value, float min, float max) =>
-        min > max ? throw new ArgumentException($"MinMaxException ({nameof(min)}={min} > {nameof(max)}={max})") :
+    public static float Clamp(float value, float min, float max) => min > max ?
+        (value < min && value > max ? max : value) :
         (value < min ? min : (value > max ? max : value));
 
+    /// <returns> min ≤ value ≤ max, unless min &gt; max then the return value will be outside the range </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static double Clamp(double value, double min, double max) => min > max ?
+        (value < min && value > max ? max : value) :
+        (value < min ? min : (value > max ? max : value));
+    #endregion
+
+    #region ClampImplicit
+    /// <summary> determines the min and max implicitly from a and b </summary>
     /// <returns> min ≤ value ≤ max </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static double Clamp(double value, double min, double max) =>
-        min > max ? throw new ArgumentException($"MinMaxException ({nameof(min)}={min} > {nameof(max)}={max})") :
-        (value < min ? min : (value > max ? max : value));
+    public static int ClampImplicit(int value, int a, int b)
+    {
+        int max, min;
+        if (a > b)
+        {
+            max = a;
+            min = b;
+        }
+        else
+        {
+            max = b;
+            min = a;
+        }
+        return value < min ? min : (value > max ? max : value);
+    }
+
+    /// <summary> determines the min and max implicitly from a and b </summary>
+    /// <returns> min ≤ value ≤ max </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static uint ClampImplicit(uint value, uint a, uint b)
+    {
+        uint max, min;
+        if (a > b)
+        {
+            max = a;
+            min = b;
+        }
+        else
+        {
+            max = b;
+            min = a;
+        }
+        return value < min ? min : (value > max ? max : value);
+    }
+
+    /// <summary> determines the min and max implicitly from a and b </summary>
+    /// <returns> min ≤ value ≤ max </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static long ClampImplicit(long value, long a, long b)
+    {
+        long max, min;
+        if (a > b)
+        {
+            max = a;
+            min = b;
+        }
+        else
+        {
+            max = b;
+            min = a;
+        }
+        return value < min ? min : (value > max ? max : value);
+    }
+
+    /// <summary> determines the min and max implicitly from a and b </summary>
+    /// <returns> min ≤ value ≤ max </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ulong ClampImplicit(ulong value, ulong a, ulong b)
+    {
+        ulong max, min;
+        if (a > b)
+        {
+            max = a;
+            min = b;
+        }
+        else
+        {
+            max = b;
+            min = a;
+        }
+        return value < min ? min : (value > max ? max : value);
+    }
+
+    /// <summary> determines the min and max implicitly from a and b </summary>
+    /// <returns> min ≤ value ≤ max </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static short ClampImplicit(short value, short a, short b)
+    {
+        short max, min;
+        if (a > b)
+        {
+            max = a;
+            min = b;
+        }
+        else
+        {
+            max = b;
+            min = a;
+        }
+        return value < min ? min : (value > max ? max : value);
+    }
+
+    /// <summary> determines the min and max implicitly from a and b </summary>
+    /// <returns> min ≤ value ≤ max </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ushort ClampImplicit(ushort value, ushort a, ushort b)
+    {
+        ushort max, min;
+        if (a > b)
+        {
+            max = a;
+            min = b;
+        }
+        else
+        {
+            max = b;
+            min = a;
+        }
+        return value < min ? min : (value > max ? max : value);
+    }
+
+    /// <summary> determines the min and max implicitly from a and b </summary>
+    /// <returns> min ≤ value ≤ max </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static sbyte ClampImplicit(sbyte value, sbyte a, sbyte b)
+    {
+        sbyte max, min;
+        if (a > b)
+        {
+            max = a;
+            min = b;
+        }
+        else
+        {
+            max = b;
+            min = a;
+        }
+        return value < min ? min : (value > max ? max : value);
+    }
+
+    /// <summary> determines the min and max implicitly from a and b </summary>
+    /// <returns> min ≤ value ≤ max </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static byte ClampImplicit(byte value, byte a, byte b)
+    {
+        byte max, min;
+        if (a > b)
+        {
+            max = a;
+            min = b;
+        }
+        else
+        {
+            max = b;
+            min = a;
+        }
+        return value < min ? min : (value > max ? max : value);
+    }
+
+    /// <summary> determines the min and max implicitly from a and b </summary>
+    /// <returns> min ≤ value ≤ max </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float ClampImplicit(float value, float a, float b)
+    {
+        float max, min;
+        if (a > b)
+        {
+            max = a;
+            min = b;
+        }
+        else
+        {
+            max = b;
+            min = a;
+        }
+        return value < min ? min : (value > max ? max : value);
+    }
+
+    /// <summary> determines the min and max implicitly from a and b </summary>
+    /// <returns> min ≤ value ≤ max </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static double ClampImplicit(double value, double a, double b)
+    {
+        double max, min;
+        if (a > b)
+        {
+            max = a;
+            min = b;
+        }
+        else
+        {
+            max = b;
+            min = a;
+        }
+        return value < min ? min : (value > max ? max : value);
+    }
     #endregion
     
     #region Closest
@@ -1387,8 +1579,6 @@ public static partial class Math
     #endregion
 
     #region SqrRoot
-    //https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/ieee754/dbl-64/e_sqrt.c;h=9913d35da9d272e22893e3d343260efe4a4f5af7;hb=HEAD
-    
     /// <returns> Approximate square root of 'value' </returns>
     /// <remarks> Results are less accurate the closer to zero they are </remarks>
     public static float SqrRoot(uint value)
