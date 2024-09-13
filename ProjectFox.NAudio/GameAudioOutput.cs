@@ -35,8 +35,9 @@ public sealed class GameAudioOutput//GameAudioPlayback? GameAudioPlayer?
         }
     }
 
-    public GameAudioOutput()
+    public GameAudioOutput(int latency = 60)
     {
+        waveOut.DesiredLatency = latency;
         waveOut.Init(provider);
         Engine.FrameComplete += FrameComplete;
     }
