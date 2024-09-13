@@ -36,8 +36,9 @@ public abstract class AudioSource : Object2D
 
         if (!channel.audible) return;
 
-        bool isPet = owner != null;
-        if ((!isPet && scene != channel.scene) || (isPet && owner.scene != channel.scene))
+        Scene scene = owner == null ? this.scene : (owner.owner == null ? owner.scene : owner.Scene);
+
+        if (scene != channel.scene)
             Engine.SendError(ErrorCodes.AudioChannelNotInScene, name, channel.name.ToString(),
                 $"AudioSource '{name}' drew to channel from a null/different scene");
 
