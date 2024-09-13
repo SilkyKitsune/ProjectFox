@@ -50,6 +50,8 @@ public abstract class AudioSource : Object2D
             return;
         }
 
+        if (waveShape.Length == 0) return;//length error?
+
         bool noVol = volume == 0f || (leftVolume == 0f && rightVolume == 0) ||
             channel.volume == 0 || (channel.leftVolume == 0f && rightVolume == 0f);
 
