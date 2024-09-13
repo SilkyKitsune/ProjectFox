@@ -5,6 +5,106 @@ namespace ProjectFox.CoreEngine.Math;
 
 public partial struct Vector
 {
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector Max(Vector a, Vector b) => a.DistanceFromZeroSquared() > b.DistanceFromZeroSquared() ? a : b;
+
+    public static Vector Max(params Vector[] values)
+    {
+        if (values.Length == 0) throw new ArgumentNullException(nameof(values));
+        if (values.Length == 1) return values[0];
+
+        Vector max = values[0];
+        float delta = max.DistanceFromZeroSquared(), newDelta;
+
+        foreach (Vector v in values)
+            if (!max.Equals(v))
+            {
+                newDelta = v.DistanceFromZeroSquared();
+                if (newDelta > delta)
+                {
+                    max = v;
+                    delta = newDelta;
+                }
+            }
+        return max;
+    }
+
+    public static int MaxIndex(Vector[] values)
+    {
+        if (values.Length == 0) throw new ArgumentNullException(nameof(values));
+        if (values.Length == 1) return 0;
+
+        int max = 0;
+        float delta = values[max].DistanceFromZeroSquared(), newDelta;
+
+        for (int i = 1; i < values.Length; i++)
+        {
+            Vector current = values[i];
+            if (!values[max].Equals(current))
+            {
+                newDelta = current.DistanceFromZeroSquared();
+                if (newDelta > delta)
+                {
+                    max = i;
+                    delta = newDelta;
+                }
+            }
+        }
+        return max;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector Min(Vector a, Vector b) => a.DistanceFromZeroSquared() < b.DistanceFromZeroSquared() ? a : b;
+
+    public static Vector Min(params Vector[] values)
+    {
+        if (values.Length == 0) throw new ArgumentNullException(nameof(values));
+        if (values.Length == 1) return values[0];
+
+        Vector min = values[0];
+        float delta = min.DistanceFromZeroSquared(), newDelta;
+
+        foreach (Vector v in values)
+        {
+            if (v.IsZero()) return v;
+            if (!min.Equals(v))
+            {
+                newDelta = v.DistanceFromZeroSquared();
+                if (newDelta < delta)
+                {
+                    min = v;
+                    delta = newDelta;
+                }
+            }
+        }
+        return min;
+    }
+
+    public static int MinIndex(Vector[] values)
+    {
+        if (values.Length == 0) throw new ArgumentNullException(nameof(values));
+        if (values.Length == 1) return 0;
+
+        int min = 0;
+        float delta = values[min].DistanceFromZeroSquared(), newDelta;
+
+        for (int i = 1; i < values.Length; i++)
+        {
+            Vector current = values[i];
+            if (current.IsZero()) return i;
+            if (!values[min].Equals(current))
+            {
+                newDelta = current.DistanceFromZeroSquared();
+                if (newDelta < delta)
+                {
+                    min = i;
+                    delta = newDelta;
+                }
+            }
+        }
+        return min;
+    }
+
     /// <returns> new vector of ( | x | , | y | )  </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Vector Abs() => new(Math.Abs(x), Math.Abs(y));
@@ -217,102 +317,6 @@ public partial struct Vector
     /// <returns> true if (this = (0, 0)) </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsZero() => x == 0 && y == 0;
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Vector Max(Vector value) => DistanceFromZeroSquared() > value.DistanceFromZeroSquared() ? this : value;
-
-    public Vector Max(params Vector[] values)
-    {
-        if (values.Length == 0) return this;
-
-        float delta = DistanceFromZeroSquared(), newDelta;
-
-        Vector max = this;
-        foreach (Vector v in values)
-            if (!max.Equals(v))
-            {
-                newDelta = v.DistanceFromZeroSquared();
-                if (newDelta > delta)
-                {
-                    max = v;
-                    delta = newDelta;
-                }
-            }
-        return max;
-    }
-
-    public int MaxIndex(Vector[] values)
-    {
-        if (values.Length == 0) return -1;//is this okay?
-
-        float delta = DistanceFromZeroSquared(), newDelta;
-
-        int max = -1;//this will throw exception
-        for (int i = 0; i < values.Length; i++)
-        {
-            Vector current = values[i];
-            if (!values[max].Equals(current))
-            {
-                newDelta = current.DistanceFromZeroSquared();
-                if (newDelta > delta)
-                {
-                    max = i;
-                    delta = newDelta;
-                }
-            }
-        }
-        return max;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Vector Min(Vector value) => DistanceFromZeroSquared() < value.DistanceFromZeroSquared() ? this : value;
-
-    public Vector Min(params Vector[] values)
-    {
-        if (values.Length == 0 || IsZero()) return this;
-
-        float delta = DistanceFromZeroSquared(), newDelta;
-
-        Vector min = this;
-        foreach (Vector v in values)
-        {
-            if (v.IsZero()) return v;
-            if (!min.Equals(v))
-            {
-                newDelta = v.DistanceFromZeroSquared();
-                if (newDelta < delta)
-                {
-                    min = v;
-                    delta = newDelta;
-                }
-            }
-        }
-        return min;
-    }
-
-    public int MinIndex(Vector[] values)
-    {
-        if (values.Length == 0 || IsZero()) return -1;//is this okay?
-
-        float delta = DistanceFromZeroSquared(), newDelta;
-
-        int min = 1;//this will throw exception
-        for (int i = 0; i < values.Length; i++)
-        {
-            Vector current = values[i];
-            if (current.IsZero()) return i;
-            if (!values[min].Equals(current))
-            {
-                newDelta = current.DistanceFromZeroSquared();
-                if (newDelta < delta)
-                {
-                    min = i;
-                    delta = newDelta;
-                }
-            }
-        }
-        return min;
-    }
 
     /// <param name="amount"> the absolute distance to move 'this' to (0, 0) </param>
     /// <remarks> has no effect if (amount ≤ 0) </remarks>

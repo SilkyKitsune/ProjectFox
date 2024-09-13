@@ -5,6 +5,30 @@ namespace ProjectFox.CoreEngine.Math;
 
 public partial struct Rectangle
 {
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static Rectangle Max(Rectangle a, Rectangle b) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static Rectangle Max(params Rectangle[] values) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static int MaxIndex(Rectangle[] values) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static Rectangle Min(Rectangle a, Rectangle b) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static Rectangle Min(params Rectangle[] values) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static int MinIndex(Rectangle[] values) => default;
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Rectangle Abs() =>
         new(Math.Abs(position.x), Math.Abs(position.y),
@@ -207,30 +231,6 @@ public partial struct Rectangle
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsZero() => position.x == 0 && position.y == 0 && size.x == 0 && size.y == 0;
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public Rectangle Max(Rectangle value) => default;
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public Rectangle Max(params Rectangle[] values) => default;
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public int MaxIndex(Rectangle[] values) => default;
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public Rectangle Min(Rectangle value) => default;
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public Rectangle Min(params Rectangle[] values) => default;
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public int MinIndex(Rectangle[] values) => default;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void MoveToZero(int amount)

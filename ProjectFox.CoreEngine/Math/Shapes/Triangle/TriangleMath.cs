@@ -5,6 +5,30 @@ namespace ProjectFox.CoreEngine.Math;
 
 public partial struct Triangle
 {
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static Triangle Max(Triangle a, Triangle b) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static Triangle Max(params Triangle[] values) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static int MaxIndex(Triangle[] values) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static Triangle Min(Triangle a, Triangle b) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static Triangle Min(params Triangle[] values) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static int MinIndex(Triangle[] values) => default;
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Triangle Abs() =>
         new(Math.Abs(a.x), Math.Abs(a.y),
@@ -204,30 +228,6 @@ public partial struct Triangle
         a.x == 0 && a.y == 0 &&
         b.x == 0 && b.y == 0 &&
         c.x == 0 && c.y == 0;
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public Triangle Max(Triangle value) => default;
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public Triangle Max(params Triangle[] values) => default;
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public int MaxIndex(Triangle[] values) => default;
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public Triangle Min(Triangle value) => default;
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public Triangle Min(params Triangle[] values) => default;
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public int MinIndex(Triangle[] values) => default;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void MoveToZero(int amount)

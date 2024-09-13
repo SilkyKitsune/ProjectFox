@@ -5,6 +5,30 @@ namespace ProjectFox.CoreEngine.Math;
 
 public partial struct RectangleF
 {
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static RectangleF Max(RectangleF a, RectangleF b) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static RectangleF Max(params RectangleF[] values) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static int MaxIndex(RectangleF[] values) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static RectangleF Min(RectangleF a, RectangleF b) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static RectangleF Min(params RectangleF[] values) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static int MinIndex(RectangleF[] values) => default;
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public RectangleF Abs() =>
         new(Math.Abs(position.x), Math.Abs(position.y),
@@ -172,30 +196,6 @@ public partial struct RectangleF
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsZero() => position.x == 0 && position.y == 0 && size.x == 0 && size.y == 0;
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public RectangleF Max(RectangleF value) => default;
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public RectangleF Max(params RectangleF[] values) => default;
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public int MaxIndex(RectangleF[] values) => default;
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public RectangleF Min(RectangleF value) => default;
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public RectangleF Min(params RectangleF[] values) => default;
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public int MinIndex(RectangleF[] values) => default;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void MoveToZero(float amount)

@@ -5,6 +5,31 @@ namespace ProjectFox.CoreEngine.Math;
 
 public partial struct TriangleF
 {
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static TriangleF Max(TriangleF a, TriangleF b) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static TriangleF Max(params TriangleF[] values) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static int MaxIndex(TriangleF[] values) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static TriangleF Min(TriangleF a, TriangleF b) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static TriangleF Min(params TriangleF[] values) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static int MinIndex(TriangleF[] values) => default;
+
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public TriangleF Abs() =>
         new(Math.Abs(a.x), Math.Abs(a.y),
@@ -198,30 +223,6 @@ public partial struct TriangleF
         a.x == 0 && a.y == 0 &&
         b.x == 0 && b.y == 0 &&
         c.x == 0 && c.y == 0;
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public TriangleF Max(TriangleF value) => default;
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public TriangleF Max(params TriangleF[] values) => default;
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public int MaxIndex(TriangleF[] values) => default;
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public TriangleF Min(TriangleF value) => default;
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public TriangleF Min(params TriangleF[] values) => default;
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public int MinIndex(TriangleF[] values) => default;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void MoveToZero(float amount)

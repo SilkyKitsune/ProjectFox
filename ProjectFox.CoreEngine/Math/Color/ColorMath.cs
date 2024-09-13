@@ -6,6 +6,106 @@ namespace ProjectFox.CoreEngine.Math;
 public partial struct Color
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Color Max(Color a, Color b) => a.DistanceFromZeroSquared() > b.DistanceFromZeroSquared() ? a : b;
+
+    public static Color Max(params Color[] values)
+    {
+        if (values.Length == 0) throw new ArgumentNullException(nameof(values));
+        if (values.Length == 1) return values[0];
+
+        Color max = values[0];
+        float delta = max.DistanceFromZeroSquared(), newDelta;
+
+        foreach (Color c in values)
+            if (!max.Equals(c))
+            {
+                newDelta = c.DistanceFromZeroSquared();
+                if (newDelta > delta)
+                {
+                    max = c;
+                    delta = newDelta;
+                }
+            }
+        return max;
+    }
+
+    public static int MaxIndex(Color[] values)
+    {
+        if (values.Length == 0) throw new ArgumentNullException(nameof(values));
+        if (values.Length == 1) return 0;
+
+        int max = 0;
+        float delta = values[max].DistanceFromZeroSquared(), newDelta;
+
+        for (int i = 1; i < values.Length; i++)
+        {
+            Color current = values[i];
+            if (!values[max].Equals(current))
+            {
+                newDelta = current.DistanceFromZeroSquared();
+                if (newDelta > delta)
+                {
+                    max = i;
+                    delta = newDelta;
+                }
+            }
+        }
+        return max;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Color Min(Color a, Color b) => a.DistanceFromZeroSquared() < b.DistanceFromZeroSquared() ? a : b;
+
+    public static Color Min(params Color[] values)
+    {
+        if (values.Length == 0) throw new ArgumentNullException(nameof(values));
+        if (values.Length == 1) return values[0];
+
+        Color min = values[0];
+        float delta = min.DistanceFromZeroSquared(), newDelta;
+
+        foreach (Color c in values)
+        {
+            if (c.IsZero()) return c;
+            if (!min.Equals(c))
+            {
+                newDelta = c.DistanceFromZeroSquared();
+                if (newDelta < delta)
+                {
+                    min = c;
+                    delta = newDelta;
+                }
+            }
+        }
+        return min;
+    }
+
+    public static int MinIndex(Color[] values)
+    {
+        if (values.Length == 0) throw new ArgumentNullException(nameof(values));
+        if (values.Length == 1) return 0;
+
+        int min = 0;
+        float delta = values[min].DistanceFromZeroSquared(), newDelta;
+
+        for (int i = 1; i < values.Length; i++)
+        {
+            Color current = values[i];
+            if (current.IsZero()) return i;
+            if (!values[min].Equals(current))
+            {
+                newDelta = current.DistanceFromZeroSquared();
+                if (newDelta < delta)
+                {
+                    min = i;
+                    delta = newDelta;
+                }
+            }
+        }
+        return min;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Color Abs() => this;
 
     #region Between
@@ -209,102 +309,6 @@ public partial struct Color
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsZero() => hex == 0u;
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Color Max(Color value) => DistanceFromZeroSquared() > value.DistanceFromZeroSquared() ? this : value;
-
-    public Color Max(params Color[] values)
-    {
-        if (values.Length == 0) return this;
-
-        float delta = DistanceFromZeroSquared(), newDelta;
-
-        Color max = this;
-        foreach (Color c in values)
-            if (!max.EqualsColor(c))
-            {
-                newDelta = c.DistanceFromZeroSquared();
-                if (newDelta > delta)
-                {
-                    max = c;
-                    delta = newDelta;
-                }
-            }
-        return max;
-    }
-
-    public int MaxIndex(Color[] values)
-    {
-        if (values.Length == 0) return -1;//is this okay?
-
-        float delta = DistanceFromZeroSquared(), newDelta;
-
-        int max = -1;
-        for (int i = 0; i < values.Length; i++)
-        {
-            Color current = values[i];
-            if (!values[max].Equals(current))
-            {
-                newDelta = current.DistanceFromZeroSquared();
-                if (newDelta > delta)
-                {
-                    max = i;
-                    delta = newDelta;
-                }
-            }
-        }
-        return max;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Color Min(Color value) => DistanceFromZeroSquared() < value.DistanceFromZeroSquared() ? this : value;
-
-    public Color Min(params Color[] values)
-    {
-        if (values.Length == 0 || IsBlack()) return this;
-
-        float delta = DistanceFromZeroSquared(), newDelta;
-
-        Color min = this;
-        foreach (Color c in values)
-        {
-            if (c.IsBlack()) return c;
-            if (!min.EqualsColor(c))
-            {
-                newDelta = c.DistanceFromZeroSquared();
-                if (newDelta < delta)
-                {
-                    min = c;
-                    delta = newDelta;
-                }
-            }
-        }
-        return min;
-    }
-
-    public int MinIndex(Color[] values)
-    {
-        if (values.Length == 0 || IsZero()) return -1;//is this okay?
-
-        float delta = DistanceFromZeroSquared(), newDelta;
-
-        int min = 1;
-        for (int i = 0; i < values.Length; i++)
-        {
-            Color current = values[i];
-            if (current.IsZero()) return i;
-            if (!values[min].Equals(current))
-            {
-                newDelta = current.DistanceFromZeroSquared();
-                if (newDelta < delta)
-                {
-                    min = i;
-                    delta = newDelta;
-                }
-            }
-        }
-        return min;
-    }
 
     public void MoveToZero(byte amount)
     {

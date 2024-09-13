@@ -7,8 +7,26 @@ namespace ProjectFox.CoreEngine.Math;
 /// <typeparam name="F"> equivalent floating point type, use inheriting type for floating point types </typeparam>
 public interface IMath<T, F> : IData<T>
 {
+    /// <summary> equivalent to the Math.Max method </summary>
+    public static abstract T Max(T a, T b);
+
+    /// <summary> equivalent to the Math.Max method </summary>
+    public static abstract T Max(params T[] values);
+
+    /// <summary> equivalent to the Math.MaxIndex method </summary>
+    public static abstract int MaxIndex(T[] values);
+
+    /// <summary> equivalent to the Math.Min method </summary>
+    public static abstract T Min(T a, T b);
+
+    /// <summary> equivalent to the Math.Min method </summary>
+    public static abstract T Min(params T[] values);
+
+    /// <summary> equivalent to the Math.MinIndex method </summary>
+    public static abstract int MinIndex(T[] values);
+
     //operators
-    
+
     /// <summary> equivalent to the Math.Abs method </summary>
     public abstract T Abs();
 
@@ -61,24 +79,6 @@ public interface IMath<T, F> : IData<T>
 
     /// <summary> if the value is equal to zero </summary>
     public abstract bool IsZero();
-
-    /// <summary> equivalent to the Math.Max method </summary>
-    public abstract T Max(T value);//static?
-
-    /// <summary> equivalent to the Math.Max method </summary>
-    public abstract T Max(params T[] values);//static?
-
-    /// <summary> equivalent to the Math.MaxIndex method </summary>
-    public abstract int MaxIndex(T[] values);//static?
-
-    /// <summary> equivalent to the Math.Min method </summary>
-    public abstract T Min(T value);//static?
-
-    /// <summary> equivalent to the Math.Min method </summary>
-    public abstract T Min(params T[] values);//static?
-
-    /// <summary> equivalent to the Math.MinIndex method </summary>
-    public abstract int MinIndex(T[] values);//static?
 
     public abstract void MoveToZero(T amount);
 
