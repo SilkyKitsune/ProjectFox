@@ -1420,7 +1420,7 @@ public static partial class Math
     }
     #endregion
 
-    public static int[] StepInterpolate(float value)//need to review this method, make sure it works
+    public static int[] StepInterpolate(float value)
     {
         bool neg = value < 0f;
         if (neg) value = -value;
@@ -1435,8 +1435,8 @@ public static partial class Math
             fraction = 0f;
         }
 
-        if (fraction == 0f) return new int[] { number };
-        if (fraction == 0.5f) return new int[] { number + 1, number };
+        if (fraction == 0f) return new int[1] { number };
+        if (fraction == 0.5f) return new int[2] { number + 1, number };
 
         float highSteps = fraction;
         int steps = 1;
@@ -1445,11 +1445,10 @@ public static partial class Math
         bool upper = fraction >= 0.5f;
 
         int[] array = new int[steps];
-        for (int i = 0, count = 0, 
-            secondarySteps = upper ? steps - (int)highSteps : (int)highSteps,
+        for (int i = 0, count = 0, nextIndex = 0,
+            secondarySteps = upper ? array.Length - (int)highSteps : (int)highSteps,
             primary = upper ? number + 1 : number, secondary = upper ? number : number + 1,
-            interval = Round(steps / (float)secondarySteps),//sometimes this needs to round up and sometimes down, not sure when which
-            nextIndex = /*upper ? interval - 1 :*/ 0;//this was the problem I think
+            interval = Round(array.Length / (float)secondarySteps);
             i < array.Length; i++)
         {
             if (count < secondarySteps && i == nextIndex)
