@@ -541,7 +541,7 @@ public static partial class Math
         return value < min ? min : (value > max ? max : value);
     }
     #endregion
-    
+
     #region Closest
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int Closest(int reference, int a, int b) => Abs(reference - a) < Abs(reference - b) ? a : b;
@@ -1530,6 +1530,50 @@ public static partial class Math
         return neg ? -i : i;
     }
 
+    #region Scale
+    public static T[] Scale<T>(T[] array, int newLength)
+    {
+        if (array == null) throw new ArgumentNullException(nameof(array));
+
+        if (newLength < 0) throw new ArgumentException($"{nameof(newLength)} cannot be negative");
+
+        if (array.Length == 0 || newLength == 0) return new T[0];
+
+        if (array.Length == newLength) return array;//copy?
+
+        T[] newArray = new T[newLength];
+        float l = array.Length, nl = newArray.Length;
+
+        for (int i = 0, lastIndex = array.Length - 1; i < newArray.Length; i++)
+        {
+            int i_ = (int)(i / nl * l);
+            newArray[i] = array[i_ >= array.Length ? lastIndex : i_];
+        }
+        return newArray;
+    }
+    
+    public static T[] Scale<T>(T[] array, float lengthModifier)
+    {
+        if (array == null) throw new ArgumentNullException(nameof(array));
+
+        if (lengthModifier < 0f) throw new ArgumentException($"{nameof(lengthModifier)} cannot be negative");
+
+        if (array.Length == 0 || lengthModifier == 0f) return new T[0];
+
+        if (lengthModifier == 1f) return array;//copy?
+
+        float l = array.Length, nl = array.Length * lengthModifier;
+        T[] newArray = new T[(int)nl];
+
+        for (int i = 0, lastIndex = array.Length - 1; i < newArray.Length; i++)
+        {
+            int i_ = (int)(i / nl * l);
+            newArray[i] = array[i_ >= array.Length ? lastIndex : i_];
+        }
+        return newArray;
+    }
+    #endregion
+
     #region Sign
     [MethodImpl(MethodImplOptions.AggressiveInlining)]//rename?
     public static Sign FindSign(int value) => value < 0 ? Sign.Neg : (value > 0 ? Sign.Pos : Sign.Zero);
@@ -1631,7 +1675,7 @@ public static partial class Math
         float highSteps = fraction;
         int steps = 1;
         while (HasFraction(highSteps)) highSteps = FixFraction(fraction * ++steps);
-
+        
         bool upper = fraction >= 0.5f;
 
         int[] array = new int[steps];
