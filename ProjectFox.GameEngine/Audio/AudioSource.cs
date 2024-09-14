@@ -139,7 +139,7 @@ public class SampleSource : AudioSource//move to own file?
 }
 
 #if DEBUG
-public class OSCSource : AudioSource//OscillatorSource?, move to own file
+public class OscillatorSource : AudioSource
 {
     public enum InterpolationMode
     {
@@ -205,12 +205,12 @@ public class OSCSource : AudioSource//OscillatorSource?, move to own file
 
     //public OSCSource(NameID name) default to sine?
 
-    private OSCSource(NameID name, Sample[][][] waveShapes/*, bool interpolateEmptyNotes*/) : base(name)
+    private OscillatorSource(NameID name, Sample[][][] waveShapes/*, bool interpolateEmptyNotes*/) : base(name)
     {
 
     }
 
-    public OSCSource(NameID name, Sample[] waveShape, int octave, Note note/*, float pitchOffset = 0f, float freqOffset = 0f*/) : base(name)
+    public OscillatorSource(NameID name, Sample[] waveShape, int octave, Note note/*, float pitchOffset = 0f, float freqOffset = 0f*/) : base(name)
     {
         if (octave < 0 || octave >= waveShapes.Length)
         {
