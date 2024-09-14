@@ -139,7 +139,7 @@ public class SampleSource : AudioSource//move to own file?
 }
 
 #if DEBUG
-internal class OSCSource : AudioSource
+public class OSCSource : AudioSource//OscillatorSource?, move to own file
 {
     public enum InterpolationMode
     {
@@ -148,25 +148,42 @@ internal class OSCSource : AudioSource
         Both
     }
 
-    public enum Note
+    public enum Note : int
     {
+        ///
         CNatural = 0,
+        ///
         CSharp = 1,
+        ///
         DNatural = 2,
+        ///
         DSharp = 3,
+        ///
         ENatural = 4,
+        ///
         FNatural = 5,
+        ///
         FSharp = 6,
+        ///
         GNatural = 7,
+        ///
         GSharp = 8,
+        ///
         ANatural = 9,
+        ///
         ASharp = 10,
+        ///
         BNatural = 11,
 
+        ///
         DFlat = CSharp,
+        ///
         EFlat = DSharp,
+        ///
         GFlat = FSharp,
+        ///
         AFlat = GSharp,
+        ///
         BFlat = ASharp,
     }
 
@@ -188,65 +205,141 @@ internal class OSCSource : AudioSource
 
     //public OSCSource(NameID name) default to sine?
 
-    public OSCSource(NameID name, Sample[] waveShape/*, int octave?*/) : base(name) { }//input an A4 note 440hz?
-
-    //Sample[][] single cycle waveforms, each Sample[] is an A note, octaves 0-9
-    private readonly Sample[][] waveShapes = new Sample[10][];
-
-    public InterpolationMode mode = InterpolationMode.Up;
-
-    public bool repeat = true;//rename? oneShot?
-
-    public Note note = Note.ANatural;//should note/oct be properties to reset wave offset?
-
-    public int octave = 4;
-
-    public float pitchOffest = 0f;//, phase = 0f?
-
-    //samplerate?
-
-    //polyphony?
-
-    protected override Sample[] GetDrawInfo()
+    private OSCSource(NameID name, Sample[][][] waveShapes/*, bool interpolateEmptyNotes*/) : base(name)
     {
-        bool down = note < Note.ANatural, up = note > Note.ANatural;
 
-        int oct = 0;//temp
-        
-        //how to tell if note is above or below A?
-        Sample[] baseNote = waveShapes[oct], output = new Sample[channel.samples.Length];
-        //float freq = freqs[(int)note] * Math.Pow(2, octave);
-        if (note != Note.ANatural)//down || up
-        {
-            Sample[] newNote = new Sample[0];//temp length
-
-            switch (mode)
-            {
-                case InterpolationMode.Up:
-                    for (int i = 0; i < newNote.Length; i++)
-                    {
-                        float f = (float)i / newNote.Length * baseNote.Length;
-                        //newNote[i] = (baseNote[((int)f) + 1] - baseNote[(int)f]) * Math.fraction(f) + baseNote[(int)f];
-                        newNote[i] = baseNote[(int)f];//temp
-                    }
-                    break;
-                case InterpolationMode.Down:
-                    break;
-                case InterpolationMode.Both:
-                    break;
-            }
-
-            baseNote = newNote;
-        }
-
-        int offset = 0;//make member
-        for (int i = 0; i < output.Length; i++, offset++)//copy until waveShape ends, leave empty zeros after, this is for oneShot waveShapes
-            output[i] = baseNote[Math.Wrap(offset, 0, baseNote.Length)];
-
-        return Engine.SendError<Sample[]>(ErrorCodes.NotImplemented, name);
     }
 
-    //public void SetNote(int octave, Note note, float pitchOffest = 0f) { }//?
+    public OSCSource(NameID name, Sample[] waveShape, int octave, Note note/*, float pitchOffset = 0f, float freqOffset = 0f*/) : base(name)
+    {
+        if (octave < 0 || octave >= waveShapes.Length)
+        {
+            Engine.SendError(ErrorCodes.BadArgument, name, nameof(octave), "Octave must be witin 0-9!");
+            octave = 4;
+        }
+
+        if (note < Note.CNatural || note > Note.BNatural)
+        {
+            Engine.SendError(ErrorCodes.BadArgument, name, nameof(note), "Note must be a valid constant!");
+            note = Note.ANatural;
+        }
+
+        float baseFreq = freqs[(int)note];
+        for (int k = 0; k < octave; k++) baseFreq *= 2;
+
+        for (int i = 0; i < waveShapes.Length; i++)
+        {
+            Sample[][] oct = waveShapes[i] = new Sample[12][];
+            for (int j = 0; j < oct.Length; j++)
+            {
+                float f = freqs[j];
+                for (int k = 0; k < i; k++) f *= 2;
+                oct[j] = Math.Scale(waveShape, baseFreq / f);
+            }
+        }
+    }
+
+    private readonly Sample[][][] waveShapes = new Sample[10][][];//[Octaves][Notes][WaveShapes]
+
+    private int waveShapeIndex = 0, octave = 4;
+
+    private Note note = Note.ANatural;
+
+    public bool repeatWaveShape = true, resetPhase = true;//rename resetPhase?
+    
+    public float pitchOffset = 0f, freqOffset = 0f;//, phase = 0f?
+
+    //samplerate?, polyphony?
+
+    public int Octave
+    {
+        get => octave;
+        set
+        {
+            if (value != octave)
+            {
+                octave = Math.Clamp(value, 0, waveShapes.Length);
+                if (resetPhase) waveShapeIndex = 0;//phase
+            }
+        }
+    }
+
+    public Note Note_//temp name
+    {
+        get => note;
+        set
+        {
+            if (value != note)
+            {
+                note = (Note)Math.Clamp((int)value, (int)Note.CNatural, (int)Note.BNatural);//is this okay?
+                if (resetPhase) waveShapeIndex = 0;//phase
+            }
+        }
+    }
+        
+    protected override Sample[] GetDrawInfo()
+        {
+        int octave = this.octave, note = (int)this.note;
+        float pitchOffset = this.pitchOffset;
+
+        //could this be simplified?
+        if (pitchOffset >= 1f)
+            {
+            int p = (int)pitchOffset, max = (int)Note.BNatural;
+            pitchOffset -= p;
+            note += p;
+            while (note > max)
+                    {
+                note = note - max;
+                octave++;
+            }
+            if (octave >= waveShapes.Length) octave = waveShapes.Length - 1;
+        }
+        else if (pitchOffset <= -1f)
+        {
+            int p = (int)pitchOffset, max = (int)Note.BNatural, min = (int)Note.CNatural;
+            pitchOffset -= p;
+            note += p;
+            while (note < min)
+            {
+                note = max + note;
+                octave--;
+                    }
+            if (octave < 0) octave = 0;
+            }
+        //print vars for debug
+        
+        Sample[] baseNote = waveShapes[octave][note], output = new Sample[channel.samples.Length];
+
+        if (pitchOffset != 0f || freqOffset != 0f)
+        {
+            float baseFreq = freqs[(int)note];
+            for (int k = 0; k < octave; k++) baseFreq *= 2;
+
+            //what to do with pitchOffset?
+
+            //outFreq += freqOffset
+
+            //baseNote
+        }
+
+        waveShapeIndex = Math.Wrap(waveShapeIndex, 0, baseNote.Length - 1);//inline later
+        //will this condition work?
+        for (int i = 0; i < output.Length && (repeatWaveShape || waveShapeIndex < baseNote.Length); i++, waveShapeIndex++)//copy until waveShape ends, leave empty zeros after, this is for oneShot waveShapes
+            output[i] = baseNote[Math.Wrap(waveShapeIndex, 0, baseNote.Length - 1)];//inline later
+
+        return output;
+    }
+
+    public void SetNote(int octave, Note note)
+    {
+        if (octave != this.octave || note != this.note)
+        {
+            octave = Math.Clamp(octave, 0, waveShapes.Length);
+            note = (Note)Math.Clamp((int)note, (int)Note.CNatural, (int)Note.BNatural);//is this okay?
+            if (resetPhase) waveShapeIndex = 0;//phase
+        }
+    }
 
     //public void SetNote(float freq) { }//?
 }
