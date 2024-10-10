@@ -16,7 +16,7 @@ public abstract class DrawingWindow : InputWindow
 
     protected void SendRedrawMessage(Color[] pixels, Vector dimensions)//should this have a control bool for minimized?
     {
-        if (Minimized || pixels == null || pixels.Length == 0 || dimensions.x <= 0 || dimensions.y <= 0) return;
+        if (pixels == null || pixels.Length == 0 || dimensions.x <= 0 || dimensions.y <= 0 || Minimized) return;
 
         buffer = pixels;
         bufferDimensions = dimensions;
