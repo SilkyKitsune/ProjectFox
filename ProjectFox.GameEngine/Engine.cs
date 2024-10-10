@@ -1,11 +1,12 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Threading;
 using ProjectFox.CoreEngine.Math;
-#if DEBUG
-using ProjectFox.CoreEngine.Utility;
-#endif
 using ProjectFox.GameEngine.Input;
 using ProjectFox.GameEngine.Visuals;
+
+using Stopwatch =
+    //ProjectFox.CoreEngine.Utility.Stopwatch;
+    System.Diagnostics.Stopwatch;
 
 namespace ProjectFox.GameEngine;
 
@@ -113,17 +114,17 @@ public static class Engine
             running = true;
             engineThread = new(() =>
             {
-                System.Diagnostics.Stopwatch stopwatch = new();
+                Stopwatch stopwatch = new();
                 stopwatch.Start();
 
                 while (running)
                 {
                     float ticks = stopwatch.ElapsedTicks;//should this be a float?
+                    if (
 #if DEBUG
-                    if (uncapped || ticks >= ticksPerFrame)//could uncapped run over 300 fps?
-#else
-                    if (ticks >= ticksPerFrame)
+                        uncapped ||//could uncapped run over 300 fps?
 #endif
+                        ticks >= ticksPerFrame)
                     {
                         //stopwatch.Reset();
                         stopwatch.Restart();
