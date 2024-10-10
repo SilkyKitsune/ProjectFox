@@ -1,5 +1,4 @@
-﻿using System;
-using ProjectFox.CoreEngine.Math;
+﻿using ProjectFox.CoreEngine.Math;
 
 namespace ProjectFox.Windows;
 
@@ -590,8 +589,11 @@ public struct KeyboardMouseState
                 OEM8 = value;
                 break;
 
+#if DEBUG
             default:
-                throw new Exception($"Invalid KeyCode '{keyCode}'");//mute key throws exception
+                System.Diagnostics.Debug.WriteLine($"Unknown KeyCode '{keyCode}'");
+                break;
+#endif
         }
     }
 }
