@@ -12,7 +12,7 @@ public abstract class RasterObject : Object2D
     public bool visible = true;
 
     public VectorF parallaxFactor = new(1f, 1f);
-
+    
 #if DEBUG
     public bool drawTextureBounds = false;
 
@@ -64,6 +64,8 @@ public abstract class RasterObject : Object2D
             Engine.SendError(ErrorCodes.NullTexture, name);
             return;
         }
+
+        if (texture.dimensions.x <= 0 || texture.dimensions.y <= 0) return;//size error?
 
         Rectangle textureArea = new(
             horizontalFlipOffset ? position.x - texture.dimensions.x - drawOffset.x + (flipOffsetOnPixel ? 1 : 0) : position.x + drawOffset.x,
