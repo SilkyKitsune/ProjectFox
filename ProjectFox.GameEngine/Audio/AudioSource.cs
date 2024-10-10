@@ -8,13 +8,11 @@ public abstract class AudioSource : Object2D
 {
     public AudioSource(NameID name) : base(name) { }
 
-    private int waveShapeIndex = 0;
-
     public AudioChannel channel = null;
 
     public readonly ICollection<Object2D> listeners = new Array<Object2D>(0x4);
 
-    public bool audible = true, loop = false, exceedMaxVolume = false, mono = false, swapStereo = false;//rename mono? mergestereo?
+    public bool audible = true, exceedMaxVolume = false, mono = false, swapStereo = false;
 
     public float volume = 1f, leftVolume = 1f, rightVolume = 1f, panning = 0f, maxVolumeDistance = 1f, minVolumeDistance = 10f;//Separate pan into leftMergeToRight/rightMergeToLeft?
 
@@ -52,13 +50,13 @@ public abstract class AudioSource : Object2D
 
         if (waveShape.Length == 0) return;//length error?
 
-        bool noVol = volume == 0f || (leftVolume == 0f && rightVolume == 0) ||
-            channel.volume == 0 || (channel.leftVolume == 0f && rightVolume == 0f);
+        if (volume == 0f || (leftVolume == 0f && rightVolume == 0) ||//should this be before GetDrawInfo()?
+            channel.volume == 0 || (channel.leftVolume == 0f && rightVolume == 0f)) return;
 
         float v = volume;
 
         Array<Object2D> listeners = (Array<Object2D>)this.listeners;
-        if (!noVol && listeners.length > 0)
+        if (listeners.length > 0)
         {
             if (minVolumeDistance < maxVolumeDistance)
                 Engine.SendError(ErrorCodes.MinGreaterThanMax, name, nameof(minVolumeDistance));
@@ -71,15 +69,14 @@ public abstract class AudioSource : Object2D
             }
         }
 
-        if (noVol || v == 0f) waveShapeIndex += channel.samples.Length;
-        else
-        {
+        if (v == 0f) return;
+
             bool leftPan = panning < 0, rightPan = panning > 0;//clamp pan? what happens if it's not?
             float l = v * leftVolume, r = v * rightVolume, pan = leftPan ? -panning : panning, reversePan = 1 - pan;
 
-            for (int i = 0; i < channel.samples.Length && waveShapeIndex < waveShape.Length; i++, waveShapeIndex++)
+        for (int i = 0, j = 0; i < waveShape.Length && j < channel.samples.Length; i++, j++)
             {
-                Sample sample = waveShape[waveShapeIndex];//move waveShapeIndex < waveShape.Length here? or maybe wrap it? this might be where the click on loop comes from
+            Sample sample = waveShape[i];
                 float left = sample.left * l, right = sample.right * r;
 
                 if (mono)
@@ -110,7 +107,7 @@ public abstract class AudioSource : Object2D
 
                 if (!channel.monophonic)
                 {
-                    Sample channelSample = channel.samples[i];
+                Sample channelSample = channel.samples[j];
                     left += channelSample.left;
                     right += channelSample.right;
                 }
@@ -120,11 +117,4 @@ public abstract class AudioSource : Object2D
                     (short)(Math.Clamp(right, short.MinValue, short.MaxValue)));
             }
         }
-
-        if (waveShapeIndex >= waveShape.Length)
-        {
-            waveShapeIndex = 0;
-            if (!loop) audible = false;
-        }
-    }
 }
