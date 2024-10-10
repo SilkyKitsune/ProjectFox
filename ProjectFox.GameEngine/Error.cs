@@ -8,8 +8,9 @@ public enum ErrorCodes
 
     /// <summary> Invalid Argument </summary>
     BadArgument,
-    /// <summary> Enum value outside of intended values </summary>
+    /// <summary> Enum value outside of intended constants </summary>
     BadEnumValue,
+    BadIndex,
     MinGreaterThanMax,
 
     /// <summary> Argument was null </summary>
@@ -83,6 +84,7 @@ public class ErrorMessage
 
             ErrorCodes.BadArgument => ErrorSeverity.Error,
             ErrorCodes.BadEnumValue => ErrorSeverity.Error,
+            ErrorCodes.BadIndex => ErrorSeverity.Error,
             ErrorCodes.MinGreaterThanMax => ErrorSeverity.Error,
 
             ErrorCodes.NullArgument => ErrorSeverity.Error,
