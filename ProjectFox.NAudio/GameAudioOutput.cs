@@ -6,28 +6,28 @@ using NAudio.Wave;
 
 namespace ProjectFox.NAudio;
 
-public sealed class GameAudioOutput//GameAudioPlayback? GameAudioPlayer?
+public sealed class GameAudioOutput
 {
     private sealed class GameWaveProvider : IWaveProvider
     {
         private readonly WaveFormat format = new(Speakers.SampleRate, 16, 2);
 
-        internal readonly AutoSizedArray<Sample> frames = new(Speakers.SampleRate);//rename?
+        internal readonly AutoSizedArray<Sample> samples = new(Speakers.SampleRate);
         
         public WaveFormat WaveFormat => format;
 
         public unsafe int Read(byte[] buffer, int offset, int count)
         {
-            if (frames.Length == 0) return 0;
+            if (samples.Length == 0) return 0;
 
             int sampleCount = count / sizeof(Sample);
 
-            byte[] data = Sample.GetBytes(frames.GetRange(0, sampleCount), true);
-            frames.RemoveRange(0, sampleCount);
+            byte[] data = Sample.GetBytes(samples.GetRange(0, sampleCount), true);
+            samples.RemoveRange(0, sampleCount);
 
             if (count > data.Length) count = data.Length;
 
-            buffer ??= new byte[count];//should this be earlier?
+            buffer ??= new byte[count];
 
             for (int i = 0, l = offset + count; i < count && offset < l; i++, offset++)
                 buffer[offset] = data[i];
