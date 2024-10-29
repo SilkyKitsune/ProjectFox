@@ -1,8 +1,8 @@
 ﻿using System.Runtime.CompilerServices;
 
 namespace ProjectFox.CoreEngine.Math;
-//why can't this be a polytope?
-public interface IShape2D<S, V, t, F> : IShape<S, V, t, F>, /*IPolytope<V, Triangle>,*/ IDirection<V>, IRotate2D<S, V, F, VectorF>
+
+public interface IShape2D<S, V, t, F, B> : IShape<S, V, t, F, B>, IDirection<V>
 {
     public abstract Vector.Direction DirectionToShape(S shape);
 
