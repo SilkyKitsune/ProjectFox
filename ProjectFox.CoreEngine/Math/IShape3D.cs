@@ -3,8 +3,8 @@ using System.Runtime.CompilerServices;
 
 namespace ProjectFox.CoreEngine.Math;
 
-public interface IShape3D<S, V, t, F> : IShape<S, V, t, F>//, IPolytope<V>
-{
+public interface IShape3D<S, V, t, F, B> : IShape<S, V, t, F, B>
+{//add triangle overloads
     public abstract bool Enveloping(VectorZ value);
     public abstract bool Enveloping(VectorZF value);
 
