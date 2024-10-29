@@ -43,9 +43,44 @@ public partial struct Vector
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
-    public float AngleFromRotationOrigin()
+    public float AngleFromRotationOrigin()//this doesn't completely work
     {
+#if DEBUG
+        bool x = this.x == 0, y = this.y == 0;
+
+        if (x && y) return 0f;
+
+        if (x) return this.y < 0 ? 0f : 0.5f;
+
+        if (y) return this.x < 0 ? 0.75f : 0.25f;
+
+        x = this.x < 0;
+        y = this.y < 0;
+
+        float xAbs = x ? -this.x : this.x, yAbs = y ? -this.y : this.y,
+            angle = ((x ? 0b00 : 0b10) | (y ? 0b00 : 0b01)) switch
+    {
+            0b10 => 0f,
+            0b11 => 0.25f,
+            0b01 => 0.5f,
+            0b00 => 0.75f,
+            _ => throw new Exception()//message?
+        };
+        
+        if (xAbs == yAbs) return angle + 0.125f;
+
+        float q = xAbs > yAbs ? yAbs / xAbs : xAbs / yAbs;
+
+        //if ()
+        //?
+        //each second 8th needs 1-q
+
+        if (xAbs > yAbs) return (1 - (yAbs / xAbs)) * 0.125f + 0.125f + angle;
+
+        return (xAbs / yAbs) * 0.125f + angle;
+#else
         return default;
+#endif
 
         /* these checks are essentially directionfromzero right?
 angle from rotation origin()
