@@ -3,7 +3,10 @@
 namespace ProjectFox.CoreEngine.Math;
 
 public interface IShape<S, V, t, F> : IVector<S, V, F>
+public interface IShape<S, V, t, F/*, I, If*/, B> : IVector<S, V, F>, IShape_
 {
+    public abstract B Bounds { get; }
+
     /// <summary> equivalent to the Math.Between method </summary>
     public abstract bool Between(t min, t max);
 
