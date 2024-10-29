@@ -55,7 +55,4 @@ public interface IShape2D<S, V, t, F, B> : IShape<S, V, t, F, B>, IDirection<V>
     public abstract bool Touching(IPolytope<Vector, Triangle> shape);
 
     public abstract bool Touching(IPolytope<VectorF, TriangleF> shape);
-
-    //public abstract bool Within(IGenericShape<Vector> shape);
-    //public abstract bool Within(IGenericShape<VectorF> shape);
 }
