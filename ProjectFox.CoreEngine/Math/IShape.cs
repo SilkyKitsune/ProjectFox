@@ -2,7 +2,8 @@
 
 namespace ProjectFox.CoreEngine.Math;
 
-public interface IShape<S, V, t, F> : IVector<S, V, F>
+public interface IShape_ { }
+
 public interface IShape<S, V, t, F/*, I, If*/, B> : IVector<S, V, F>, IShape_
 {
     public abstract B Bounds { get; }
@@ -52,9 +53,9 @@ public interface IShape<S, V, t, F/*, I, If*/, B> : IVector<S, V, F>, IShape_
     /// <summary> equivalent to the Math.FarthestIndex method </summary>
     public abstract int FarthestIndex(V[] values);
 
-    public abstract S IntersectionArea(S shape);
-
-    public abstract F IntersectionArea(F shape);
+    public abstract /*I*/IShape_/*S*/ IntersectionShape(S shape);//this won't work
+    //should intersection type be a generic?
+    public abstract /*If*/IShape_/*F*/ IntersectionShape(F shape);//ishape_ overload?
 
     public abstract bool Intersecting(S shape);
 
