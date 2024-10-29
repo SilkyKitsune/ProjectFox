@@ -10,9 +10,12 @@ public partial struct Color : IVector<Color, byte, Color>
 {
     private const float MaxByteF = byte.MaxValue;
 
+#if DEBUG
     /// <summary> The silliest limegirl </summary>
     public static Color Lime => 0x80FF40FF;
-
+#endif
+    //max/min brightness/saturation/lightness?
+    #region Color Methods
     public static Color Convert(int value, int channelDepth, bool alpha)
     {
         if (channelDepth < 1) throw new ArgumentException($"Invalid channelDepth! '{channelDepth}'");
@@ -53,6 +56,129 @@ public partial struct Color : IVector<Color, byte, Color>
             colors[i] = values[i].Convert(channelDepth, alpha);//inline?
         return colors;
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Color MaxColor(Color a, Color b) => a.DistanceFromBlackSquared() > b.DistanceFromBlackSquared() ? a : b;
+
+    public static Color MaxColor(params Color[] values)
+    {
+        if (values.Length == 0) throw new ArgumentNullException(nameof(values));
+        if (values.Length == 1) return values[0];
+
+        Color max = values[0];
+        float delta = max.DistanceFromBlackSquared(), newDelta;
+
+        foreach (Color c in values)
+            if (!max.EqualsColor(c))
+            {
+                newDelta = c.DistanceFromBlackSquared();
+                if (newDelta > delta)
+                {
+                    max = c;
+                    delta = newDelta;
+                }
+            }
+        return max;
+    }
+
+    public static Color MaxIndexColor(Color[] values)
+    {
+        if (values.Length == 0) throw new ArgumentNullException(nameof(values));
+        if (values.Length == 1) return 0;
+
+        int max = 0;
+        float delta = values[max].DistanceFromBlackSquared(), newDelta;
+
+        for (int i = 1; i < values.Length; i++)
+        {
+            Color current = values[i];
+            if (!values[max].EqualsColor(current))
+            {
+                newDelta = current.DistanceFromBlackSquared();
+                if (newDelta > delta)
+                {
+                    max = i;
+                    delta = newDelta;
+                }
+            }
+        }
+        return max;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Color MinColor(Color a, Color b) => a.DistanceFromBlackSquared() < b.DistanceFromBlackSquared() ? a : b;
+
+    public static Color MinColor(params Color[] values)
+    {
+        if (values.Length == 0) throw new ArgumentNullException(nameof(values));
+        if (values.Length == 1) return values[0];
+
+        Color min = values[0];
+        float delta = min.DistanceFromBlackSquared(), newDelta;
+
+        foreach (Color c in values)
+        {
+            if (c.IsBlack()) return c;
+            if (!min.EqualsColor(c))
+            {
+                newDelta = c.DistanceFromBlackSquared();
+                if (newDelta < delta)
+                {
+                    min = c;
+                    delta = newDelta;
+                }
+            }
+        }
+        return min;
+    }
+
+    public static Color MinIndexColor(Color[] values)
+    {
+        if (values.Length == 0) throw new ArgumentNullException(nameof(values));
+        if (values.Length == 1) return 0;
+
+        int min = 0;
+        float delta = values[min].DistanceFromBlackSquared(), newDelta;
+
+        for (int i = 1; i < values.Length; i++)
+        {
+            Color current = values[i];
+            if (current.IsBlack()) return i;
+            if (!values[min].EqualsColor(current))
+            {
+                newDelta = current.DistanceFromBlackSquared();
+                if (newDelta < delta)
+                {
+                    min = i;
+                    delta = newDelta;
+                }
+            }
+        }
+        return min;
+    }
+
+    public static Color[] RotateChannels(Color[] colors, bool rotateLeft)//amount?
+    {
+        Color[] newColors = new Color[colors.Length];
+        for (int i = 0; i < colors.Length; i++)
+        {
+            Color c = colors[i];
+            newColors[i] = rotateLeft ? new(c.g, c.b, c.a, c.r) : new(c.a, c.r, c.g, c.b);
+        }
+        return newColors;
+    }
+
+    public static Color[] SwapRedBlue(Color[] colors)
+    {
+        Color[] newColors = new Color[colors.Length];
+        for (int i = 0; i < colors.Length; i++)
+        {
+            Color c = colors[i];
+            newColors[i] = new(c.b, c.g, c.r, c.a);
+        }
+        return newColors;
+    }
+    #endregion
 
     public Color(byte r, byte g, byte b, byte a = byte.MaxValue)
     {
@@ -183,7 +309,7 @@ public partial struct Color : IVector<Color, byte, Color>
         return (rDelta * rDelta) + (gDelta * gDelta) + (bDelta * bDelta) + (aDelta * aDelta);
     }
     #endregion
-
+    
     #region Color Methods
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Color ClosestColor(Color a, Color b) => DistanceColorSquared(a) < DistanceColorSquared(b) ? a : b;
@@ -372,6 +498,12 @@ public partial struct Color : IVector<Color, byte, Color>
         if (g > 0) g -= Math.Clamp(amount.g, one, g);
         if (b > 0) b -= Math.Clamp(amount.b, one, b);
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Color RotateChannels(bool rotateLeft) => rotateLeft ? new(g, b, a, r) : new(a, r, g, b);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Color SwapRedBlue() => new(b, g, r, a);
     #endregion
 
     #region Blending
