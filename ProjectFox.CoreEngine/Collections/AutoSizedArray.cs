@@ -17,6 +17,9 @@ public sealed class AutoSizedArray<T> : ICollection<T>, ICopy<AutoSizedArray<T>>
 
     public AutoSizedArray(T[] array, int chunkSize = 0x10)
     {
+        if (array == null)
+            throw new ArgumentNullException(nameof(array));
+
         if (chunkSize <= 0)
             throw new ArgumentException($"{nameof(chunkSize)}={chunkSize} must be greater than zero!");
 
