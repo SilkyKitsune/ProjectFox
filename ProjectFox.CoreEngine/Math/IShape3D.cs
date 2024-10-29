@@ -34,8 +34,5 @@ public interface IShape3D<S, V, t, F, B> : IShape<S, V, t, F, B>
     public abstract bool Touching(IPolytope<VectorZ, Tetrahedron> shape);
 
     public abstract bool Touching(IPolytope<VectorZF, TetrahedronF> shape);
-
-    //public abstract bool Within(IGenericShape<VectorZ> shape);//redundant?
-    //public abstract bool Within(IGenericShape<VectorZF> shape);
 }
 #endif
