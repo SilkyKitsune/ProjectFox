@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 namespace ProjectFox.CoreEngine.Math;
 
 [StructLayout(LayoutKind.Sequential)]
-public partial struct RectangleF : IShape2D<RectangleF, VectorF, float, RectangleF>, IPolytope<VectorF, TriangleF>
+public partial struct RectangleF : IShape2D<RectangleF, VectorF, float, RectangleF, RectangleF>, IPolytope<VectorF, TriangleF>
 {
     #region Constructors
     public RectangleF(VectorF position, VectorF size)
@@ -54,6 +54,12 @@ public partial struct RectangleF : IShape2D<RectangleF, VectorF, float, Rectangl
             VectorF endPoint = EndPoint;
             return new VectorF[4] { position, new(endPoint.x, position.y), endPoint, new(position.x, endPoint.y) };
         }
+    }
+
+    public RectangleF Bounds
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => this;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
