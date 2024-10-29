@@ -1,12 +1,11 @@
-﻿using System;
+﻿#if DEBUG
+using System;
 using System.Runtime.CompilerServices;
 
 namespace ProjectFox.CoreEngine.Collections;
 
-public static partial class Strings
+[Obsolete] public static class Strings
 {
-    private const int FourBits = 0b1111;
-    
     /// <summary>
     /// 
     /// </summary>
@@ -171,3 +170,4 @@ public static partial class Strings
         return false;
     }
 }
+#endif
