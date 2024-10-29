@@ -6,7 +6,7 @@ namespace ProjectFox.CoreEngine.Math;
 
 /// <summary> an axis aligned 2D shape comprised of a position and size </summary>
 [StructLayout(LayoutKind.Sequential)]
-public partial struct Rectangle : IShape2D<Rectangle, Vector, int, RectangleF>, IPolytope<Vector, Triangle>
+public partial struct Rectangle : IShape2D<Rectangle, Vector, int, RectangleF, Rectangle>, IPolytope<Vector, Triangle>
 {
     #region Constructors
     ///
@@ -60,6 +60,12 @@ public partial struct Rectangle : IShape2D<Rectangle, Vector, int, RectangleF>, 
             Vector endPoint = EndPoint;
             return new Vector[4] { position, new(endPoint.x, position.y), endPoint, new(position.x, endPoint.y) };
         }
+    }
+
+    public Rectangle Bounds
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => this;
     }
 
     /// <returns> (position XOR size) </returns>
