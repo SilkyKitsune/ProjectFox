@@ -8,7 +8,7 @@ public partial struct Vector
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static VectorF PointFromRotationOrigin(float angle)
     {
-        Math.SineCosine(angle, out float sin, out float cos);
+        Math.SineCosine(angle, out float sin, out float cos);//i think cos is coming out 0 when angle is 0
         return new(sin, -cos);
     }
 
@@ -23,8 +23,10 @@ public partial struct Vector
         
         if (!pivot.IsZero())
         {
-            this -= pivot;//inline
-            value -= pivot;
+            v.x -= pivot.x;
+            v.y -= pivot.y;
+            value.x -= pivot.x;
+            value.y -= pivot.y;
         }
 
         float a = v.AngleFromRotationOrigin(), b = value.AngleFromRotationOrigin();
