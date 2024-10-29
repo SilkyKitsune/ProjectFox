@@ -7,14 +7,14 @@ namespace ProjectFox.CoreEngine.Math;
 public partial struct RectangleF : IShape2D<RectangleF, VectorF, float, RectangleF>, IPolytope<VectorF, TriangleF>
 {
     #region Constructors
-    public RectangleF(VectorF pos, VectorF size)
+    public RectangleF(VectorF position, VectorF size)
     {
-        position = pos;
+        this.position = position;
         this.size = size;
     }
-    public RectangleF(VectorF pos, float width, float height)
+    public RectangleF(VectorF position, float width, float height)
     {
-        position = pos;
+        this.position = position;
         size = new(width, height);
     }
     public RectangleF(float x, float y, VectorF size)

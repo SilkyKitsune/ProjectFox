@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
-using ProjectFox.CoreEngine.Collections;
 
 namespace ProjectFox.CoreEngine.Math;
 
@@ -10,9 +9,9 @@ public partial struct Rectangle : IShape2D<Rectangle, Vector, int, RectangleF, R
 {
     #region Constructors
     ///
-    public Rectangle(Vector pos, Vector size)
+    public Rectangle(Vector position, Vector size)
     {
-        position = pos;
+        this.position = position;
         this.size = size;
     }
     ///
@@ -22,9 +21,9 @@ public partial struct Rectangle : IShape2D<Rectangle, Vector, int, RectangleF, R
         this.size = size;
     }
     ///
-    public Rectangle(Vector pos, int width, int height)
+    public Rectangle(Vector position, int width, int height)
     {
-        position = pos;
+        this.position = position;
         size = new Vector(width, height);
     }
     ///
@@ -95,4 +94,5 @@ public partial struct Rectangle : IShape2D<Rectangle, Vector, int, RectangleF, R
     /// <returns> $"(Pos = {(0b)position}, Size = {(0b)size})" </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ToBinString(bool littleEndian = false, bool leadingText = false, char byteSeparator = '|', char nibbleSeparator = '_') =>
-        $"(Pos = {position.ToBinString(littleEndian, leadingText, byteSeparator, nibbleSeparator)}, Size = {size.ToBinString(littleEndian, leadingText, byteSeparator, nibbleSeparator)})";}
+        $"(Pos = {position.ToBinString(littleEndian, leadingText, byteSeparator, nibbleSeparator)}, Size = {size.ToBinString(littleEndian, leadingText, byteSeparator, nibbleSeparator)})";
+}
