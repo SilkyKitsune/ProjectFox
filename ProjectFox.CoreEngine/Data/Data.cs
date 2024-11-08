@@ -53,6 +53,34 @@ public unsafe static partial class Data
         return bytes;
     }
 
+    public static byte[][] GetBytesSeparate(short[] values, bool littleEndian)
+    {
+        if (values == null || values.Length == 0) throw new ArgumentNullException();
+
+        int size = sizeof(short);
+        byte[][] bytes = new byte[values.Length][];
+#if BIGENDIAN
+        if (!littleEndian)
+#else
+        if (littleEndian)
+#endif
+            for (int i = 0; i < values.Length; i++)
+            {
+                byte[] bytes_ = new byte[size];
+                fixed (byte* ptr = bytes_) *(short*)ptr = values[i];
+                bytes[i] = bytes_;
+            }
+        else for (int i = 0; i < values.Length; i++)
+            {
+                byte[] bytes_ = new byte[size];
+                short value = values[i];
+                bytes_[0] = (byte)(value >> 0x08);
+                bytes_[1] = (byte)value;
+                bytes[i] = bytes_;
+            }
+        return bytes;
+    }
+
     public static byte[] GetBytes(int value, bool littleEndian)
     {
         byte[] bytes = new byte[sizeof(int)];
@@ -95,6 +123,36 @@ public unsafe static partial class Data
                 bytes[j++] = (byte)(value >> 0x10);
                 bytes[j++] = (byte)(value >> 0x08);
                 bytes[j++] = (byte)value;
+            }
+        return bytes;
+    }
+
+    public static byte[][] GetBytesSeparate(int[] values, bool littleEndian)
+    {
+        if (values == null || values.Length == 0) throw new ArgumentNullException();
+
+        int size = sizeof(int);
+        byte[][] bytes = new byte[values.Length][];
+#if BIGENDIAN
+        if (!littleEndian)
+#else
+        if (littleEndian)
+#endif
+            for (int i = 0; i < values.Length; i++)
+            {
+                byte[] bytes_ = new byte[size];
+                fixed (byte* ptr = bytes_) *(int*)ptr = values[i];
+                bytes[i] = bytes_;
+            }
+        else for(int i = 0; i < values.Length; i++)
+            {
+                byte[] bytes_ = new byte[size];
+                int value = values[i];
+                bytes_[0] = (byte)(value >> 0x18);
+                bytes_[1] = (byte)(value >> 0x10);
+                bytes_[2] = (byte)(value >> 0x08);
+                bytes_[3] = (byte)value;
+                bytes[i] = bytes_;
             }
         return bytes;
     }
@@ -153,6 +211,40 @@ public unsafe static partial class Data
         return bytes;
     }
 
+    public static byte[][] GetBytesSeparate(long[] values, bool littleEndian)
+    {
+        if (values == null || values.Length == 0) throw new ArgumentNullException();
+
+        int size = sizeof(long);
+        byte[][] bytes = new byte[values.Length][];
+#if BIGENDIAN
+        if (!littleEndian)
+#else
+        if (littleEndian)
+#endif
+            for (int i = 0; i < values.Length; i++)
+            {
+                byte[] bytes_ = new byte[size];
+                fixed (byte* ptr = bytes_) *(long*)ptr = values[i];
+                bytes[i] = bytes_;
+            }
+        else for (int i = 0; i < values.Length; i++)
+            {
+                byte[] bytes_ = new byte[size];
+                long value = values[i];
+                bytes_[0] = (byte)(value >> 0x38);
+                bytes_[1] = (byte)(value >> 0x30);
+                bytes_[2] = (byte)(value >> 0x28);
+                bytes_[3] = (byte)(value >> 0x20);
+                bytes_[4] = (byte)(value >> 0x18);
+                bytes_[5] = (byte)(value >> 0x10);
+                bytes_[6] = (byte)(value >> 0x08);
+                bytes_[7] = (byte)value;
+                bytes[i] = bytes_;
+            }
+        return bytes;
+    }
+
     public static byte[] GetBytes(float value, bool littleEndian)
     {
         byte[] bytes = new byte[sizeof(float)];
@@ -199,6 +291,40 @@ public unsafe static partial class Data
                     bytes[j++] = (byte)(value >> 0x10);
                     bytes[j++] = (byte)(value >> 0x08);
                     bytes[j++] = (byte)value;
+                }
+            }
+        return bytes;
+    }
+
+    public static byte[][] GetBytesSeparate(float[] values, bool littleEndian)
+    {
+        if (values == null || values.Length == 0) throw new ArgumentNullException();
+
+        int size = sizeof(float);
+        byte[][] bytes = new byte[values.Length][];
+#if BIGENDIAN
+        if (!littleEndian)
+#else
+        if (littleEndian)
+#endif
+            for (int i = 0; i < values.Length; i++)
+            {
+                byte[] bytes_ = new byte[size];
+                fixed (byte* ptr = bytes_) *(float*)ptr = values[i];
+                bytes[i] = bytes_;
+            }
+        else fixed (float* ptr = values)
+            {
+                int* ptr_ = (int*)ptr;
+                for (int i = 0; i < values.Length; i++)
+                {
+                    byte[] bytes_ = new byte[size];
+                    int value = ptr_[i];
+                    bytes_[0] = (byte)(value >> 0x18);
+                    bytes_[1] = (byte)(value >> 0x10);
+                    bytes_[2] = (byte)(value >> 0x08);
+                    bytes_[3] = (byte)value;
+                    bytes[i] = bytes_;
                 }
             }
         return bytes;
@@ -258,6 +384,44 @@ public unsafe static partial class Data
                     bytes[j++] = (byte)(value >> 0x10);
                     bytes[j++] = (byte)(value >> 0x08);
                     bytes[j++] = (byte)value;
+                }
+            }
+        return bytes;
+    }
+
+    public static byte[][] GetBytesSeparate(double[] values, bool littleEndian)
+    {
+        if (values == null || values.Length == 0) throw new ArgumentNullException();
+
+        int size = sizeof(double);
+        byte[][] bytes = new byte[values.Length][];
+#if BIGENDIAN
+        if (!littleEndian)
+#else
+        if (littleEndian)
+#endif
+            for (int i = 0; i < values.Length; i++)
+            {
+                byte[] bytes_ = new byte[size];
+                fixed (byte* ptr = bytes_) *(double*)ptr = values[i];
+                bytes[i] = bytes_;
+            }
+        else fixed (double* ptr = values)
+            {
+                long* ptr_ = (long*)ptr;
+                for (int i = 0; i < values.Length; i++)
+                {
+                    byte[] bytes_ = new byte[size];
+                    long value = ptr_[i];
+                    bytes_[0] = (byte)(value >> 0x38);
+                    bytes_[1] = (byte)(value >> 0x30);
+                    bytes_[2] = (byte)(value >> 0x28);
+                    bytes_[3] = (byte)(value >> 0x20);
+                    bytes_[4] = (byte)(value >> 0x18);
+                    bytes_[5] = (byte)(value >> 0x10);
+                    bytes_[6] = (byte)(value >> 0x08);
+                    bytes_[7] = (byte)value;
+                    bytes[i] = bytes_;
                 }
             }
         return bytes;
