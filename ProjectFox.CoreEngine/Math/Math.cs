@@ -17,9 +17,6 @@ public static partial class Math
         Pos = 0b01
     }
 
-    /// <summary> the total number of ticks in one millisecond </summary>
-    public const ulong ticksPerMillisecond = 10000;//move?
-
     #region Abs
     /// <returns> absolute value of 'value' </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
