@@ -81,6 +81,7 @@ public sealed class AutoSizedArray<T> : ICollection<T>, ICopy<AutoSizedArray<T>>
 
     public void Add(params T[] values)
     {
+        if (values == null) throw new ArgumentNullException(nameof(values));
         if (values.Length == 0) return;
 
         int newLength = length + values.Length;
