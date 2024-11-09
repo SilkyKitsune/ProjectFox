@@ -339,15 +339,15 @@ public static partial class Math
 
     /// <returns> min ≤ value ≤ max, unless min &gt; max then the return value will be outside the range </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static float Clamp(float value, float min, float max) => min > max ?
+    public static float Clamp(float value, float min, float max) => float.IsNaN(value) ? min : (min > max ?
         (value < min && value > max ? max : value) :
-        (value < min ? min : (value > max ? max : value));
+        (value < min ? min : (value > max ? max : value)));
 
     /// <returns> min ≤ value ≤ max, unless min &gt; max then the return value will be outside the range </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static double Clamp(double value, double min, double max) => min > max ?
+    public static double Clamp(double value, double min, double max) => double.IsNaN(value) ? min : (min > max ?
         (value < min && value > max ? max : value) :
-        (value < min ? min : (value > max ? max : value));
+        (value < min ? min : (value > max ? max : value)));
     #endregion
 
     #region ClampImplicit
