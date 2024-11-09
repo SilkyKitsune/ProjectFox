@@ -4,10 +4,12 @@ using System.Threading;
 
 namespace ProjectFox.CoreEngine.Utility;
 
-/// <summary> A sort of accurate-ish Stopwatch class (not meant for deployment) </summary>
+/// <summary> A sort of accurate-ish Stopwatch class (experimental, not meant for deployment) </summary>
 /// <remarks> DEBUG Only </remarks>
 public sealed class Stopwatch
 {
+    internal const ulong ticksPerMillisecond = 10000;
+
     private bool running = false;
     private long count = 0u;
     
@@ -22,7 +24,7 @@ public sealed class Stopwatch
     public float ElapsedMilliseconds
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => count / 21L / (float)Math.Math.ticksPerMillisecond;
+        get => count / 21L / (float)ticksPerMillisecond;
     }
 
     public override string ToString()//remove
