@@ -1,16 +1,15 @@
 ﻿#if DEBUG
 using System.Threading;
-using static ProjectFox.CoreEngine.Math.Math;
 
 namespace ProjectFox.CoreEngine.Utility;
 
-/// <summary> A sort of accurate-ish Timer class (not meant for deployment) </summary>
+/// <summary> A sort of accurate-ish Timer class (experimental, not meant for deployment) </summary>
 /// <remarks> DEBUG Only </remarks>
 public sealed class Timer
 {
     public delegate void TimerDelegate();
 
-    private long interval = 1000L * (long)ticksPerMillisecond * 21L;
+    private long interval = 1000L * (long)Stopwatch.ticksPerMillisecond * 21L;
     private bool running = false;
     private long count = 0L;
     private Thread thread;
@@ -32,8 +31,8 @@ public sealed class Timer
 
     public long Interval
     {
-        get => interval / 21L / (long)ticksPerMillisecond;
-        set => interval = value * (long)ticksPerMillisecond * 21L;
+        get => interval / 21L / (long)Stopwatch.ticksPerMillisecond;
+        set => interval = value * (long)Stopwatch.ticksPerMillisecond * 21L;
     }
 
     public void Start()
