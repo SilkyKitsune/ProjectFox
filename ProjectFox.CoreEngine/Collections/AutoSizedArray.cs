@@ -95,6 +95,15 @@ public sealed class AutoSizedArray<T> : ICollection<T>, ICopy<AutoSizedArray<T>>
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void AddConcat(T[][] arrays)//could this be inlined at all? is it worth inlining?
+    {
+        if (arrays == null) throw new ArgumentNullException(nameof(arrays));
+        if (arrays.Length == 0) return;
+
+        foreach (T[] array in arrays) Add(array);//should this handle null elements?
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Clear()
     {
         length = 0;

@@ -8,6 +8,7 @@ public interface ICollection<T>
 
     public abstract void Add(T value);
     public abstract void Add(params T[] values);
+    public abstract void AddConcat(T[][] arrays);
     public abstract void Clear();
     public abstract string Concat();
     public abstract bool Contains(T value);
