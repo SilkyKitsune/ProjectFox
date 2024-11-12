@@ -141,6 +141,26 @@ public partial struct VectorZ
     public static VectorZ operator ^(VectorZ vz, int i) => new(vz.x ^ i, vz.y ^ i, vz.z ^ i);
     #endregion
 
+    #region int_vectorz
+    ///
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static VectorZ operator -(int i, VectorZ vz) => new(i - vz.x, i - vz.y, i - vz.z);
+
+    /// <exception cref="DivideByZeroException"/>
+    public static VectorZ operator /(int i, VectorZ vz)
+    {
+        if (vz.x == 0 || vz.y == 0 || vz.z == 0) throw new DivideByZeroException();
+        return new(i / vz.x, i / vz.y, i / vz.z);
+    }
+
+    /// <exception cref="DivideByZeroException"/>
+    public static VectorZ operator %(int i, VectorZ vz)
+    {
+        if (vz.x == 0 || vz.y == 0 || vz.z == 0) throw new DivideByZeroException();
+        return new(i % vz.x, i % vz.y, i % vz.z);
+    }
+    #endregion
+
     #region vectorz_float
     ///
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -168,6 +188,28 @@ public partial struct VectorZ
     {
         if (f == 0f) throw new DivideByZeroException();
         return new(vz.x % f, vz.y % f, vz.z % f);
+    }
+    #endregion
+
+    #region float_vectorz
+    ///
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static VectorZF operator -(float f, VectorZ vz) => new(f - vz.x, f - vz.y, f - vz.z);
+
+    /// <exception cref="DivideByZeroException"/>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static VectorZF operator /(float f, VectorZ vz)
+    {
+        if (vz.x == 0 || vz.y == 0 || vz.z == 0) throw new DivideByZeroException();
+        return new(f / vz.x, f / vz.y, f / vz.z);
+    }
+
+    /// <exception cref="DivideByZeroException"/>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static VectorZF operator %(float f, VectorZ vz)
+    {
+        if (vz.x == 0 || vz.y == 0 || vz.z == 0) throw new DivideByZeroException();
+        return new(f % vz.x, f % vz.y, f % vz.z);
     }
     #endregion
 }

@@ -177,4 +177,26 @@ public partial struct VectorF
         return new(vf.x % f, vf.y % f);
     }
     #endregion
+
+    #region float_vectorf
+    ///
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static VectorF operator -(float f, VectorF vf) => new(f - vf.x, f - vf.y);
+
+    /// <exception cref="DivideByZeroException"></exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static VectorF operator /(float f, VectorF vf)
+    {
+        if (vf.x == 0f || vf.y == 0f) throw new DivideByZeroException();
+        return new(f / vf.x, f / vf.y);
+}
+
+    /// <exception cref="DivideByZeroException"></exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static VectorF operator %(float f, VectorF vf)
+    {
+        if (vf.x == 0f || vf.y == 0f) throw new DivideByZeroException();
+        return new(f % vf.x, f % vf.y);
+    }
+    #endregion
 }

@@ -172,4 +172,26 @@ public partial struct VectorZF
         return new(vzf.x % f, vzf.x % f, vzf.x % f);
     }
     #endregion
+
+    #region float_vectorzf
+    ///
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static VectorZF operator -(float f, VectorZF vzf) => new(f - vzf.x, f - vzf.y, f - vzf.z);
+
+    /// <exception cref="DivideByZeroException"></exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static VectorZF operator /(float f, VectorZF vzf)
+    {
+        if (vzf.x == 0f || vzf.y == 0f || vzf.z == 0f) throw new DivideByZeroException();
+        return new(f / vzf.x, f / vzf.y, f / vzf.z);
+}
+
+    /// <exception cref="DivideByZeroException"></exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static VectorZF operator %(float f, VectorZF vzf)
+    {
+        if (vzf.x == 0f || vzf.y == 0f || vzf.z == 0f) throw new DivideByZeroException();
+        return new(f % vzf.x, f % vzf.y, f % vzf.z);
+    }
+    #endregion
 }
