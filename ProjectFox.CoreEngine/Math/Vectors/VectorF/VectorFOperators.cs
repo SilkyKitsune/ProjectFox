@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using D = ProjectFox.CoreEngine.Data.Data;
 
 namespace ProjectFox.CoreEngine.Math;
 
@@ -72,6 +73,18 @@ public partial struct VectorF
         if (vf2.x == 0f || vf2.y == 0f) throw new DivideByZeroException();
         return new(vf1.x % vf2.x, vf1.y % vf2.y);
     }
+
+    ///
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static VectorF operator &(VectorF vf1, VectorF vf2) => new(D.ANDFloat32(vf1.x, vf2.x), D.ANDFloat32(vf1.y, vf2.y));
+
+    ///
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static VectorF operator |(VectorF vf1, VectorF vf2) => new(D.ORFloat32(vf1.x, vf2.x), D.ORFloat32(vf1.y, vf2.y));
+
+    ///
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static VectorF operator ^(VectorF vf1, VectorF vf2) => new(D.XORFloat32(vf1.x, vf2.x), D.XORFloat32(vf1.y, vf2.y));
     #endregion
 
     #region vectorf_vector
@@ -176,6 +189,18 @@ public partial struct VectorF
         if (f == 0f) throw new DivideByZeroException();
         return new(vf.x % f, vf.y % f);
     }
+
+    ///
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static VectorF operator &(VectorF vf, float f) => new(D.ANDFloat32(vf.x, f), D.ANDFloat32(vf.y, f));
+
+    ///
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static VectorF operator |(VectorF vf, float f) => new(D.ORFloat32(vf.x, f), D.ORFloat32(vf.y, f));
+
+    ///
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static VectorF operator ^(VectorF vf, float f) => new(D.XORFloat32(vf.x, f), D.XORFloat32(vf.y, f));
     #endregion
 
     #region float_vectorf
@@ -189,7 +214,7 @@ public partial struct VectorF
     {
         if (vf.x == 0f || vf.y == 0f) throw new DivideByZeroException();
         return new(f / vf.x, f / vf.y);
-}
+    }
 
     /// <exception cref="DivideByZeroException"></exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

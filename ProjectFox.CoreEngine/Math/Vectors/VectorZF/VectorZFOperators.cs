@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using D = ProjectFox.CoreEngine.Data.Data;
 
 namespace ProjectFox.CoreEngine.Math;
 
@@ -67,6 +68,18 @@ public partial struct VectorZF
         if (vzf2.x == 0f || vzf2.y == 0f || vzf2.z == 0f) throw new DivideByZeroException();
         return new(vzf1.x % vzf2.x, vzf1.x % vzf2.x, vzf1.x % vzf2.x);
     }
+
+    ///
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static VectorZF operator &(VectorZF vzf1, VectorZF vzf2) => new(D.ANDFloat32(vzf1.x, vzf2.x), D.ANDFloat32(vzf1.y, vzf2.y), D.ANDFloat32(vzf1.z, vzf2.z));
+
+    ///
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static VectorZF operator |(VectorZF vzf1, VectorZF vzf2) => new(D.ORFloat32(vzf1.x, vzf2.x), D.ORFloat32(vzf1.y, vzf2.y), D.ORFloat32(vzf1.z, vzf2.z));
+
+    ///
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static VectorZF operator ^(VectorZF vzf1, VectorZF vzf2) => new(D.XORFloat32(vzf1.x, vzf2.x), D.XORFloat32(vzf1.y, vzf2.y), D.XORFloat32(vzf1.z, vzf2.z));
     #endregion
 
     #region vectorzf_vectorz
@@ -171,6 +184,18 @@ public partial struct VectorZF
         if (f == 0f) throw new DivideByZeroException();
         return new(vzf.x % f, vzf.x % f, vzf.x % f);
     }
+
+    ///
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static VectorZF operator &(VectorZF vzf, float f) => new(D.ANDFloat32(vzf.x, f), D.ANDFloat32(vzf.y, f), D.ANDFloat32(vzf.z, f));
+
+    ///
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static VectorZF operator |(VectorZF vzf, float f) => new(D.ORFloat32(vzf.x, f), D.ORFloat32(vzf.y, f), D.ORFloat32(vzf.z, f));
+
+    ///
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static VectorZF operator ^(VectorZF vzf, float f) => new(D.XORFloat32(vzf.x, f), D.XORFloat32(vzf.y, f), D.XORFloat32(vzf.z, f));
     #endregion
 
     #region float_vectorzf
@@ -184,7 +209,7 @@ public partial struct VectorZF
     {
         if (vzf.x == 0f || vzf.y == 0f || vzf.z == 0f) throw new DivideByZeroException();
         return new(f / vzf.x, f / vzf.y, f / vzf.z);
-}
+    }
 
     /// <exception cref="DivideByZeroException"></exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
