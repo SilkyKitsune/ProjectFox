@@ -3,21 +3,21 @@ using System.Runtime.CompilerServices;
 
 namespace ProjectFox.CoreEngine.Collections;
 
-public sealed class HashLookupTable<H, T> : IHashTable<H, T>, ICopy<HashLookupTable<H, T>>
+public sealed class LookupTable<C, T> : ITable<C, T>, ICopy<LookupTable<C, T>>
 {
-    public HashLookupTable(int chunkSize = 0x10)
+    public LookupTable(int chunkSize = 0x10)
     {
         codes = new(chunkSize);
         values = new(chunkSize);
     }
 
-    private HashLookupTable(AutoSizedArray<H> codes, AutoSizedArray<T> values)
+    private LookupTable(AutoSizedArray<C> codes, AutoSizedArray<T> values)
     {
         this.codes = codes;
         this.values = values;
     }
 
-    private readonly AutoSizedArray<H> codes;
+    private readonly AutoSizedArray<C> codes;
     private readonly AutoSizedArray<T> values;
 
     public int ChunkSize
@@ -32,7 +32,7 @@ public sealed class HashLookupTable<H, T> : IHashTable<H, T>, ICopy<HashLookupTa
         get => codes.Length;
     }
 
-    public T this[H code]
+    public T this[C code]
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get
@@ -51,7 +51,7 @@ public sealed class HashLookupTable<H, T> : IHashTable<H, T>, ICopy<HashLookupTa
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Add(H code, T value)
+    public void Add(C code, T value)
     {
         if (codes.Length > 0 && codes.Contains(code))
             throw new Exception($"Already contains code '{code}'");
@@ -72,7 +72,7 @@ public sealed class HashLookupTable<H, T> : IHashTable<H, T>, ICopy<HashLookupTa
         int length = this.codes.Length;
         if (length == 0) return string.Empty;
 
-        H[] codes = this.codes.ToArray();
+        C[] codes = this.codes.ToArray();
         T[] values = this.values.ToArray();
 
         string s = "";
@@ -91,28 +91,28 @@ public sealed class HashLookupTable<H, T> : IHashTable<H, T>, ICopy<HashLookupTa
     public bool Contains(T value) => values.Contains(value);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool ContainsCode(H code) => codes.Contains(code);
+    public bool ContainsCode(C code) => codes.Contains(code);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Copy(out HashLookupTable<H, T> copy)
+    public void Copy(out LookupTable<C, T> copy)
     {
-        this.codes.Copy(out AutoSizedArray<H> codes);
+        this.codes.Copy(out AutoSizedArray<C> codes);
         this.values.Copy(out AutoSizedArray<T> values);
         copy = new(codes, values);
     }
 
-    public void CopyTo(IHashTable<H, T> table)
+    public void CopyTo(ITable<C, T> table)
     {
         if (table == null) throw new ArgumentNullException(nameof(table));
         if (this.codes.Length == 0) return;
 
-        if (table is HashLookupTable<H, T> hashTable)
+        if (table is LookupTable<C, T> hashTable)
         {
             CopyTo(hashTable);
             return;
         }
 
-        H[] codes = this.codes.ToArray();
+        C[] codes = this.codes.ToArray();
         T[] values = this.values.ToArray();
 
         table.Clear();
@@ -121,7 +121,7 @@ public sealed class HashLookupTable<H, T> : IHashTable<H, T>, ICopy<HashLookupTa
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void CopyTo(HashLookupTable<H, T> table)
+    public void CopyTo(LookupTable<C, T> table)
     {
         if (table == null) throw new ArgumentNullException(nameof(table));
         if (codes.Length == 0) return;
@@ -131,7 +131,7 @@ public sealed class HashLookupTable<H, T> : IHashTable<H, T>, ICopy<HashLookupTa
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public H GetCode(T value)
+    public C GetCode(T value)
     {
         int index = values.IndexOf(value);
         if (index < 0) throw new ArgumentException($"Value not found '{value}'");
@@ -139,9 +139,9 @@ public sealed class HashLookupTable<H, T> : IHashTable<H, T>, ICopy<HashLookupTa
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public H[] GetCodes() => codes.ToArray();
+    public C[] GetCodes() => codes.ToArray();
 
-    public T[] GetMultiple(params H[] codes)
+    public T[] GetMultiple(params C[] codes)
     {
         if (codes.Length == 0) return null;
 
@@ -161,7 +161,7 @@ public sealed class HashLookupTable<H, T> : IHashTable<H, T>, ICopy<HashLookupTa
     public int IndexOf(T value) => values.IndexOf(value);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public int IndexOfCode(H code) => codes.IndexOf(code);
+    public int IndexOfCode(C code) => codes.IndexOf(code);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsEmpty() => codes.IsEmpty();
@@ -171,7 +171,7 @@ public sealed class HashLookupTable<H, T> : IHashTable<H, T>, ICopy<HashLookupTa
         int length = this.codes.Length;
         if (length == 0) return string.Empty;
 
-        H[] codes = this.codes.ToArray();
+        C[] codes = this.codes.ToArray();
         T[] values = this.values.ToArray();
 
         string s = "";
@@ -185,7 +185,7 @@ public sealed class HashLookupTable<H, T> : IHashTable<H, T>, ICopy<HashLookupTa
         int length = this.codes.Length;
         if (length == 0) return string.Empty;
 
-        H[] codes = this.codes.ToArray();
+        C[] codes = this.codes.ToArray();
         T[] values = this.values.ToArray();
 
         string s = "";
@@ -209,7 +209,7 @@ public sealed class HashLookupTable<H, T> : IHashTable<H, T>, ICopy<HashLookupTa
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int LastIndexOf(T value) => values.LastIndexOf(value);
 
-    public bool Remove(H code)
+    public bool Remove(C code)
     {
         int index = codes.IndexOf(code);
         if (index < 0) return false;
@@ -235,7 +235,7 @@ public sealed class HashLookupTable<H, T> : IHashTable<H, T>, ICopy<HashLookupTa
         return true;
     }
 
-    public bool TryGet(H code, out T value)
+    public bool TryGet(C code, out T value)
     {
         value = default;
 
@@ -246,7 +246,7 @@ public sealed class HashLookupTable<H, T> : IHashTable<H, T>, ICopy<HashLookupTa
         return true;
     }
 
-    public bool TryGetCode(T value, out H code)
+    public bool TryGetCode(T value, out C code)
     {
         code = default;
 
