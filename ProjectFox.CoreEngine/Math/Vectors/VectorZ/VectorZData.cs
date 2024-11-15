@@ -132,6 +132,10 @@ public partial struct VectorZ
         return bytes;
     }
 
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static byte[][] GetBytesSeparate(VectorZ[] values, bool littleEndian) => default;
+
     public static string JoinHex(bool littleEndian, bool leadingText, string separator, params VectorZ[] values)
     {
         string str = "";

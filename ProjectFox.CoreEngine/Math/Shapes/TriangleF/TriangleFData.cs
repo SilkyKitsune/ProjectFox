@@ -187,6 +187,10 @@ public partial struct TriangleF
         return bytes;
     }
 
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static byte[][] GetBytesSeparate(TriangleF[] values, bool littleEndian) => default;
+
     public static string JoinHex(bool littleEndian, bool leadingText, string separator, params TriangleF[] values)
     {
         string str = "";

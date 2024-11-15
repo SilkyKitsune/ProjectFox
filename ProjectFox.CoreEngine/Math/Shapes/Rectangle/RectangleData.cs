@@ -147,6 +147,10 @@ public partial struct Rectangle
         return bytes;
     }
 
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static byte[][] GetBytesSeparate(Rectangle[] values, bool littleEndian) => default;
+
     public static string JoinHex(bool littleEndian, bool leadingText, string separator, params Rectangle[] values)
     {
         string str = "";

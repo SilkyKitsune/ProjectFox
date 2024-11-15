@@ -14,6 +14,8 @@ public interface IData<T>
 
     public abstract static byte[] GetBytes(T[] values, bool littleEndian);
 
+    public abstract static byte[][] GetBytesSeparate(T[] values, bool littleEndian);
+
     public abstract static string JoinHex(bool littleEndian, bool leadingText, string separator, params T[] values);
 
     public abstract static string JoinBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, string elementSeparator, params T[] values);

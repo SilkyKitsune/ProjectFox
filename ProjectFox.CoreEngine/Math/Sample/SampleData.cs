@@ -174,6 +174,10 @@ public partial struct Sample
         return bytes;
     }
 
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static byte[][] GetBytesSeparate(Sample[] values, bool littleEndian) => default;
+
     public static string JoinHex(bool littleEndian, bool leadingText, string separator, params Sample[] values)
     {
         string str = "";
