@@ -205,6 +205,38 @@ public partial struct TriangleF
         return str;
     }
 
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static bool TryParse(string str, out TriangleF value)
+    {
+        value = default;
+        return default;
+    }
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static bool TryParseAny(string str, bool littleEndian, out TriangleF value)
+    {
+        value = default;
+        return default;
+    }
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static bool TryParseBin(string str, bool littleEndian, out TriangleF value)
+    {
+        value = default;
+        return default;
+    }
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static bool TryParseHex(string str, bool littleEndian, out TriangleF value)
+    {
+        value = default;
+        return default;
+    }
+
     public unsafe byte[] GetBytes(bool littleEndian)
     {
         byte[] bytes = new byte[sizeof(TriangleF)];

@@ -20,6 +20,14 @@ public interface IData<T>
 
     public abstract static string JoinBin(bool littleEndian, bool leadingText, char byteSeparator, char nibbleSeparator, string elementSeparator, params T[] values);
 
+    public abstract static bool TryParse(string str, out T value);
+    
+    public abstract static bool TryParseAny(string str, bool littleEndian, out T value);
+
+    public abstract static bool TryParseBin(string str, bool littleEndian, out T value);
+
+    public abstract static bool TryParseHex(string str, bool littleEndian, out T value);
+
     public abstract byte[] GetBytes(bool littleEndian);
 
     public abstract string ToHexString(bool littleEndian = false, bool leadingText = false);

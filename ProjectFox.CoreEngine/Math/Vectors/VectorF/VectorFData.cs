@@ -141,6 +141,38 @@ public partial struct VectorF
         return str;
     }
 
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static bool TryParse(string str, out VectorF value)
+    {
+        value = default;
+        return default;
+    }
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static bool TryParseAny(string str, bool littleEndian, out VectorF value)
+    {
+        value = default;
+        return default;
+    }
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static bool TryParseBin(string str, bool littleEndian, out VectorF value)
+    {
+        value = default;
+        return default;
+    }
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static bool TryParseHex(string str, bool littleEndian, out VectorF value)
+    {
+        value = default;
+        return default;
+    }
+
     public unsafe byte[] GetBytes(bool littleEndian)
     {
         byte[] bytes = new byte[sizeof(VectorF)];

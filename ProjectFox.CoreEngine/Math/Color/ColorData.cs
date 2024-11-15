@@ -150,6 +150,38 @@ public partial struct Color
         return str;
     }
 
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static bool TryParse(string str, out Color value)
+    {
+        value = default;
+        return default;
+    }
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static bool TryParseAny(string str, bool littleEndian, out Color value)
+    {
+        value = default;
+        return default;
+    }
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static bool TryParseBin(string str, bool littleEndian, out Color value)
+    {
+        value = default;
+        return default;
+    }
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static bool TryParseHex(string str, bool littleEndian, out Color value)
+    {
+        value = default;
+        return default;
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public byte[] GetBytes(bool littleEndian) => new byte[4] { r, g, b, a };
 
