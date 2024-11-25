@@ -7,7 +7,7 @@ public partial struct VectorF
 {
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
-    public float Angle(VectorF value, VectorF pivot = default) => default;
+    public static float Angle(VectorF a, VectorF b, VectorF pivot = default) => default;
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>

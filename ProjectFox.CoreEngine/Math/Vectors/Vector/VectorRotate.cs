@@ -5,43 +5,39 @@ namespace ProjectFox.CoreEngine.Math;
 
 public partial struct Vector
 {
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public static float Angle(Vector a, Vector b, Vector pivot = default)
+    {
+#if DEBUG
+        if (a.Equals(b)) return 0f;
+
+        if (!pivot.IsZero())
+        {
+            a.x -= pivot.x;
+            a.y -= pivot.y;
+            b.x -= pivot.x;
+            b.y -= pivot.y;
+        }
+
+        //any checks for right angles? or is that already covered by AngleFromRotationOrigin()?
+
+        float a_ = a.AngleFromRotationOrigin(), b_ = b.AngleFromRotationOrigin();
+
+        if (a_ < b_) return b_ - a_;
+        if (a_ > b_) return a_ - b_;
+        return a_;//this is unnecessary because if angles are equal then the points should be too
+#else
+        return default;
+#endif
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static VectorF PointFromRotationOrigin(float angle)
     {
         Math.SineCosine(angle, out float sin, out float cos);//i think cos is coming out 0 when angle is 0
         return new(sin, -cos);
     }
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public float Angle(Vector value, Vector pivot = default)
-    {
-#if DEBUG
-        //check for if arguments are equal at all
-
-        Vector v = this;
-        
-        if (!pivot.IsZero())
-        {
-            v.x -= pivot.x;
-            v.y -= pivot.y;
-            value.x -= pivot.x;
-            value.y -= pivot.y;
-        }
-
-        float a = v.AngleFromRotationOrigin(), b = value.AngleFromRotationOrigin();
-
-        if (a < b) return b - a;
-        if (a > b) return a - b;
-        return a;
-#else
-        return default;
-#endif
-    }
-
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public float Angle(VectorF value, VectorF pivot = default) => default;
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
