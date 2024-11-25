@@ -2,46 +2,7 @@
 
 public partial struct Triangle
 {
-    /*
-//what if the triangle was already right?
-Triangle.intersecting(Vector)
-|-----
-| Pivot point = min side
-|    Ab => c
-|    Bc => a
-|    CA => b
-|//these assign the same thing
-| if (ab < bc)
-|   min side = ab
-|   pivot point = c
-| else
-|   min side = bc
-|   pivot point = a
-| if (ca < minside) pivot point = b
-|-----
-Far point = max side from pivot
-A => b || c
-B => c || a
-C => a || b
-
-Value -= pivot
-Far point -= pivot
-Midpoint -= pivot
-Pivot = (0, 0)
-
-Angle = farpoint.angleorigin()
-
-Value.rotate(angle, pivot)//don't need pivot since it's origin
-Far point.Rotate (angle, pivot)
-Midpoint.rotate(angle, pivot)
-
-Right triangles =
-(0, mid.y, mid.x, -mid.y),
-(0, mid.y, mid.x, far.y - mid.y)
-
-Return red.intersecting(value) || blue.intersecting(value)
-*/
-
+    #region Enveloping
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
     public bool Enveloping(Triangle shape) => default;
@@ -76,23 +37,35 @@ intersecting
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
     public bool Enveloping(VectorF value) => default;
+    #endregion
+
+    #region Intersection
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public Rectangle IntersectionBounds(Triangle shape) => default;
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
-    public Triangle IntersectionArea(Triangle shape) => default;
+    public RectangleF IntersectionBounds(TriangleF shape) => default;
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
-    public TriangleF IntersectionArea(TriangleF shape) => default;
+    public Rectangle IntersectionBounds(IPolytope<Vector, Triangle> shape) => default;
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
-    public IPolytope<Vector, Triangle> IntersectionArea(IPolytope<Vector, Triangle> shape) => default;
+    public RectangleF IntersectionBounds(IPolytope<VectorF, TriangleF> shape) => default;
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
-    public IPolytope<VectorF, TriangleF> IntersectionArea(IPolytope<VectorF, TriangleF> shape) => default;
+    public IShape_ IntersectionShape(Triangle shape) => default;
 
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public IShape_ IntersectionShape(TriangleF shape) => default;
+    #endregion
+
+    #region Intersecting
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
     public bool Intersecting(Triangle shape) => default;
@@ -108,7 +81,9 @@ intersecting
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
     public bool Intersecting(IPolytope<VectorF, TriangleF> shape) => default;
+    #endregion
 
+    #region Overlapping
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
     public bool Overlapping(Vector vector)
@@ -154,7 +129,9 @@ overlapping(vector)
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
     public bool Overlapping(TriangleF shape) => default;
+    #endregion
 
+    #region Touching
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
     public bool Touching(Triangle shape) => default;
@@ -170,4 +147,5 @@ overlapping(vector)
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
     public bool Touching(IPolytope<VectorF, TriangleF> shape) => default;
+    #endregion
 }

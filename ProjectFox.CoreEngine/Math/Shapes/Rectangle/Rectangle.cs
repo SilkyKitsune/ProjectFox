@@ -5,7 +5,7 @@ namespace ProjectFox.CoreEngine.Math;
 
 /// <summary> an axis aligned 2D shape comprised of a position and size </summary>
 [StructLayout(LayoutKind.Sequential)]
-public partial struct Rectangle : IShape2D<Rectangle, Vector, int, RectangleF, Rectangle>, IPolytope<Vector, Triangle>
+public partial struct Rectangle : IShape<Rectangle, RectangleF, Vector, VectorF, Triangle, TriangleF, Rectangle, RectangleF, int>, IPolytope<Vector, Triangle>, IDirection<Vector>
 {
     #region Constructors
     ///

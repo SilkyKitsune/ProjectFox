@@ -15,6 +15,14 @@ public partial struct RectangleF
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Enveloping(RectangleF shape) => (shape.size.x > size.x || shape.size.y > size.y) ? false : Enveloping(shape.position);
 
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public bool Enveloping(TriangleF shape) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public bool Enveloping(Triangle shape) => default;
+
     public bool Enveloping(IPolytope<Vector, Triangle> shape)
     {
         Vector[] points = shape.Points;
@@ -38,8 +46,8 @@ public partial struct RectangleF
     }
     #endregion
 
-    #region IntersectionArea
-    public RectangleF IntersectionArea(RectangleF shape)
+    #region Intersection
+    public RectangleF IntersectionBounds(RectangleF shape)
     {
         if (Equals(shape)) return shape;
 
@@ -55,25 +63,35 @@ public partial struct RectangleF
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
-    public Rectangle IntersectionArea(Rectangle shape) => default;
+    public RectangleF IntersectionBounds(TriangleF shape) => default;
 
-    public IPolytope<Vector, Triangle> IntersectionArea(IPolytope<Vector, Triangle> shape)
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public RectangleF IntersectionBounds(Triangle shape) => default;
+
+    public RectangleF IntersectionBounds(IPolytope<VectorF, TriangleF> shape)
     {
         if (shape == null) throw new ArgumentNullException();
 
-        if (shape is Rectangle rectangle) return IntersectionArea(rectangle);
+        if (shape is RectangleF rectangle) return IntersectionBounds(rectangle);
 
-        return null;
+        return default;
     }
 
-    public IPolytope<VectorF, TriangleF> IntersectionArea(IPolytope<VectorF, TriangleF> shape)
+    public RectangleF IntersectionBounds(IPolytope<Vector, Triangle> shape)
     {
         if (shape == null) throw new ArgumentNullException();
 
-        if (shape is RectangleF rectangle) return IntersectionArea(rectangle);
+        if (shape is Rectangle rectangle) return IntersectionBounds(
+            new RectangleF(rectangle.position.x, rectangle.position.y,
+                rectangle.size.x, rectangle.size.y));
 
-        return null;
+        return default;
     }
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public IShape_ IntersectionShape(RectangleF shape) => default;
     #endregion
 
     #region Intersecting
@@ -84,6 +102,14 @@ public partial struct RectangleF
         float x = shape.position.x - position.x, y = shape.position.y - position.x;
         return (x < 0f ? -x < shape.size.x : x < size.x) && (y < 0f ? -y < shape.size.y : y < size.y);
     }
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public bool Intersecting(TriangleF shape) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public bool Intersecting(Triangle shape) => default;
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
@@ -103,7 +129,15 @@ public partial struct RectangleF
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Overlapping(RectangleF shape) => Equals(shape) || Enveloping(shape) || shape.Enveloping(this);
-    
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public bool Overlapping(TriangleF shape) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public bool Overlapping(Triangle shape) => default;
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Overlapping(IPolytope<Vector, Triangle> shape) => Equals(shape) || Enveloping(shape);// || shape.Enveloping(this);
     
@@ -115,6 +149,14 @@ public partial struct RectangleF
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
     public bool Touching(RectangleF shape) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public bool Touching(TriangleF shape) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public bool Touching(Triangle shape) => default;
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>

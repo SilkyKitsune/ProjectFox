@@ -12,23 +12,17 @@ public partial struct Rectangle
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Enveloping(VectorF value) => (value.x > position.x && value.x < position.x + size.x) && (value.y > position.y && value.y < position.y + size.y);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool Enveloping(Rectangle shape)//I dont think this will work
-    {
-        return (shape.size.x > size.x || shape.size.y > size.y) ? false : Enveloping(shape.position);
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]//I dont think this will work, what was this refering to?
+    public bool Enveloping(Rectangle shape) => (shape.size.x > size.x || shape.size.y > size.y) ? false : Enveloping(shape.position);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool Enveloping(RectangleF shape)
-    {
-        return (shape.size.x > size.x || shape.size.y > size.y) ? false : Enveloping(shape.position);
-    }
+    public bool Enveloping(RectangleF shape) => (shape.size.x > size.x || shape.size.y > size.y) ? false : Enveloping(shape.position);
 
-    //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //public bool Enveloping(Triangle shape) => Enveloping(shape.a) && Enveloping(shape.b) && Enveloping(shape.c);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool Enveloping(Triangle shape) => Enveloping(shape.a) && Enveloping(shape.b) && Enveloping(shape.c);
 
-    //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //public bool Enveloping(TriangleF shape) => Enveloping(shape.a) && Enveloping(shape.b) && Enveloping(shape.c);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool Enveloping(TriangleF shape) => Enveloping(shape.a) && Enveloping(shape.b) && Enveloping(shape.c);
 
     public bool Enveloping(IPolytope<Vector, Triangle> shape)
     {
@@ -53,9 +47,9 @@ public partial struct Rectangle
     }
     #endregion
 
-    #region IntersectionArea
+    #region Intersection
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Rectangle IntersectionArea(Rectangle shape)
+    public Rectangle IntersectionBounds(Rectangle shape)
     {
         if (Equals(shape)) return shape;
 
@@ -73,27 +67,41 @@ public partial struct Rectangle
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>
-    public RectangleF IntersectionArea(RectangleF shape) => default;
+    public RectangleF IntersectionBounds(RectangleF shape) => default;
 
-    //public bool GetIntersectionArea(Triangle shape)?
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public Rectangle IntersectionBounds(Triangle shape) => default;
 
-    public IPolytope<Vector, Triangle> IntersectionArea(IPolytope<Vector, Triangle> shape)
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public RectangleF IntersectionBounds(TriangleF shape) => default;
+
+    public Rectangle IntersectionBounds(IPolytope<Vector, Triangle> shape)
     {
         if (shape == null) throw new ArgumentNullException();
 
-        if (shape is Rectangle rectangle) return IntersectionArea(rectangle);
+        if (shape is Rectangle rectangle) return IntersectionBounds(rectangle);
 
-        return null;
+        return default;
     }
 
-    public IPolytope<VectorF, TriangleF> IntersectionArea(IPolytope<VectorF, TriangleF> shape)
+    public RectangleF IntersectionBounds(IPolytope<VectorF, TriangleF> shape)
     {
         if (shape == null) throw new ArgumentNullException();
 
-        if (shape is RectangleF rectangle) return IntersectionArea(rectangle);
+        if (shape is RectangleF rectangle) return IntersectionBounds(rectangle);
 
-        return null;
+        return default;
     }
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public IShape_ IntersectionShape(Rectangle shape) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public IShape_ IntersectionShape(RectangleF shape) => default;
     #endregion
 
     #region Intersecting
@@ -113,8 +121,13 @@ public partial struct Rectangle
         return (x < 0f ? -x < shape.size.x : x < size.x) && (y < 0f ? -y < shape.size.y : y < size.y);
     }
 
-    /*public bool Intersecting(Triangle shape) => default;
-    public bool Intersecting(TriangleF shape) => default;*/
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public bool Intersecting(Triangle shape) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public bool Intersecting(TriangleF shape) => default;
 
     public bool Intersecting(IPolytope<Vector, Triangle> shape)
     {
@@ -122,8 +135,9 @@ public partial struct Rectangle
 
         if (shape is Rectangle rectangle) return Intersecting(rectangle);
 
-        //foreach (Triangle triangle in shape.GetPrimitives())
-            //if (Intersecting(triangle)) return true;//this needs the triangle overload
+        foreach (Triangle triangle in shape.GetPrimitives())
+            if (Intersecting(triangle)) return true;
+
         return false;
     }
 
@@ -133,8 +147,9 @@ public partial struct Rectangle
 
         if (shape is RectangleF rectangle) return Intersecting(rectangle);
 
-        //foreach (TriangleF triangle in shape.GetPrimitives())
-            //if (Intersecting(triangle)) return true;
+        foreach (TriangleF triangle in shape.GetPrimitives())
+            if (Intersecting(triangle)) return true;
+
         return false;
     }
     #endregion
@@ -150,7 +165,13 @@ public partial struct Rectangle
     public bool Overlapping(Rectangle shape) => Equals(shape) || Enveloping(shape) || shape.Enveloping(this);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool Overlapping(RectangleF shape) => Equals(shape) || Enveloping(shape) || shape.Enveloping((RectangleF)this);//is this okay?
+    public bool Overlapping(RectangleF shape) => Equals(shape) || Enveloping(shape) || shape.Enveloping((RectangleF)this);//is this okay? should it be a constructor directly?
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool Overlapping(Triangle shape) => Equals(shape) || Enveloping(shape) || shape.Enveloping(this);//no Equals(Tri) or Tri.Enveloping(Rect) overloads
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool Overlapping(TriangleF shape) => Equals(shape) || Enveloping(shape) || shape.Enveloping(this);//no Equals(Tri) or Tri.Enveloping(Rect) overloads
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Overlapping(IPolytope<Vector, Triangle> shape) => Equals(shape) || Enveloping(shape);// || shape.Enveloping(this);
@@ -187,8 +208,13 @@ public partial struct Rectangle
         return false;
     }
 
-    /*public bool Touching(Triangle shape) => default;
-    public bool Touching(TriangleF shape) => default;*/
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public bool Touching(Triangle shape) => default;
+
+    /// <summary> Not Yet Implemented </summary>
+    /// <returns> default </returns>
+    public bool Touching(TriangleF shape) => default;
 
     /// <summary> Not Yet Implemented </summary>
     /// <returns> default </returns>

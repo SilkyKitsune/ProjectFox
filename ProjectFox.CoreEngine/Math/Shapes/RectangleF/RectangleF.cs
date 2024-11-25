@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 namespace ProjectFox.CoreEngine.Math;
 
 [StructLayout(LayoutKind.Sequential)]
-public partial struct RectangleF : IShape2D<RectangleF, VectorF, float, RectangleF, RectangleF>, IPolytope<VectorF, TriangleF>
+public partial struct RectangleF : IShape<RectangleF, RectangleF, VectorF, Vector, TriangleF, Triangle, RectangleF, RectangleF, float>, IPolytope<VectorF, TriangleF>, IDirection<VectorF>
 {
     #region Constructors
     public RectangleF(VectorF position, VectorF size)

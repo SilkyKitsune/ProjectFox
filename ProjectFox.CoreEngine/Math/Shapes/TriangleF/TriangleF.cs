@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 namespace ProjectFox.CoreEngine.Math;
 
 [StructLayout(LayoutKind.Sequential)]
-public partial struct TriangleF : IShape2D<TriangleF, VectorF, float, TriangleF>, IPolytope<VectorF, TriangleF>
+public partial struct TriangleF : IShape<TriangleF, TriangleF, VectorF, Vector, TriangleF, Triangle, RectangleF, RectangleF, float>, IPolytope<VectorF, TriangleF>, IDirection<VectorF>
 {
     #region Constructors
     public TriangleF(VectorF a, VectorF b, VectorF c)
@@ -71,6 +71,14 @@ public partial struct TriangleF : IShape2D<TriangleF, VectorF, float, TriangleF>
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => new VectorF[3] { a, b, c };
+    }
+
+    public RectangleF Bounds
+    {
+        get
+        {
+            return default;
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

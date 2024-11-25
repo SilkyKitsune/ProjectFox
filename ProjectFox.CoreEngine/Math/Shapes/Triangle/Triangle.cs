@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 namespace ProjectFox.CoreEngine.Math;
 
 [StructLayout(LayoutKind.Sequential)]
-public partial struct Triangle : IShape2D<Triangle, Vector, int, TriangleF>, IPolytope<Vector, Triangle>
+public partial struct Triangle : IShape<Triangle, TriangleF, Vector, VectorF, Triangle, TriangleF, Rectangle, RectangleF, int>, IPolytope<Vector, Triangle>, IDirection<Vector>
 {
 #if DEBUG
     /// <summary>  </summary>
@@ -92,6 +92,45 @@ public partial struct Triangle : IShape2D<Triangle, Vector, int, TriangleF>, IPo
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => new Vector[3] { a, b, c };
+    }
+
+    public Rectangle Bounds
+    {
+        get
+        {
+            Rectangle r = new();
+
+            if (a.x < b.x)
+            {
+                r.position.x = a.x;
+                r.size.x = b.x;
+            }
+            else
+            {
+                r.position.x = b.x;
+                r.size.x = a.x;
+            }
+
+            if (a.y < b.y)
+            {
+                r.position.y = a.y;
+                r.size.y = b.y;
+            }
+            else
+            {
+                r.position.y = b.y;
+                r.size.y = a.y;
+            }
+
+            if (c.x < r.position.x) r.position.x = c.x;
+            if (c.y < r.position.y) r.position.y = c.y;
+
+            r.size = new(
+                (r.size.x > c.x ? r.size.x : c.x) - r.position.x,
+                (r.size.y > c.y ? r.size.y : c.y) - r.position.y);
+
+            return r;
+        }
     }
 
     /// <returns> (a XOR b XOR c) </returns>
