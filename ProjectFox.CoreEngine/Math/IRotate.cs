@@ -1,6 +1,6 @@
 ﻿namespace ProjectFox.CoreEngine.Math;
 
-public interface IRotate2D<V, Vf, A, R>
+public interface IRotate<V, Vf, A, R>
 {
     public static abstract A Angle(V a, V b, V pivot = default);
 
