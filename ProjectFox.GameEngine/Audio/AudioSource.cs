@@ -40,7 +40,7 @@ public abstract class AudioSource : Object2D
             Engine.SendError(ErrorCodes.AudioChannelNotInScene, name, channel.name.ToString(),
                 $"AudioSource '{name}' drew to channel from a null/different scene");
 
-        Sample[] waveShape = GetDrawInfo();//if waveShape is changed between frames waveShapeIndex could be invalid, for loop condition covers that but will skip playback on first frame
+        Sample[] waveShape = GetDrawInfo();
 
         if (waveShape == null)
         {
@@ -62,10 +62,11 @@ public abstract class AudioSource : Object2D
                 Engine.SendError(ErrorCodes.MinGreaterThanMax, name, nameof(minVolumeDistance));
             else
             {
-                float distance = Closest(listeners.ToArray()).position.Distance(position);//overload for awway<>?
-                if (distance >= minVolumeDistance) v = 0f;
-                else if (exceedMaxVolume || distance > maxVolumeDistance)
-                    v *= 1 - ((distance - maxVolumeDistance) / (minVolumeDistance - maxVolumeDistance));
+                float distance = Closest(listeners.ToArray()).position.DistanceSquared(position);
+
+                if (distance >= minVolumeDistance * minVolumeDistance) v = 0f;
+                else if (exceedMaxVolume || distance > maxVolumeDistance * maxVolumeDistance)
+                    v *= 1 - ((Math.SqrRoot(distance) - maxVolumeDistance) / (minVolumeDistance - maxVolumeDistance));
             }
         }
 
