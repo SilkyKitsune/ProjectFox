@@ -13,9 +13,9 @@ public class Scene : NamedType
     /// <param name="name"> the scene's ID </param>
     public Scene(NameID name) : base(name) { }
 
-    private readonly HashArray<Object> objects = new(0x100);
-    internal readonly HashArray<VisualLayer> visualLayers = new(0x40);
-    private readonly HashArray<AudioChannel> audioChannels = new(0x40);
+    private readonly Table<Object> objects = new(0x100);
+    internal readonly Table<VisualLayer> visualLayers = new(0x40);
+    private readonly Table<AudioChannel> audioChannels = new(0x40);
 
     private ClearModes clearMode = Clear;
     private SetPiece bg = new(new("_BGDraw", 0)) { parallaxFactor = new(0f, 0f) };

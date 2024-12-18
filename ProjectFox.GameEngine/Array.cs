@@ -82,7 +82,7 @@ internal sealed class Array<T> : ICollection<T>
         }
         elements[length++] = value;
     }
-
+    
     public void Add(params T[] values)
     {
         if (values.Length == 0) return;
@@ -139,7 +139,7 @@ internal sealed class Array<T> : ICollection<T>
         for (int i = 0; i < length; i++) s += elements[i].ToString();
         return s;
     }
-
+    
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Contains(T value)
     {
@@ -434,11 +434,11 @@ internal sealed class Array<T> : ICollection<T>
     public T[] ToArray() => length == 0 ? new T[0] : elements[..length];
 }
 
-internal sealed class HashArray<T> : IHashTable<NameID, T>
+internal sealed class Table<T> : ITable<NameID, T>
 {
     private static readonly NameID HashArrayName = new("HshTble", 0);
 
-    internal HashArray(int chunkSize)
+    internal Table(int chunkSize)
     {
         codes = new(chunkSize);
         values = new(chunkSize);
@@ -540,7 +540,7 @@ internal sealed class HashArray<T> : IHashTable<NameID, T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool ContainsCode(NameID code) => codes.Contains(code);
 
-    public void CopyTo(IHashTable<NameID, T> table) =>
+    public void CopyTo(ITable<NameID, T> table) =>
         Engine.SendError(ErrorCodes.NotImplemented, HashArrayName, null,
             "IHashTable.CopyTo() is not implemented for this type");
 

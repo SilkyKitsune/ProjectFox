@@ -4,9 +4,9 @@ public sealed class PhysicsSpace : NamedType
 {
     public PhysicsSpace(NameID name) : base(name) { }
 
-    internal readonly HashArray<PhysicsSpace> scanSpaces = new HashArray<PhysicsSpace>(0x20);
+    internal readonly Table<PhysicsSpace> scanSpaces = new(0x20);
     //do these need to be hash array?
-    internal readonly HashArray<PhysicsRectangle> rectangles = new HashArray<PhysicsRectangle>(0x100);
+    internal readonly Table<PhysicsRectangle> rectangles = new(0x100);
     //polygons
     //circles
     //rays
