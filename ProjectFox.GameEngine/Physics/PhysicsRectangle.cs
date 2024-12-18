@@ -212,7 +212,7 @@ public class PhysicsRectangle : PhysicsShape
                                 }
                             case ScanModes.E2:
                                 {
-                                    Rectangle r = rect.IntersectionArea(rect2);
+                                    Rectangle r = rect.IntersectionBounds(rect2);
 
                                     if (r.size.x > 0 && r.size.y > 0)
                                     {
@@ -226,7 +226,7 @@ public class PhysicsRectangle : PhysicsShape
                                 }
                             case ScanModes.F2:
                                 {
-                                    Rectangle r = rect.IntersectionArea(rect2);
+                                    Rectangle r = rect.IntersectionBounds(rect2);
 
                                     if (r.size.x > 0 && r.size.y > 0)
                                     {
@@ -253,7 +253,7 @@ public class PhysicsRectangle : PhysicsShape
                                         if (!scanThoroughly) return;
                                     }*/
 
-                                    Rectangle r = rect.IntersectionArea(rect2);
+                                    Rectangle r = rect.IntersectionBounds(rect2);
                                     bool x = r.size.x > 0, y = r.size.y > 0;
 
                                     if (x && y)
@@ -272,7 +272,7 @@ public class PhysicsRectangle : PhysicsShape
                                 }
                             case ScanModes.H2:
                                 {
-                                    Rectangle r = rect.IntersectionArea(rect2);
+                                    Rectangle r = rect.IntersectionBounds(rect2);
                                     bool a = r.size.Equals(rect.size), b = r.size.Equals(rect2.size), env = !a && b, w = a && !b;
 
                                     enveloping = enveloping || env;
@@ -322,7 +322,7 @@ public class PhysicsRectangle : PhysicsShape
                             #region 3 Cases
                             case ScanModes.A3:
                                 {
-                                    Rectangle r = rect.IntersectionArea(rect2);
+                                    Rectangle r = rect.IntersectionBounds(rect2);
                                     if (r.size.x > 0 && r.size.y > 0)
                                     {
                                         bool a = r.size.Equals(rect.size), b = r.size.Equals(rect2.size);
@@ -338,7 +338,7 @@ public class PhysicsRectangle : PhysicsShape
                                 }
                             case ScanModes.B3:
                                 {
-                                    Rectangle r = rect.IntersectionArea(rect2);
+                                    Rectangle r = rect.IntersectionBounds(rect2);
                                     if (r.size.x > 0 && r.size.y > 0)
                                     {
                                         bool a = r.size.Equals(rect.size), b = r.size.Equals(rect2.size);
@@ -354,7 +354,7 @@ public class PhysicsRectangle : PhysicsShape
                                 }
                             case ScanModes.C3:
                                 {
-                                    Rectangle r = rect.IntersectionArea(rect2);
+                                    Rectangle r = rect.IntersectionBounds(rect2);
                                     bool x = r.size.x > 0, y = r.size.y > 0;
 
                                     if (x && y)
@@ -374,7 +374,7 @@ public class PhysicsRectangle : PhysicsShape
                                 }
                             case ScanModes.D3_Overlapping:
                                 {
-                                    Rectangle r = rect.IntersectionArea(rect2);
+                                    Rectangle r = rect.IntersectionBounds(rect2);
                                     bool a = r.size.Equals(rect.size), b = r.size.Equals(rect2.size), eq = a && b, env = !a && b, w = a && !b;
 
                                     equal = equal || eq;
@@ -390,7 +390,7 @@ public class PhysicsRectangle : PhysicsShape
                                 }
                             case ScanModes.E3:
                                 {
-                                    Rectangle r = rect.IntersectionArea(rect2);
+                                    Rectangle r = rect.IntersectionBounds(rect2);
                                     bool a = r.size.Equals(rect.size), b = r.size.Equals(rect2.size), eq = a && b, env = !a && b;
 
                                     equal = equal || eq;
@@ -411,7 +411,7 @@ public class PhysicsRectangle : PhysicsShape
                                 }
                             case ScanModes.F3:
                                 {
-                                    Rectangle r = rect.IntersectionArea(rect2);
+                                    Rectangle r = rect.IntersectionBounds(rect2);
                                     bool a = r.size.Equals(rect.size), b = r.size.Equals(rect2.size), eq = a && b, w = a && !b;
 
                                     equal = equal || eq;
@@ -432,7 +432,7 @@ public class PhysicsRectangle : PhysicsShape
                                 }
                             case ScanModes.G3:
                                 {
-                                    Rectangle r = rect.IntersectionArea(rect2);
+                                    Rectangle r = rect.IntersectionBounds(rect2);
                                     if (r.size.x > 0 && r.size.y > 0)
                                     {
                                         bool a = r.size.Equals(rect.size), b = r.size.Equals(rect2.size);
@@ -448,7 +448,7 @@ public class PhysicsRectangle : PhysicsShape
                                 }
                             case ScanModes.H3:
                                 {
-                                    Rectangle r = rect.IntersectionArea(rect2);
+                                    Rectangle r = rect.IntersectionBounds(rect2);
                                     bool x = r.size.x > 0, y = r.size.y > 0;
 
                                     if (x && y)
@@ -468,7 +468,7 @@ public class PhysicsRectangle : PhysicsShape
                                 }
                             case ScanModes.I3:
                                 {
-                                    Rectangle r = rect.IntersectionArea(rect2);
+                                    Rectangle r = rect.IntersectionBounds(rect2);
                                     bool x = r.size.x > 0, y = r.size.y > 0;
 
                                     if (x && y)
@@ -488,7 +488,7 @@ public class PhysicsRectangle : PhysicsShape
                                 }
                             case ScanModes.J3:
                                 {
-                                    Rectangle r = rect.IntersectionArea(rect2);
+                                    Rectangle r = rect.IntersectionBounds(rect2);
                                     bool a = r.size.Equals(rect.size), b = r.size.Equals(rect2.size), env = !a && b, w = a && !b;
 
                                     enveloping = enveloping || env;
@@ -512,7 +512,7 @@ public class PhysicsRectangle : PhysicsShape
                             #region 4 Cases
                             case ScanModes.A4:
                                 {
-                                    Rectangle r = rect.IntersectionArea(rect2);
+                                    Rectangle r = rect.IntersectionBounds(rect2);
 
                                     if (r.size.x > 0 && r.size.y > 0)
                                     {
@@ -530,7 +530,7 @@ public class PhysicsRectangle : PhysicsShape
                                 }
                             case ScanModes.B4:
                                 {
-                                    Rectangle r = rect.IntersectionArea(rect2);
+                                    Rectangle r = rect.IntersectionBounds(rect2);
                                     bool x = r.size.x > 0, y = r.size.y > 0;
 
                                     if (x || y)
@@ -562,7 +562,7 @@ public class PhysicsRectangle : PhysicsShape
                                 }
                             case ScanModes.C4:
                                 {
-                                    Rectangle r = rect.IntersectionArea(rect2);
+                                    Rectangle r = rect.IntersectionBounds(rect2);
                                     bool x = r.size.x > 0, y = r.size.y > 0;
 
                                     if (x || y)
@@ -594,7 +594,7 @@ public class PhysicsRectangle : PhysicsShape
                                 }
                             case ScanModes.D4:
                                 {
-                                    Rectangle r = rect.IntersectionArea(rect2);
+                                    Rectangle r = rect.IntersectionBounds(rect2);
                                     bool x = r.size.x > 0, y = r.size.y > 0;
 
                                     if (x || y)
@@ -626,7 +626,7 @@ public class PhysicsRectangle : PhysicsShape
                                 }
                             case ScanModes.E4:
                                 {
-                                    Rectangle r = rect.IntersectionArea(rect2);
+                                    Rectangle r = rect.IntersectionBounds(rect2);
                                     bool x = r.size.x > 0, y = r.size.y > 0;
 
                                     if (x || y)
@@ -660,7 +660,7 @@ public class PhysicsRectangle : PhysicsShape
 
                             case ScanModes.All:
                                 {
-                                    Rectangle r = rect.IntersectionArea(rect2);
+                                    Rectangle r = rect.IntersectionBounds(rect2);
                                     bool x = r.size.x > 0, y = r.size.y > 0;
 
                                     if (x || y)//is this necessary?
@@ -772,7 +772,7 @@ public class PhysicsRectangle : PhysicsShape
 
                         if (this != rectangle && rectangle.enabled && rectangle.shapeEnabled && rectangle.size.x > 0 && rectangle.size.y > 0)
                         {
-                            Rectangle rect2 = rectangle.Rectangle/*inline*/, area = rect.IntersectionArea(rect2);
+                            Rectangle rect2 = rectangle.Rectangle/*inline*/, area = rect.IntersectionBounds(rect2);
 
                             //if (rectangle.soft)//? //use lines for soft?
 
@@ -839,7 +839,7 @@ public class PhysicsRectangle : PhysicsShape
         }
 
         Rectangle rect = Rectangle,//inline?
-            screen = new(Screen.position, Screen.size), area = screen.IntersectionArea(rect);
+            screen = new(Screen.position, Screen.size), area = screen.IntersectionBounds(rect);
 
         if (area.size.x <= 0 || area.size.y <= 0) return;
 
