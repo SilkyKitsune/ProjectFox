@@ -44,7 +44,13 @@ public abstract class InputDevice
 
         if (sticks != null && analogStickValues != null)
             for (int i = 0, l = Math.Min(sticks.Length, analogStickValues.Length); i < l; i++)
-                sticks[i].position = analogStickValues[i].Clamp(-127, 127);
+            {
+                Stick stick = sticks[i];
+
+                stick.position = analogStickValues[i].Clamp(Stick.MinValue, Stick.MaxValue);//inline?
+                stick.xMoved.Value = stick.position.x > stick.deadZone.x || stick.position.x < stick.negDeadZone.x;//inline?
+                stick.yMoved.Value = stick.position.y > stick.deadZone.y || stick.position.y < stick.negDeadZone.y;//inline?
+            }
 
         if (cursors != null && cursorValues != null)
             for (int i = 0, l = Math.Min(cursors.Length, cursorValues.Length); i < l; i++)
