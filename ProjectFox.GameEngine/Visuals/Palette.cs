@@ -145,7 +145,8 @@ public sealed class PaletteAnimation : Animation, IPalette
 {
     public sealed class PaletteFrame : Frame
     {
-        public IPalette palette;
+        public IPalette palette = null;
+        public int paletteOffset = 0;//how to implement this?
     }
 
     public PaletteAnimation(params PaletteFrame[] frames) => this.frames.Add(frames);
