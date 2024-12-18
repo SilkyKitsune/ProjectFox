@@ -88,12 +88,13 @@ public class DirectionalPad
 
 public class Stick//directional stick?
 {
-    private const int MinValue = -127, MaxValue = 127;//public?
     private const float MaxF = MaxValue;
+    
+    public const int MinValue = -127, MaxValue = 127;
     
     internal Vector position = new(0, 0), deadZone = new(0, 0), negDeadZone = new(0, 0);//neg deadzone redundant?
     
-    private readonly DigitalButton xMoved = new(), yMoved = new();
+    internal readonly DigitalButton xMoved = new(), yMoved = new();
 
     public readonly ICollection<Stick> bindings = new Array<Stick>(0x2);
     //analog button bindings
