@@ -83,21 +83,6 @@ internal sealed class Array<T> : ICollection<T>
         elements[length++] = value;
     }
 
-    /*internal ErrorCodes AddInternal(T value)
-    {
-        if (value == null) return ErrorCodes.NullArgument;
-
-        if (length == elements.Length)
-        {
-            T[] array = new T[length + chunkSize];
-            for (int i = 0; i < length; i++) array[i] = elements[i];
-            elements = array;
-        }
-        elements[length++] = value;
-
-        return ErrorCodes.NotImplemented;//no error
-    }*/
-    
     public void Add(params T[] values)
     {
         if (values.Length == 0) return;
@@ -123,18 +108,6 @@ internal sealed class Array<T> : ICollection<T>
             elements = array;
         }
         for (int i = 0; i < values.Length; i++) elements[length++] = values[i];
-        length = newLength;
-    }
-
-    [Obsolete] internal void AddLength(int addedLength)
-    {
-        int newLength = length + addedLength;
-        if (newLength >= elements.Length)
-        {
-            T[] array = new T[(newLength / chunkSize + 1) * chunkSize];
-            for (int i = 0; i < length; i++) array[i] = elements[i];
-            elements = array;
-        }
         length = newLength;
     }
 
