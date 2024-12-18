@@ -28,51 +28,46 @@ public static class Debug
         private static readonly Array<object> outputMessageQueue = new Array<object>(0x100);
         private static readonly Array<string> inputMessageQueue = new Array<string>(0x10);
 
-        private static readonly Timer timer = new()
+        private static readonly SpinTimer timer = new(10, 0.5f, true, (t, p) =>
         {
-            Interval = 20L,
-            elapsed = () =>
+            while (readMode) inputMessageQueue.AddDirect(C.ReadLine());
+            if (outputMessageQueue.length > 0)
             {
-                while (readMode) inputMessageQueue.AddDirect(C.ReadLine());
-                if (outputMessageQueue.length > 0)
+                int length;
+                object[] queue;
+                lock (outputMessageQueue)
                 {
-                    int length;
-                    object[] queue;
-                    lock (outputMessageQueue)
-                    {
-                        length = outputMessageQueue.length;
-                        queue = outputMessageQueue.elements;
-                        outputMessageQueue.Clear();
-                    }
-                    if (queue != null)
-                        for (int i = 0; i < length; i++)
-                        {
-                            if (queue[i] is ErrorMessage error)
-                            {
-                                switch (error.severity)
-                                {
-                                    case ErrorMessage.ErrorSeverity.None:
-                                        C.WriteLine(error.error);
-                                        break;
-                                    case ErrorMessage.ErrorSeverity.Warning:
-                                        C.ForegroundColor = System.ConsoleColor.Yellow;
-                                        C.WriteLine(error.error);
-                                        C.ForegroundColor = System.ConsoleColor.White;
-                                        break;
-                                    case ErrorMessage.ErrorSeverity.Error:
-                                        C.ForegroundColor = System.ConsoleColor.Red;
-                                        C.WriteLine(error.error);
-                                        C.ForegroundColor = System.ConsoleColor.White;
-                                        break;
-                                }
-                                C.WriteLine(error.message);
-                            }
-                            else C.WriteLine(queue[i]);
-                        }
+                    length = outputMessageQueue.length;
+                    queue = outputMessageQueue.elements;
+                    outputMessageQueue.Clear();
                 }
-            },
-            Running = true
-        };
+                if (queue != null)
+                    for (int i = 0; i < length; i++)
+                    {
+                        if (queue[i] is ErrorMessage error)
+                        {
+                            switch (error.severity)
+                            {
+                                case ErrorMessage.ErrorSeverity.None:
+                                    C.WriteLine(error.error);
+                                    break;
+                                case ErrorMessage.ErrorSeverity.Warning:
+                                    C.ForegroundColor = System.ConsoleColor.Yellow;
+                                    C.WriteLine(error.error);
+                                    C.ForegroundColor = System.ConsoleColor.White;
+                                    break;
+                                case ErrorMessage.ErrorSeverity.Error:
+                                    C.ForegroundColor = System.ConsoleColor.Red;
+                                    C.WriteLine(error.error);
+                                    C.ForegroundColor = System.ConsoleColor.White;
+                                    break;
+                            }
+                            C.WriteLine(error.message);
+                        }
+                        else C.WriteLine(queue[i]);
+                    }
+            }
+        });//higher sleep?
 
         /// <summary> console will read messages until set to false </summary>
         public static bool ReadMode
@@ -107,7 +102,7 @@ public static class Debug
 
         public static void Clear() => C.Clear();
 
-        /// <summary> Stops the console thread, CANNOT BE RESTARTED!!! </summary>
+        /// <summary> Stops the console timer, CANNOT BE RESTARTED!!! </summary>
         public static void Shutdown()
         {
             readMode = false;
