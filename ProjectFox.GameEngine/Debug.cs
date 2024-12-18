@@ -12,9 +12,9 @@ public static class Debug
     internal static readonly VisualLayer debugLayer = new(new("DbgLayr", 0)) { visible = false };
 
     public static readonly ICollection<int> TestArray = new Array<int>(0x8);
-    public static readonly IHashTable<NameID, int> TestTable = new HashArray<int>(0x8);
+    public static readonly ITable<NameID, int> TestTable = new Table<int>(0x8);
     public static readonly ICollection<string> TestArrayRef = new Array<string>(0x8);
-    public static readonly IHashTable<NameID, string> TestTableRef = new HashArray<string>(0x8);
+    public static readonly ITable<NameID, string> TestTableRef = new Table<string>(0x8);
 
     public static bool DrawDebug { get => debugLayer.visible; set => debugLayer.visible = value; }
 
