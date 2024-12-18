@@ -75,7 +75,7 @@ public abstract class RasterObject : Object2D
                 parallaxFactor.x == 1f ? Screen.position.x : (int)(Screen.position.x * parallaxFactor.x),
                 parallaxFactor.y == 1f ? Screen.position.y : (int)(Screen.position.y * parallaxFactor.y),
                 Screen.size),
-            drawArea = screen.IntersectionArea(textureArea);
+            drawArea = screen.IntersectionBounds(textureArea);
 
         if (drawArea.size.x <= 0 || drawArea.size.y <= 0) return;
 
