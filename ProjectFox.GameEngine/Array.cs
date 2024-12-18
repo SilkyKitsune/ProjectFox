@@ -511,15 +511,6 @@ internal sealed class HashArray<T> : IHashTable<NameID, T>
         values.Add(value);
     }
 
-    /*internal ErrorCodes AddInternal(NameID code, T value)
-    {
-        if (value == null) return ErrorCodes.NullArgument;
-        if (codes.Contains(code)) return ErrorCodes.BadArgument;
-        codes.AddInternal(code);
-        values.AddInternal(value);
-        return ErrorCodes.NotImplemented;//no error
-    }*/
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Clear()
     {
