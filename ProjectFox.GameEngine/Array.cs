@@ -111,6 +111,18 @@ internal sealed class Array<T> : ICollection<T>
         length = newLength;
     }
 
+    public void AddConcat(T[][] arrays)
+    {
+        if (arrays == null)
+        {
+            Engine.SendError(ErrorCodes.NullArgument, ArrayName, nameof(arrays));
+            return;
+        }
+        if (arrays.Length == 0) return;
+
+        foreach (T[] array in arrays) Add(array);
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Clear()
     {
