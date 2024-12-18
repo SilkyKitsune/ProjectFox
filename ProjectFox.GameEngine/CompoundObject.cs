@@ -66,7 +66,7 @@ public abstract class CompoundObject : Object
     {
         if (!paused || pauseWalks)
         {
-            PreFrame();
+            PrePhysics();
 
             foreach (Object obj in objects)
                 if (obj == null) Engine.SendError(ErrorCodes.NullPet, name);
@@ -92,7 +92,7 @@ public abstract class CompoundObject : Object
                 }
             }
 
-            PostFrame();
+            PreDraw();
         }
     }
 

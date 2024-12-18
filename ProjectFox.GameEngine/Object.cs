@@ -49,16 +49,16 @@ public abstract class Object : SceneType
     {
         if (!paused || pauseWalks)
         {
-            PreFrame();
-            PostFrame();
+            PrePhysics();
+            PreDraw();
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected virtual void PreFrame() { }
+    protected virtual void PrePhysics() { }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected virtual void PostFrame() { }
+    protected virtual void PreDraw() { }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected internal virtual void PostDraw() { }

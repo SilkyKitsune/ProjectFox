@@ -249,7 +249,7 @@ public abstract class PhysicsShape : Object2D
     {
         if (!paused || pauseWalks)
         {
-            PreFrame();
+            PrePhysics();
 
             equal = false;
             intersecting = false;
@@ -270,7 +270,7 @@ public abstract class PhysicsShape : Object2D
                     if (scan && scanMode != ScanModes.None) _scan();
                 }
             }
-            PostFrame();
+            PreDraw();
         }
     }
 }

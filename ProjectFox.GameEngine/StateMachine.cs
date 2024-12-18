@@ -11,11 +11,11 @@ public abstract class State
 
     ///
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public virtual void PreFrame() { }
+    public virtual void PrePhysics() { }
 
     ///
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public virtual void PostFrame() { }
+    public virtual void PreDraw() { }
 
     ///
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -45,13 +45,13 @@ public abstract class StateMachine
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void CurrentStateEnter() => states[currentState].Enter();
 
-    /// <summary> calls PreFrame() on the current state </summary>
+    /// <summary> calls PrePhysics() on the current state </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void CurrentStatePreFrame() => states[currentState].PreFrame();
+    public void CurrentStatePrePhysics() => states[currentState].PrePhysics();
 
-    /// <summary> calls PostFrame() on the current state </summary>
+    /// <summary> calls PreDraw() on the current state </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void CurrentStatePostFrame() => states[currentState].PostFrame();
+    public void CurrentStatePreDraw() => states[currentState].PreDraw();
 
     /// <summary> calls PostDraw() on the current state </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
