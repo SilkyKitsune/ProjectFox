@@ -24,11 +24,13 @@ public abstract class Texture : ICopy<Texture>
 
 public sealed class ColorTexture : Texture, IColorGroup
 {
+    private static readonly NameID name = new("ClrTxtr", 0);
+
     public ColorTexture(Vector dimensions, Color[] pixels = null) : base(dimensions, false)
     {
         if (dimensions.x < 0 || dimensions.y < 0)
         {
-            Engine.SendError(ErrorCodes.BadArgument, new("ClrTxtr", 0), nameof(dimensions), "Texture dimensions cannot be negative!");
+            Engine.SendError(ErrorCodes.BadArgument, name, nameof(dimensions), "Texture dimensions cannot be negative!");
             dimensions = default;
         }
         
@@ -98,11 +100,13 @@ public sealed class ColorTexture : Texture, IColorGroup
 
 public sealed class PalettizedTexture : Texture
 {
+    private static readonly NameID name = new("PltTxtr", 0);
+
     public PalettizedTexture(Vector dimensions, byte[] pixels = null) : base(dimensions, true)
     {
         if (dimensions.x < 0 || dimensions.y < 0)
         {
-            Engine.SendError(ErrorCodes.BadArgument, new("PltTxtr", 0), nameof(dimensions), "Texture dimensions cannot be negative!");
+            Engine.SendError(ErrorCodes.BadArgument, name, nameof(dimensions), "Texture dimensions cannot be negative!");
             dimensions = default;
         }
 
@@ -118,7 +122,7 @@ public sealed class PalettizedTexture : Texture
     {
         if (dimensions.x < 0 || dimensions.y < 0)
         {
-            Engine.SendError(ErrorCodes.BadArgument, new("PltTxtr", 0), nameof(dimensions), "Texture dimensions cannot be negative!");
+            Engine.SendError(ErrorCodes.BadArgument, name, nameof(dimensions), "Texture dimensions cannot be negative!");
             dimensions = default;
         }
 
@@ -147,7 +151,7 @@ public sealed class PalettizedTexture : Texture
     {
         if (dimensions.x < 0 || dimensions.y < 0)
         {
-            Engine.SendError(ErrorCodes.BadArgument, new("PltTxtr", 0), nameof(dimensions), "Texture dimensions cannot be negative!");
+            Engine.SendError(ErrorCodes.BadArgument, name, nameof(dimensions), "Texture dimensions cannot be negative!");
             dimensions = default;
         }
 
@@ -177,7 +181,7 @@ public sealed class PalettizedTexture : Texture
     {
         if (palette == null)
             return Engine.SendError<ColorTexture>(
-                ErrorCodes.NullArgument, new("PltTxtr", 0), nameof(palette));
+                ErrorCodes.NullArgument, name, nameof(palette));
 
         Color[] colors = palette.GetColors(),
             colorPixels = new Color[pixels.Length];
