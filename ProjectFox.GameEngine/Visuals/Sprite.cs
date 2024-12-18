@@ -58,7 +58,7 @@ public class Sprite : RasterObject
             return;
         }
         
-        TextureAnimation.TextureFrame frame = frames.elements[animation.frameIndex];
+        TextureAnimation.TextureFrame frame = frames.elements[animation.frameIndex >= frames.length || animation.frameIndex < 0 ? 0 : animation.frameIndex];
         
         texture = frame.texture;
 

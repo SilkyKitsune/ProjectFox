@@ -169,8 +169,8 @@ public sealed class PaletteAnimation : Animation, IPalette
     private protected override void GetFrame(out Frame frame, out int frameCount)
     {
         Array<PaletteFrame> frames = (Array<PaletteFrame>)this.frames;
-        frame = frames.elements[frameIndex];
         frameCount = frames.length;
+        frame = frames.elements[frameIndex >= frameCount || frameIndex < 0 ? 0 : frameIndex];
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -226,8 +226,8 @@ public sealed class TextureAnimation : Animation
     private protected override void GetFrame(out Frame frame, out int frameCount)
     {
         Array<TextureFrame> frames = (Array<TextureFrame>)this.frames;
-        frame = frames.elements[frameIndex];
         frameCount = frames.length;
+        frame = frames.elements[frameIndex >= frameCount || frameIndex < 0 ? 0 : frameIndex];//is this okay?
     }
 
     public override void Copy(out Animation copy)
