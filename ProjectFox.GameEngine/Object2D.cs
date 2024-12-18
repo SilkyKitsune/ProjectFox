@@ -130,6 +130,42 @@ public abstract class Object2D : Object
         return closest;
     }
 
+    public float Distance(Object2D object2D)
+    {
+        if (object2D == null)
+            return Engine.SendError<float>(ErrorCodes.NullArgument, name);//message?
+
+        Vector pos0 = owner == null ? position : (Vector)owner.offsets[petIndex],//inline?
+            pos1 = object2D.owner == null ? object2D.position : (Vector)object2D.owner.offsets[object2D.petIndex];
+
+        if (pos0.Equals(pos1)) return 0f;
+
+        int xDelta = pos0.x - pos1.x, yDelta = pos0.y - pos1.y;
+
+        if (xDelta < 0) xDelta = -xDelta;
+        if (yDelta < 0) yDelta = -yDelta;
+
+        return Math.SqrRoot((xDelta * xDelta) + (yDelta * yDelta));
+    }
+
+    public int DistanceSquared(Object2D object2D)
+    {
+        if (object2D == null)
+            return Engine.SendError<int>(ErrorCodes.NullArgument, name);//message?
+
+        Vector pos0 = owner == null ? position : (Vector)owner.offsets[petIndex],//inline?
+            pos1 = object2D.owner == null ? object2D.position : (Vector)object2D.owner.offsets[object2D.petIndex];
+
+        if (pos0.Equals(pos1)) return 0;
+
+        int xDelta = pos0.x - pos1.x, yDelta = pos0.y - pos1.y;
+
+        if (xDelta < 0) xDelta = -xDelta;
+        if (yDelta < 0) yDelta = -yDelta;
+
+        return (xDelta * xDelta) + (yDelta * yDelta);
+    }
+
     public Object2D Farthest(params Object2D[] objects)
     {
         if (objects.Length == 0)

@@ -93,6 +93,44 @@ public abstract class Object3D : Object
         return closest;
     }
 
+    public float Distance(Object3D object3D)
+    {
+        if (object3D == null)
+            return Engine.SendError<int>(ErrorCodes.NullArgument, name);//message?
+
+        VectorZ pos0 = owner == null ? position : owner.offsets[petIndex],
+            pos1 = object3D.owner == null ? object3D.position : object3D.owner.offsets[object3D.petIndex];
+
+        if (pos0.Equals(pos1)) return 0f;
+
+        int xDelta = pos0.x - pos1.x, yDelta = pos0.y - pos1.y, zDelta = pos0.z - pos1.z;
+
+        if (xDelta < 0) xDelta = -xDelta;
+        if (yDelta < 0) yDelta = -yDelta;
+        if (zDelta < 0) zDelta = -zDelta;
+
+        return Math.SqrRoot((xDelta * xDelta) + (yDelta * yDelta) + (zDelta * zDelta));
+    }
+
+    public int DistanceSquared(Object3D object3D)
+    {
+        if (object3D == null)
+            return Engine.SendError<int>(ErrorCodes.NullArgument, name);//message?
+
+        VectorZ pos0 = owner == null ? position : owner.offsets[petIndex],
+            pos1 = object3D.owner == null ? object3D.position : object3D.owner.offsets[object3D.petIndex];
+
+        if (pos0.Equals(pos1)) return 0;
+
+        int xDelta = pos0.x - pos1.x, yDelta = pos0.y - pos1.y, zDelta = pos0.z - pos1.z;
+
+        if (xDelta < 0) xDelta = -xDelta;
+        if (yDelta < 0) yDelta = -yDelta;
+        if (zDelta < 0) zDelta = -zDelta;
+
+        return (xDelta * xDelta) + (yDelta * yDelta) + (zDelta * zDelta);
+    }
+
     public Object3D Farthest(params Object3D[] objects)
     {
         if (objects.Length == 0)
