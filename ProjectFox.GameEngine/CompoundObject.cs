@@ -46,6 +46,9 @@ public abstract class CompoundObject : Object
 
             foreach (Object obj in objects)
             {
+                if (obj == null) Engine.SendError(ErrorCodes.NullPet, name);
+                else
+                {
                 int i = vs[obj.petIndex];
                 if (i == 1)
                 {
@@ -60,6 +63,7 @@ public abstract class CompoundObject : Object
             }
         }
     }
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]//why is this here?
     internal override void _frame()
@@ -70,7 +74,7 @@ public abstract class CompoundObject : Object
 
             foreach (Object obj in objects)
                 if (obj == null) Engine.SendError(ErrorCodes.NullPet, name);
-                else obj._frame();
+                else if (obj.enabled) obj._frame();
 
             if (followIndex > -1 && followIndex < objects.Length)//test
             {
@@ -101,7 +105,7 @@ public abstract class CompoundObject : Object
     {
         foreach (Object obj in objects)
             if (obj == null) Engine.SendError(ErrorCodes.NullPet, name);
-            else obj._draw(layer);
+            else if (obj.enabled) obj._draw(layer);
 #if DEBUG
         //draw pos
 #endif
@@ -109,7 +113,9 @@ public abstract class CompoundObject : Object
 
     protected internal override void PostDraw()
     {
-        foreach (Object obj in objects) obj?.PostDraw();
+        foreach (Object obj in objects)
+            if (obj == null) Engine.SendError(ErrorCodes.NullPet, name);
+            else if (obj.enabled) obj?.PostDraw();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
