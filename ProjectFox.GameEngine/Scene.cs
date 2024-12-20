@@ -18,7 +18,7 @@ public class Scene : NamedType
     private readonly Table<AudioChannel> audioChannels = new(0x40);
 
     private ClearModes clearMode = Clear;
-    private SetPiece bg = new(new("_BGDraw", 0)) { parallaxFactor = new(0f, 0f) };
+    private readonly SetPiece bg = new(new("SceneBG", 0)) { parallaxFactor = new(0f, 0f) };
 
     public bool paused = false;
 
