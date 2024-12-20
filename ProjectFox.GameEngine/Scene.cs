@@ -11,7 +11,7 @@ namespace ProjectFox.GameEngine;
 public class Scene : NamedType
 {
     /// <param name="name"> the scene's ID </param>
-    public Scene(NameID name) : base(name) { }
+    public Scene(NameID name) : base(name) => bg.scene = this;//temp
 
     private readonly Table<Object> objects = new(0x100);
     internal readonly Table<VisualLayer> visualLayers = new(0x40);
@@ -72,7 +72,9 @@ public class Scene : NamedType
                 screenLayer.Fill(bgColor);
                 break;
             case DrawTexture:
+                screenLayer.scene = this;//temp
                 bg._draw(screenLayer);
+                screenLayer.scene = null;//temp
                 break;
             default:
                 Engine.SendError(ErrorCodes.BadEnumValue, name, nameof(clearMode));
