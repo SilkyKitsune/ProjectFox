@@ -1,9 +1,11 @@
-﻿using System.Runtime.CompilerServices;
+﻿#if DEBUG
+using System.Runtime.CompilerServices;
 using ProjectFox.CoreEngine.Math;
 
 namespace ProjectFox.GameEngine.Visuals;
 
-public class SetPiece : RasterObject
+/// <summary> Deprecated (DEBUG Only) </summary>
+[System.Obsolete] public class SetPiece : RasterObject
 {
     public SetPiece(NameID name) : base(name) { }
 
@@ -36,3 +38,4 @@ public class SetPiece : RasterObject
         paletteOffset = this.paletteOffset;
     }
 }
+#endif
