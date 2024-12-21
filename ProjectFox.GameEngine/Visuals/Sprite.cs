@@ -15,11 +15,13 @@ public class Sprite : RasterObject
     
     public Sprite(NameID name) : base(name) { }
 
+    public Texture texture = null;
+
     public TextureAnimation animation = null;
 
     public Vector drawOffset = new(0, 0);
 
-    public bool verticalFlipTexture = false, horizontalFlipTexture = false, verticalFlipOffset = false, horizontalFlipOffset = false, flipOffsetOnPixel = false;
+    public bool verticalFlipTexture = false, horizontalFlipTexture = false, verticalFlipOffset = false, horizontalFlipOffset = false, flipOffsetOnPixel = false, preferTexture = false;
 
     public IPalette palette = null;
 
@@ -32,23 +34,19 @@ public class Sprite : RasterObject
         out Vector drawOffset, out bool verticalFlipOffset, out bool horizontalFlipOffset, out bool flipOffsetOnPixel,
         out IPalette palette, out int paletteOffset)
     {
-        texture = null;
-        verticalFlipTexture = false;
-        horizontalFlipTexture = false;
+        texture = this.texture;
+        verticalFlipTexture = this.verticalFlipTexture;
+        horizontalFlipTexture = this.horizontalFlipTexture;
 
-        drawOffset = new(0, 0);
-        verticalFlipOffset = false;
-        horizontalFlipOffset = false;
-        flipOffsetOnPixel = false;
+        drawOffset = this.drawOffset;
+        verticalFlipOffset = this.verticalFlipOffset;
+        horizontalFlipOffset = this.horizontalFlipOffset;
+        flipOffsetOnPixel = this.flipOffsetOnPixel;
 
-        palette = null;
-        paletteOffset = 0;
+        palette = this.palette;
+        paletteOffset = this.paletteOffset;
 
-        if (animation == null)
-        {
-            Engine.SendError(ErrorCodes.NullAnimation, name);
-            return;
-        }
+        if ((preferTexture && texture != null) || animation == null) return;
 
         Array<TextureAnimation.TextureFrame> frames = (Array<TextureAnimation.TextureFrame>)animation.frames;
 
@@ -62,11 +60,9 @@ public class Sprite : RasterObject
         
         texture = frame.texture;
 
-        verticalFlipTexture = this.verticalFlipTexture;
-        if (animation.verticalFlipTexture) verticalFlipTexture = !verticalFlipTexture;//is there a better way to do this?
+        if (animation.verticalFlipTexture) verticalFlipTexture = !verticalFlipTexture;
         if (frame.verticalFlipTexture) verticalFlipTexture = !verticalFlipTexture;
         
-        horizontalFlipTexture = this.horizontalFlipTexture;
         if (animation.horizontalFlipTexture) horizontalFlipTexture = !horizontalFlipTexture;
         if (frame.horizontalFlipTexture) horizontalFlipTexture = !horizontalFlipTexture;
 
@@ -74,19 +70,16 @@ public class Sprite : RasterObject
             this.drawOffset.x + animation.drawOffset.x + frame.drawOffset.x,
             this.drawOffset.y + animation.drawOffset.y + frame.drawOffset.y);
 
-        verticalFlipOffset = this.verticalFlipOffset;
-        if (animation.verticalFlipOffset) verticalFlipOffset = !verticalFlipOffset;//is there a better way to do this?
+        if (animation.verticalFlipOffset) verticalFlipOffset = !verticalFlipOffset;
         if (frame.verticalFlipOffset) verticalFlipOffset = !verticalFlipOffset;
 
-        horizontalFlipOffset = this.horizontalFlipOffset;
         if (animation.horizontalFlipOffset) horizontalFlipOffset = !horizontalFlipOffset;
         if (frame.horizontalFlipOffset) horizontalFlipOffset = !horizontalFlipOffset;
 
-        flipOffsetOnPixel = this.flipOffsetOnPixel;
         if (animation.flipOffsetOnPixel) flipOffsetOnPixel = !flipOffsetOnPixel;
         if (frame.flipOffsetOnPixel) flipOffsetOnPixel = !flipOffsetOnPixel;
 
-        paletteOffset = this.paletteOffset + animation.paletteOffset + frame.paletteOffset;
+        paletteOffset += animation.paletteOffset + frame.paletteOffset;
 
         switch (palettePriority)
         {
