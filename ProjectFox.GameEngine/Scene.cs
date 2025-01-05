@@ -23,7 +23,7 @@ public class Scene : NamedType
     public bool paused = false;
 
     /// <summary> the color used when ClearMode == Fill (black by default) </summary>
-    public Color bgColor = new(255, 255, 255);
+    public Color bgColor = new(0, 0, 0);
     
     public ClearModes ClearMode
     {
