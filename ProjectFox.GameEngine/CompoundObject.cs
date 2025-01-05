@@ -8,15 +8,21 @@ namespace ProjectFox.GameEngine;
 public abstract class CompoundObject : Object
 {
     /// <param name="name"> the object's ID </param>
-    public CompoundObject(NameID name) : base(name)
+    /// <param name="petCount"> number of Objects owned by this CompoundObject </param>
+    protected CompoundObject(NameID name, int petCount) : base(name)
     {
-        int objectCount = ObjectCount;
-        objects = new Object[objectCount];//error check for 0 object count?
-        vs = new byte[objectCount];
-        offsets = new VectorZ[objectCount];
+        if (petCount < 0)
+        {
+            Engine.SendError(ErrorCodes.BadArgument, name, nameof(petCount), "Pet Count cannot be negative!");
+            petCount = 0;
     }
     
-    private readonly Object[] objects;
+        objects = new Object[petCount];
+        vs = new byte[petCount];
+        offsets = new VectorZ[petCount];
+    }
+
+    private readonly Object[] objects;//pets?
     private readonly byte[] vs;
     internal readonly VectorZ[] offsets;
 
@@ -32,8 +38,12 @@ public abstract class CompoundObject : Object
     public Color positionColor = new(byte.MaxValue, 0, 0);
 #endif
 
-    /// <summary> readonly number of Objects owned by this CompoundObject </summary>
-    protected abstract int ObjectCount { get; }
+    /// <summary> number of Objects owned by this CompoundObject </summary>
+    public int PetCount
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => objects.Length;
+    }
 
     /// <summary> the object's position in world space </summary>
     public VectorZ Position
@@ -65,7 +75,6 @@ public abstract class CompoundObject : Object
     }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]//why is this here?
     internal override void _frame()
     {
         if (!paused || pauseWalks)
@@ -76,7 +85,7 @@ public abstract class CompoundObject : Object
                 if (obj == null) Engine.SendError(ErrorCodes.NullPet, name);
                 else if (obj.enabled) obj._frame();
 
-            if (followIndex > -1 && followIndex < objects.Length)//test
+            if (followIndex > -1 && followIndex < objects.Length)
             {
                 Object obj = objects[followIndex];
                 if (obj != null)
