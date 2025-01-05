@@ -6,16 +6,16 @@ namespace ProjectFox.GameEngine.Visuals;
 
 public abstract class Texture : ICopy<Texture>
 {
-    internal Texture(Vector dimensions, bool indexed)
+    internal Texture(Vector size, bool indexed)
     {
-        this.dimensions = dimensions;
+        this.size = size;
         this.indexed = indexed;
     }
 
-    internal readonly bool indexed;
-    internal readonly Vector dimensions;//size?
+    internal readonly bool indexed;//rename palettized?
+    internal readonly Vector size;
 
-    public Vector Dimensions => dimensions;
+    public Vector Size => size;
     
     public abstract void Copy(out Texture copy);
 
@@ -26,15 +26,15 @@ public sealed class ColorTexture : Texture, IColorGroup
 {
     private static readonly NameID name = new("ClrTxtr", 0);
 
-    public ColorTexture(Vector dimensions, Color[] pixels = null) : base(dimensions, false)
+    public ColorTexture(Vector size, Color[] pixels = null) : base(size, false)
     {
-        if (dimensions.x < 0 || dimensions.y < 0)
+        if (size.x < 0 || size.y < 0)
         {
-            Engine.SendError(ErrorCodes.BadArgument, name, nameof(dimensions), "Texture dimensions cannot be negative!");
-            dimensions = default;
+            Engine.SendError(ErrorCodes.BadArgument, name, nameof(size), "Texture size cannot be negative!");
+            size = new(0, 0);
         }
         
-        int length = dimensions.x * dimensions.y;
+        int length = size.x * size.y;
         if (pixels == null || pixels.Length != length)
             pixels = new Color[length];
         this.pixels = pixels;
@@ -48,7 +48,7 @@ public sealed class ColorTexture : Texture, IColorGroup
     {
         Color[] newPixels = new Color[pixels.Length];
         pixels.CopyTo(newPixels, 0);
-        copy = new ColorTexture(dimensions, newPixels);
+        copy = new ColorTexture(size, newPixels);
     }
 
     //palettized copy?
@@ -102,15 +102,15 @@ public sealed class PalettizedTexture : Texture
 {
     private static readonly NameID name = new("PltTxtr", 0);
 
-    public PalettizedTexture(Vector dimensions, byte[] pixels = null) : base(dimensions, true)
+    public PalettizedTexture(Vector size, byte[] pixels = null) : base(size, true)
     {
-        if (dimensions.x < 0 || dimensions.y < 0)
+        if (size.x < 0 || size.y < 0)
         {
-            Engine.SendError(ErrorCodes.BadArgument, name, nameof(dimensions), "Texture dimensions cannot be negative!");
-            dimensions = default;
+            Engine.SendError(ErrorCodes.BadArgument, name, nameof(size), "Texture size cannot be negative!");
+            size = new(0, 0);
         }
 
-        int length = dimensions.x * dimensions.y;
+        int length = size.x * size.y;
         if (pixels == null || pixels.Length != length)
             pixels = new byte[length];
         this.pixels = pixels;
@@ -118,16 +118,16 @@ public sealed class PalettizedTexture : Texture
 
     public PalettizedTexture(int width, int height, byte[] pixels = null) : this(new(width, height), pixels) { }
 
-    public PalettizedTexture(Vector dimensions, Color[] pixels, ref ColorPalette palette, bool rampToPalette) : base(dimensions, true)
+    public PalettizedTexture(Vector size, Color[] pixels, ref ColorPalette palette, bool rampToPalette) : base(size, true)
     {
-        if (dimensions.x < 0 || dimensions.y < 0)
+        if (size.x < 0 || size.y < 0)
         {
-            Engine.SendError(ErrorCodes.BadArgument, name, nameof(dimensions), "Texture dimensions cannot be negative!");
-            dimensions = default;
+            Engine.SendError(ErrorCodes.BadArgument, name, nameof(size), "Texture size cannot be negative!");
+            size = new(0, 0);
         }
 
         palette ??= new();
-        int length = dimensions.x * dimensions.y;
+        int length = size.x * size.y;
         this.pixels = new byte[length];
         if (pixels != null && pixels.Length == length) for (int i = 0; i < length; i++)
             {
@@ -147,15 +147,15 @@ public sealed class PalettizedTexture : Texture
 
     public PalettizedTexture(int width, int height, Color[] pixels, ref ColorPalette palette, bool rampToPalette) : this(new(width, height), pixels, ref palette, rampToPalette) { }
 
-    public PalettizedTexture(Vector dimensions, Color[] pixels, IndexPalette palette/*, rampToGlobal?*/) : base(dimensions, true)
+    public PalettizedTexture(Vector size, Color[] pixels, IndexPalette palette/*, rampToGlobal?*/) : base(size, true)
     {
-        if (dimensions.x < 0 || dimensions.y < 0)
+        if (size.x < 0 || size.y < 0)
         {
-            Engine.SendError(ErrorCodes.BadArgument, name, nameof(dimensions), "Texture dimensions cannot be negative!");
-            dimensions = default;
+            Engine.SendError(ErrorCodes.BadArgument, name, nameof(size), "Texture size cannot be negative!");
+            size = new(0, 0);
         }
 
-        int length = dimensions.x * dimensions.y;
+        int length = size.x * size.y;
         this.pixels = new byte[length];
         if (pixels != null && pixels.Length == length && palette != null && palette.indices.Length > 0)
         {
@@ -166,7 +166,7 @@ public sealed class PalettizedTexture : Texture
 
     public PalettizedTexture(int width, int height, Color[] pixels, IndexPalette palette) : this(new(width, height), pixels, palette) { }
 
-    //public PalettizedTexture(Vector dimensions, Color[] pixels, IPalette palette)?
+    //public PalettizedTexture(Vector size, Color[] pixels, IPalette palette)?
 
     internal readonly byte[] pixels;
 
@@ -189,7 +189,7 @@ public sealed class PalettizedTexture : Texture
         for (int i = 0; i < pixels.Length; i++)
             colorPixels[i] = colors[Math.Clamp(pixels[i], 0, colors.Length)];
 
-        return new(dimensions, colorPixels);
+        return new(size, colorPixels);
     }
 }
 

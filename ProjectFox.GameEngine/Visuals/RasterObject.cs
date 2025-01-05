@@ -65,12 +65,12 @@ public abstract class RasterObject : Object2D
             return;
         }
 
-        if (texture.dimensions.x <= 0 || texture.dimensions.y <= 0) return;//size error?
+        if (texture.size.x <= 0 || texture.size.y <= 0) return;//size error?
 
         Rectangle textureArea = new(
-            horizontalFlipOffset ? position.x - texture.dimensions.x - drawOffset.x + (flipOffsetOnPixel ? 1 : 0) : position.x + drawOffset.x,
-            verticalFlipOffset ? position.y - texture.dimensions.y - drawOffset.y + (flipOffsetOnPixel ? 1 : 0) : position.y + drawOffset.y,
-            texture.dimensions),
+            horizontalFlipOffset ? position.x - texture.size.x - drawOffset.x + (flipOffsetOnPixel ? 1 : 0) : position.x + drawOffset.x,
+            verticalFlipOffset ? position.y - texture.size.y - drawOffset.y + (flipOffsetOnPixel ? 1 : 0) : position.y + drawOffset.y,
+            texture.size),
             screen = new(
                 parallaxFactor.x == 1f ? Screen.position.x : (int)(Screen.position.x * parallaxFactor.x),
                 parallaxFactor.y == 1f ? Screen.position.y : (int)(Screen.position.y * parallaxFactor.y),
