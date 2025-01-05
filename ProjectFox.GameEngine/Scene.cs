@@ -107,7 +107,7 @@ public class Scene : NamedType
         if (Screen.visible) for (int i = 0; i < visualLayers.codes.length; i++)
             {
                 VisualLayer layer = visualLayers.values.elements[i];
-                if (layer.visible) layer.Blend(layer.pixels, screenLayer.pixels);
+                if (layer.visible && layer.alpha != 0) layer.Blend(layer.pixels, screenLayer.pixels);
             }
 
         if (Speakers.audible) for (int i = 0; i < audioChannels.codes.length; i++)
