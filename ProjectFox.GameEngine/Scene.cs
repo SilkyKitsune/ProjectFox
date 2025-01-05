@@ -18,7 +18,7 @@ public class Scene : NamedType
     private readonly Table<AudioChannel> audioChannels = new(0x40);
 
     private ClearModes clearMode = Clear;
-    private readonly SetPiece bg = new(new("SceneBG", 0)) { parallaxFactor = new(0f, 0f) };
+    private readonly Sprite bg = new(new("SceneBG", 0)) { layer = screenLayer, parallaxFactor = new(0f, 0f) };
 
     public bool paused = false;
 
@@ -73,7 +73,7 @@ public class Scene : NamedType
                 break;
             case DrawTexture:
                 screenLayer.scene = this;//temp
-                bg._draw(screenLayer);
+                bg._draw();
                 screenLayer.scene = null;//temp
                 break;
             default:
