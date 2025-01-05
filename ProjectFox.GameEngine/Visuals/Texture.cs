@@ -17,7 +17,9 @@ public abstract class Texture : ICopy<Texture>
 
     public Vector Size => size;
     
-    public abstract void Copy(out Texture copy);
+    public abstract void DeepCopy(out Texture copy);
+
+    public abstract void ShallowCopy(out Texture copy);
 
     //rotated copy? 1 clockwise right angle
 }
@@ -44,12 +46,14 @@ public sealed class ColorTexture : Texture, IColorGroup
 
     internal readonly Color[] pixels;
 
-    public override void Copy(out Texture copy)
+    public override void DeepCopy(out Texture copy)
     {
         Color[] newPixels = new Color[pixels.Length];
         pixels.CopyTo(newPixels, 0);
         copy = new ColorTexture(size, newPixels);
     }
+
+    public override void ShallowCopy(out Texture copy) => copy = new ColorTexture(size, pixels);
 
     //palettized copy?
 
@@ -170,13 +174,6 @@ public sealed class PalettizedTexture : Texture
 
     internal readonly byte[] pixels;
 
-    public override void Copy(out Texture copy)
-    {
-        byte[] newPixels = new byte[pixels.Length];
-        pixels.CopyTo(newPixels, 0);
-        copy = new PalettizedTexture(dimensions, newPixels);
-    }
-
     public ColorTexture ColorCopy(IPalette palette)
     {
         if (palette == null)
@@ -191,6 +188,15 @@ public sealed class PalettizedTexture : Texture
 
         return new(size, colorPixels);
     }
+
+    public override void DeepCopy(out Texture copy)
+    {
+        byte[] newPixels = new byte[pixels.Length];
+        pixels.CopyTo(newPixels, 0);
+        copy = new PalettizedTexture(size, newPixels);
+}
+
+    public override void ShallowCopy(out Texture copy) => copy = new PalettizedTexture(size, pixels);
 }
 
 public sealed class TextureAnimation : Animation
@@ -230,7 +236,13 @@ public sealed class TextureAnimation : Animation
         frame = frames.elements[frameIndex >= frameCount || frameIndex < 0 ? 0 : frameIndex];//is this okay?
     }
 
-    public override void Copy(out Animation copy)
+    public override void DeepCopy(out Animation copy)
+    {
+        copy = null;
+        Engine.SendError(ErrorCodes.NotImplemented, default);
+    }
+
+    public override void ShallowCopy(out Animation copy)
     {
         copy = null;
         Engine.SendError(ErrorCodes.NotImplemented, default);

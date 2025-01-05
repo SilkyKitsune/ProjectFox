@@ -4,7 +4,7 @@
 /// <typeparam name="T"> Inheriting type </typeparam>
 public interface ICopy<T>
 {
-    /// <summary></summary>
-    /// <param name="copy"></param>
-    public abstract void Copy(out T copy);
+    public abstract void DeepCopy(out T copy);
+
+    public abstract void ShallowCopy(out T copy);
 }

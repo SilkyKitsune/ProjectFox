@@ -138,7 +138,9 @@ public abstract class Animation : ICopy<Animation>
         }
     }
 
-    public abstract void Copy(out Animation copy);
+    public abstract void DeepCopy(out Animation copy);
+
+    public abstract void ShallowCopy(out Animation copy);
 }
 
 public sealed class DelegateAnimation : Animation
@@ -185,7 +187,13 @@ public sealed class DelegateAnimation : Animation
         //would moving it to start fix that?
     }
 
-    public override void Copy(out Animation copy)
+    public override void DeepCopy(out Animation copy)
+    {
+        copy = null;
+        Engine.SendError(ErrorCodes.NotImplemented, default);
+    }
+
+    public override void ShallowCopy(out Animation copy)
     {
         copy = null;
         Engine.SendError(ErrorCodes.NotImplemented, default);

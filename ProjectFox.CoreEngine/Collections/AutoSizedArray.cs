@@ -130,9 +130,6 @@ public sealed class AutoSizedArray<T> : ICollection<T>, ICopy<AutoSizedArray<T>>
         return false;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Copy(out AutoSizedArray<T> copy) => copy = new(this);
-
     public void CopyTo(ICollection<T> collection)
     {
         if (collection == null) throw new ArgumentNullException(nameof(collection));
@@ -159,6 +156,9 @@ public sealed class AutoSizedArray<T> : ICollection<T>, ICopy<AutoSizedArray<T>>
         for (int i = 0; i < length; i++) array.elements[i] = elements[i];
         array.length = length;
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void DeepCopy(out AutoSizedArray<T> copy) => copy = new(this);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public T FromLastIndex(int index) => index > length || index <= 0 ?
@@ -381,6 +381,10 @@ public sealed class AutoSizedArray<T> : ICollection<T>, ICopy<AutoSizedArray<T>>
 
         return length;
     }
+
+    /// <summary> Operation not allowed, will always throw exception </summary>
+    /// <exception cref="NotImplementedException"></exception>
+    public void ShallowCopy(out AutoSizedArray<T> copy) => throw new NotImplementedException();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public T[] ToArray() => length == 0 ? new T[0] : elements[0..length];

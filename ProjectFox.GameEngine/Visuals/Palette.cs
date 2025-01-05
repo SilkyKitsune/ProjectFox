@@ -74,6 +74,12 @@ public class ColorPalette : IPalette, IColorGroup
             colors.elements[i].Saturation *= modifier;
     }
 
+    public void ShallowCopy(out IPalette copy)
+    {
+        copy = null;
+        Engine.SendError(ErrorCodes.NotImplemented, default);
+    }
+
     public void VelocityMultiply(float modifier)
     {
         Array<Color> colors = (Array<Color>)this.colors;
@@ -138,7 +144,9 @@ public abstract class IndexPalette : IPalette
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ColorPalette ColorCopy() => new(GetColors());
 
-    public abstract void Copy(out IPalette copy);
+    public abstract void DeepCopy(out IPalette copy);
+
+    public abstract void ShallowCopy(out IPalette copy);
 }
 
 public sealed class PaletteAnimation : Animation, IPalette
@@ -183,13 +191,25 @@ public sealed class PaletteAnimation : Animation, IPalette
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     void IPalette._animate() => _animate();//is this okay?
 
-    public void Copy(out IPalette copy)
+    public override void DeepCopy(out Animation copy)
     {
         copy = null;
-        Engine.SendError(ErrorCodes.NotImplemented, new("PalAnim", 0));
+        Engine.SendError(ErrorCodes.NotImplemented, default);
     }
 
-    public override void Copy(out Animation copy)
+    public void DeepCopy(out IPalette copy)
+    {
+        copy = null;
+        Engine.SendError(ErrorCodes.NotImplemented, default);
+    }
+
+    public override void ShallowCopy(out Animation copy)
+    {
+        copy = null;
+        Engine.SendError(ErrorCodes.NotImplemented, default);
+    }
+
+    public void ShallowCopy(out IPalette copy)
     {
         copy = null;
         Engine.SendError(ErrorCodes.NotImplemented, default);

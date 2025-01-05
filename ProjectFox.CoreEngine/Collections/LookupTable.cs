@@ -93,14 +93,6 @@ public sealed class LookupTable<C, T> : ITable<C, T>, ICopy<LookupTable<C, T>>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool ContainsCode(C code) => codes.Contains(code);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Copy(out LookupTable<C, T> copy)
-    {
-        this.codes.Copy(out AutoSizedArray<C> codes);
-        this.values.Copy(out AutoSizedArray<T> values);
-        copy = new(codes, values);
-    }
-
     public void CopyTo(ITable<C, T> table)
     {
         if (table == null) throw new ArgumentNullException(nameof(table));
@@ -128,6 +120,14 @@ public sealed class LookupTable<C, T> : ITable<C, T>, ICopy<LookupTable<C, T>>
 
         codes.CopyTo(table.codes);
         values.CopyTo(table.values);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void DeepCopy(out LookupTable<C, T> copy)
+    {
+        this.codes.DeepCopy(out AutoSizedArray<C> codes);
+        this.values.DeepCopy(out AutoSizedArray<T> values);
+        copy = new(codes, values);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -234,6 +234,10 @@ public sealed class LookupTable<C, T> : ITable<C, T>, ICopy<LookupTable<C, T>>
         values.RemoveAt(index);
         return true;
     }
+
+    /// <summary> Operation not allowed, will always throw exception </summary>
+    /// <exception cref="NotImplementedException"></exception>
+    public void ShallowCopy(out LookupTable<C, T> copy) => throw new NotImplementedException();
 
     public bool TryGet(C code, out T value)
     {
