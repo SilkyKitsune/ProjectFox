@@ -37,7 +37,7 @@ public class ColorPalette : IPalette, IColorGroup
     public Color[] GetColors() => colors.ToArray();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Copy(out IPalette copy) => copy = new ColorPalette(colors.ToArray());
+    public void DeepCopy(out IPalette copy) => copy = new ColorPalette(colors.ToArray());
 
     public bool Grayscale()
     {
