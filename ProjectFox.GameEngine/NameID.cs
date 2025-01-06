@@ -32,7 +32,7 @@ public partial struct NameID
 
         switch (chars.Length)
         {
-            case 7:
+            default:
                 c6 = (sbyte)(chars[6] & 0x7F);
                 goto case 6;
             case 6:
@@ -52,6 +52,8 @@ public partial struct NameID
                 goto case 1;
             case 1:
                 c0 = (sbyte)(chars[0] & 0x7F);
+                break;
+            case 0:
                 break;
         }
     }
