@@ -99,7 +99,7 @@ public static class Engine
         SceneList.activeScene?._frame();
 
 #if DEBUG
-        if (Debug.debugLayer.visible)
+        if (Debug.debugLayer.visible && Debug.debugLayer.alpha != 0)
             Debug.debugLayer.Blend(Debug.debugLayer.pixels, Screen.screenLayer.pixels);
 #endif
 
@@ -187,7 +187,7 @@ public static class Engine
         private static readonly NameID Name = new NameID("ScnList", 0);
         private static readonly NameID NoScene = new("NoScene", 0);
 
-        internal static readonly HashArray<Scene> scenes = new HashArray<Scene>(0x8);
+        internal static readonly Table<Scene> scenes = new(0x8);
         internal static Scene activeScene;
 
         /// <summary> the number of scenes that have been added </summary>
