@@ -1,12 +1,10 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Threading;
+using Stopwatch = System.Diagnostics.Stopwatch;
 using ProjectFox.CoreEngine.Math;
+using ProjectFox.CoreEngine.Utility;
 using ProjectFox.GameEngine.Input;
 using ProjectFox.GameEngine.Visuals;
-
-using Stopwatch =
-    //ProjectFox.CoreEngine.Utility.Stopwatch;
-    System.Diagnostics.Stopwatch;
 
 namespace ProjectFox.GameEngine;
 
@@ -17,11 +15,12 @@ public delegate void EngineEvent();
 public static class Engine
 {
     private static readonly NameID Name = new("Engine", 0);
-
+    
     private static uint frameCount = 0;
-    private static int freq = 1;
-    private static ulong ticksPerFrame = Math.ticksPerMillisecond * 1000uL, timeOfLastFrameInTicks = 0u;//shorten name?
-    private static bool running = false;//topmost
+    private static int freq = 1, msPerSleep = 0;
+    private static long ticksPerFrame = Stopwatch.Frequency / freq, ticksPerSleep = 0;
+    private static float msPerFrame = ticksPerFrame / SpinTimer.ticksPerMillisecond, msOfLastFrame = msPerFrame, sleepPeriod = 0f;
+    private static bool running = false, sleepingEnabled = false;//topmost
 
     private static readonly Array<ErrorMessage> storedErrors = new Array<ErrorMessage>(0x20);
 
@@ -61,8 +60,32 @@ public static class Engine
             if (value != freq)
             {
                 freq = Math.Clamp(value, 1, 300);
-                ticksPerFrame = Math.ticksPerMillisecond * 1000uL / (ulong)freq;
+                ticksPerFrame = Stopwatch.Frequency / freq;
+                msPerFrame = ticksPerFrame / SpinTimer.ticksPerMillisecond;
+                sleepingEnabled = sleepPeriod > 0f;
+                ticksPerSleep = (long)(ticksPerFrame * sleepPeriod);
+                msPerSleep = (int)(ticksPerSleep / SpinTimer.ticksPerMillisecond);
                 FreqChanged?.Invoke();
+            }
+        }
+    }
+
+    public static float SleepPeriod
+    {
+        get => sleepPeriod;
+        set
+        {
+            if (value < 0f)
+            {
+                SendError(ErrorCodes.BadArgument, Name, null, "sleep period cannot be negative");
+                return;
+            }
+            if (value != sleepPeriod)
+            {
+                sleepPeriod = Math.Clamp(value, 0f, 0.9f);//is max okay as 0.9?
+                sleepingEnabled = sleepPeriod > 0f;
+                ticksPerSleep = (long)(ticksPerFrame * sleepPeriod);
+                msPerSleep = (int)(ticksPerSleep / SpinTimer.ticksPerMillisecond);
             }
         }
     }
@@ -71,14 +94,20 @@ public static class Engine
     public static float MillisecondsPerFrame
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => (float)ticksPerFrame / Math.ticksPerMillisecond;
+        get => msPerFrame;
     }
-    //msoflastframe?
+
+    public static float MillisecondsOfLastFrame
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => msOfLastFrame;
+    }
+
     /// <summary> percent of MillisecondsPerFrame the previous frame took to complete </summary>
     public static float TimeOfLastFrame
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => (float)timeOfLastFrameInTicks / ticksPerFrame;
+        get => msOfLastFrame / msPerFrame;
     }
 
     /// <summary> procresses a single frame callstack, the engine's main entry point </summary>
@@ -87,10 +116,11 @@ public static class Engine
     {
         FrameBegin?.Invoke();
 
-        timeOfLastFrameInTicks = millisecondsOfLastFrame == -1f ? ticksPerFrame//should this go above frame begin?
-            : (ulong)(Math.Clamp(millisecondsOfLastFrame, 0f, float.MaxValue) * Math.ticksPerMillisecond);
+        //should this go above frame begin?
+        msOfLastFrame = millisecondsOfLastFrame < 0f || float.IsNaN(millisecondsOfLastFrame) ?
+            msPerFrame : (millisecondsOfLastFrame > float.MaxValue ? float.MaxValue : millisecondsOfLastFrame);
         
-        Ports.ProcessDevices();//where should ports.process go?
+        Ports.ProcessDevices();
 
 #if DEBUG
         Debug.debugLayer.Clear();//should these go in scene?
@@ -109,32 +139,32 @@ public static class Engine
 
     public static void Start()
     {
-        if (!running)
-        {
-            running = true;
-            engineThread = new(() =>
-            {
-                Stopwatch stopwatch = new();
-                stopwatch.Start();
+        if (engineThread != null) return;
 
-                while (running)
-                {
-                    float ticks = stopwatch.ElapsedTicks;//should this be a float?
-                    if (
+        engineThread = new(() =>
+        {
+            long prevTimestamp = Stopwatch.GetTimestamp();
+            while (running)
+            {
+                long currentTimestamp = Stopwatch.GetTimestamp(), elapsedTicks = currentTimestamp - prevTimestamp;
+                if (
 #if DEBUG
-                        uncapped ||//could uncapped run over 300 fps?
+                    !uncapped &&
 #endif
-                        ticks >= ticksPerFrame)
-                    {
-                        //stopwatch.Reset();
-                        stopwatch.Restart();
-                        Engine.Frame(ticks / (float)Math.ticksPerMillisecond);
-                    }
+                    sleepingEnabled && elapsedTicks < ticksPerSleep) Thread.Sleep(msPerSleep);
+                if (
+#if DEBUG
+                    uncapped ||//could uncapped run over 300 fps?
+#endif
+                    elapsedTicks >= ticksPerFrame)
+                {
+                    prevTimestamp = currentTimestamp;
+                    Engine.Frame(elapsedTicks/ SpinTimer.ticksPerMillisecond);
                 }
-                stopwatch.Stop();
-            });
-            engineThread.Start();
-        }
+            }
+        });
+        running = true;
+        engineThread.Start();
     }
 
     public static void Stop()
