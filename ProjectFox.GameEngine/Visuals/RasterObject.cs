@@ -71,11 +71,11 @@ public abstract class RasterObject : Object2D
             horizontalFlipOffset ? position.x - texture.size.x - drawOffset.x + (flipOffsetOnPixel ? 1 : 0) : position.x + drawOffset.x,
             verticalFlipOffset ? position.y - texture.size.y - drawOffset.y + (flipOffsetOnPixel ? 1 : 0) : position.y + drawOffset.y,
             texture.size),
-            screen = new(
+            screenArea = new(
                 parallaxFactor.x == 1f ? Screen.position.x : (int)(Screen.position.x * parallaxFactor.x),
                 parallaxFactor.y == 1f ? Screen.position.y : (int)(Screen.position.y * parallaxFactor.y),
                 Screen.size),
-            drawArea = screen.IntersectionBounds(textureArea);
+            drawArea = screenArea.IntersectionBounds(textureArea);
 
         if (drawArea.size.x <= 0 || drawArea.size.y <= 0) return;
 
@@ -99,8 +99,8 @@ public abstract class RasterObject : Object2D
         else sourceStep -= drawArea.size.x;
 
         drawArea.position = new(
-            drawArea.position.x - screen.position.x,
-            drawArea.position.y - screen.position.y);
+            drawArea.position.x - screenArea.position.x,
+            drawArea.position.y - screenArea.position.y);
 
 #if DEBUG
         if (Screen.visible && Debug.debugLayer.visible && drawTextureBounds)
@@ -117,16 +117,16 @@ public abstract class RasterObject : Object2D
             if (boundArea.position.y >= 0)
             {
                 boundX = 0;
-                boundD = boundArea.position.y * screen.size.x + (drawArea.position.x < 0 ? 0 : drawArea.position.x);
+                boundD = boundArea.position.y * screenArea.size.x + (drawArea.position.x < 0 ? 0 : drawArea.position.x);
 
                 while (boundX++ < drawArea.size.x && boundD < Debug.debugLayer.pixels.Length)
                     Debug.debugLayer.pixels[boundD++] = boundsColor;
             }
             //bottom loop
-            if (boundEnd.y < screen.size.y)
+            if (boundEnd.y < screenArea.size.y)
             {
                 boundX = 0;
-                boundD = boundEnd.y * screen.size.x + (drawArea.position.x < 0 ? 0 : drawArea.position.x);
+                boundD = boundEnd.y * screenArea.size.x + (drawArea.position.x < 0 ? 0 : drawArea.position.x);
 
                 while (boundX++ < drawArea.size.x && boundD < Debug.debugLayer.pixels.Length)
                     Debug.debugLayer.pixels[boundD++] = boundsColor;
@@ -135,32 +135,32 @@ public abstract class RasterObject : Object2D
             if (boundArea.position.x >= 0)
             {
                 boundX = 0;
-                boundD = (boundArea.position.y < 0 ? 0 : boundArea.position.y) * screen.size.x + boundArea.position.x;
+                boundD = (boundArea.position.y < 0 ? 0 : boundArea.position.y) * screenArea.size.x + boundArea.position.x;
 
                 while (boundX++ < boundHeight && boundD < Debug.debugLayer.pixels.Length)
                 {
                     Debug.debugLayer.pixels[boundD] = boundsColor;
-                    boundD += screen.size.x;
+                    boundD += screenArea.size.x;
                 }
             }
             //right loop
-            if (boundEnd.x < screen.size.x)
+            if (boundEnd.x < screenArea.size.x)
             {
                 boundX = 0;
-                boundD = (boundArea.position.y < 0 ? 0 : boundArea.position.y) * screen.size.x + boundEnd.x;
+                boundD = (boundArea.position.y < 0 ? 0 : boundArea.position.y) * screenArea.size.x + boundEnd.x;
 
                 while (boundX++ < boundHeight && boundD < Debug.debugLayer.pixels.Length)
                 {
                     Debug.debugLayer.pixels[boundD] = boundsColor;
-                    boundD += screen.size.x;
+                    boundD += screenArea.size.x;
                 }
             }
         }
 #endif
 
         int x = 0, s = topLeft.y * textureArea.size.x + topLeft.x,
-            d = drawArea.position.y * screen.size.x + drawArea.position.x,
-            destStep = screen.size.x - drawArea.size.x;
+            d = drawArea.position.y * screenArea.size.x + drawArea.position.x,
+            destStep = screenArea.size.x - drawArea.size.x;
 
         if (texture.indexed)
         {
