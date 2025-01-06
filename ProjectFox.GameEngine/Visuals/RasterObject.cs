@@ -43,7 +43,7 @@ public abstract class RasterObject : Object2D
             return;
         }
 
-        if (!layer.visible) return;
+        if (!layer.visible || layer.alpha == 0) return;
 
         Scene scene = owner == null ? this.scene : (owner.owner == null ? owner.scene : owner.Scene);
         
