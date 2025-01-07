@@ -7,7 +7,7 @@ namespace ProjectFox.CoreEngine.Math;
 
 /// <summary> 2D float vector </summary>
 [StructLayout(LayoutKind.Sequential)]
-public partial struct VectorF : IVector<VectorF, float, VectorF>, IDirection<VectorF>, IRotate<VectorF, VectorF, float, int>
+public partial struct VectorF : IVector<VectorF, float, VectorF>, IDirection<VectorF>, IRotate<VectorF, VectorF, float, int>, IProjection<VectorF, float, Vector, VectorF, int, float, float>
 {
     /// <param name="x"> x value of the vector </param>
     /// <param name="y"> y value of the vector </param>
