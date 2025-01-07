@@ -5,12 +5,9 @@ namespace ProjectFox.CoreEngine.Math;
 
 public partial struct Vector
 {
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
     public static float Angle(Vector a, Vector b, Vector pivot = default)
     {
-#if DEBUG
-        if (a.Equals(b)) return 0f;
+        if (a.Equals(b) || a.Equals(pivot) || b.Equals(pivot)) return 0f;
 
         if (!pivot.IsZero())
         {
@@ -20,16 +17,8 @@ public partial struct Vector
             b.y -= pivot.y;
         }
 
-        //any checks for right angles? or is that already covered by AngleFromRotationOrigin()?
-
         float a_ = a.AngleFromRotationOrigin(), b_ = b.AngleFromRotationOrigin();
-
-        if (a_ < b_) return b_ - a_;
-        if (a_ > b_) return a_ - b_;
-        return a_;//this is unnecessary because if angles are equal then the points should be too
-#else
-        return default;
-#endif
+        return a_ < b_ ? b_ - a_ : a_ - b_;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
