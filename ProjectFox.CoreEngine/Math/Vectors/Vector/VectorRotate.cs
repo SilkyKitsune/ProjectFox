@@ -35,106 +35,51 @@ public partial struct Vector
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static VectorF PointFromRotationOrigin(float angle)
     {
-        Math.SineCosine(angle, out float sin, out float cos);//i think cos is coming out 0 when angle is 0
+        Math.SineCosine(angle, out float sin, out float cos);
         return new(sin, -cos);
     }
 
-    /// <summary> Not Yet Implemented </summary>
-    /// <returns> default </returns>
-    public float AngleFromRotationOrigin()//this doesn't completely work
+    public float AngleFromRotationOrigin()
     {
-#if DEBUG
-        bool x = this.x == 0, y = this.y == 0;
+        bool xZero = x == 0, yZero = y == 0;
 
-        if (x && y) return 0f;
+        if (xZero && yZero) return 0f;
 
-        if (x) return this.y < 0 ? 0f : 0.5f;
+        if (xZero) return y < 0 ? 0f : 0.5f;
 
-        if (y) return this.x < 0 ? 0.75f : 0.25f;
+        if (yZero) return x < 0 ? 0.75f : 0.25f;
 
-        x = this.x < 0;
-        y = this.y < 0;
+        float angle = 0f;
+        Vector v;
 
-        float xAbs = x ? -this.x : this.x, yAbs = y ? -this.y : this.y,
-            angle = ((x ? 0b00 : 0b10) | (y ? 0b00 : 0b01)) switch
+        int q = (x < 0 ? 0b00 : 0b10) | (y < 0 ? 0b00 : 0b01);
+        switch (q)
     {
-            0b10 => 0f,
-            0b11 => 0.25f,
-            0b01 => 0.5f,
-            0b00 => 0.75f,
-            _ => throw new Exception()//message?
-        };
+            case 0b10:
+                v = new(x, -y);
+                break;
+            case 0b11:
+                angle = 0.25f;
+                v = new(y, x);
+                break;
+            case 0b01:
+                angle = 0.5f;
+                v = new(-x, y);
+                break;
+            case 0b00:
+                angle = 0.75f;
+                v = new(-y, -x);
+                break;
+            default:
+                throw new Exception($"Angle error: Quadrant={q}");
+        }
         
-        if (xAbs == yAbs) return angle + 0.125f;
+        if (v.x == v.y) return angle + 0.125f;
 
-        float q = xAbs > yAbs ? yAbs / xAbs : xAbs / yAbs;
-
-        //if ()
-        //?
-        //each second 8th needs 1-q
-
-        if (xAbs > yAbs) return (1 - (yAbs / xAbs)) * 0.125f + 0.125f + angle;
-
-        return (xAbs / yAbs) * 0.125f + angle;
-#else
-        return default;
-#endif
-
-        /* these checks are essentially directionfromzero right?
-angle from rotation origin()
-  Bool x = x == 0, y == 0
-
-  If (x && y) return 0
-  If (x) return y < 0 ? 0 : 180
-  If (y) return x < 0 ? 270 : 90
-
-  Bool x > 0, y > 0
-
-  Angle = x && y
-    00 => 90 < angle < 180
-    0y => 0 < angle < 90
-    x0 => 180 < angle < 270
-    xy => 270 < angle < 360
-
-  RotateRight(angle)
-
-  If (x == y) angle += 45
-  If (x > y) ~vector
-
-  ?
-
-Need to include abs somewhere
-        */
-
-        /*
-angleorigin()
-  float angle
-  switch (directionfromzero)
-    zero => 0
-    up => 0
-    right => 90
-    down => 180
-    left => 270
-
-    upright
-      if (x == y) return 45
-      Angle += 0
-    downright
-      if (x == y) return ?
-      Angle += ?
-    down left
-       If (x == y) return ?
-      Angle += ?
-    Up left
-      if (x == y) return ?
-      Angle += ?
-
-  if (x > y)
-    float = y / x
-    return angle + 45 + anglefromfloat
-  float = x / y
-  return angle + anglefromfloat
-        */
+        return (v.x > v.y ?
+            0.25f - Math.ArcSine(v.y / DistanceFromZero()) :
+            Math.ArcSine(v.x / DistanceFromZero()))
+            + angle;
     }
 
     public VectorF Rotate(float amount, VectorF pivot = default)
