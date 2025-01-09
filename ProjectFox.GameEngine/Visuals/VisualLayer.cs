@@ -7,7 +7,9 @@ public class VisualLayer : SceneType//could render layers have a render frequenc
 {
     public VisualLayer(NameID name) : base(name) => Clear();
 
-    internal Color[] pixels = null;
+    internal Color[] pixels = null, portablePixels = new Color[0];//temp?
+
+    internal bool usePortablePixels = false;//temp
 
     public bool visible = true;
     public byte alpha = byte.MaxValue;
@@ -71,31 +73,33 @@ public class VisualLayer : SceneType//could render layers have a render frequenc
                 Engine.SendError(ErrorCodes.VisualLayerNotInScene, name, layerMask.name.ToString(),
                     $"Layer '{name}' used a mask from a null/different scene");
 
+            Color[] maskPixels = usePortablePixels ? layerMask.portablePixels : layerMask.pixels;
+
             if (useAlpha)
             {
                 float a = alpha / (float)byte.MaxValue;
                 for (int i = 0; i < pixels.Length; i++)
                 {
-                    reserved[i].a = byte.MaxValue;
+                    //reserved[i].a = byte.MaxValue;
 
-                    if (layerMask.pixels[i].a == byte.MinValue)
+                    if (maskPixels[i].a == byte.MinValue)
                     {
                         Color pixel = pixels[i];
-                        pixel.a = pixel.a < byte.MaxValue ? pixel.a = (byte)(pixel.a * a) : pixel.a = alpha;
+                        pixel.a = pixel.a < byte.MaxValue ? pixel.a = (byte)(pixel.a * a) : alpha;
                         reserved[i] = reserved[i].Blend(pixel);
 
-                        reserved[i].a = byte.MaxValue;//this should be moved if there's going to be an else
+                        //reserved[i].a = byte.MaxValue;//this should be moved if there's going to be an else
                     }
-                    //else if (layerMask.pixels[i].a < max)?
+                    //else if (maskPixels[i].a < max)?
                 }
                 return;
             }
 
             for (int i = 0; i < pixels.Length; i++)
             {
-                reserved[i].a = byte.MaxValue;
+                //reserved[i].a = byte.MaxValue;
 
-                Color maskPixel = layerMask.pixels[i];
+                Color maskPixel = maskPixels[i];
                 if (maskPixel.a == byte.MinValue)
                 {
                     Color pixel = pixels[i];
@@ -111,7 +115,8 @@ public class VisualLayer : SceneType//could render layers have a render frequenc
                     if (pixel.a == byte.MaxValue) reserved[i] = pixel.Blend(maskPixel);
                     //else if (pixel.a > byte.MinValue)
                 }
-                reserved[i].a = byte.MaxValue;//this should be moved if there's going to be an else
+
+                //reserved[i].a = byte.MaxValue;//this should be moved if there's going to be an else
             }
             return;
         }
@@ -121,19 +126,20 @@ public class VisualLayer : SceneType//could render layers have a render frequenc
             float a = alpha / (float)byte.MaxValue;
             for (int i = 0; i < pixels.Length; i++)
             {
-                reserved[i].a = byte.MaxValue;
+                //reserved[i].a = byte.MaxValue;
 
                 Color pixel = pixels[i];
-                pixel.a = pixel.a < byte.MaxValue ? (byte)(pixel.a * a) : pixel.a = alpha;
+                pixel.a = pixel.a < byte.MaxValue ? (byte)(pixel.a * a) : alpha;
                 reserved[i] = reserved[i].Blend(pixel);
-                reserved[i].a = byte.MaxValue;
+
+                //reserved[i].a = byte.MaxValue;
             }
             return;
         }
         
         for (int i = 0; i < pixels.Length; i++)
         {
-            reserved[i].a = byte.MaxValue;
+            //reserved[i].a = byte.MaxValue;
 
             Color pixel = pixels[i];
 
@@ -141,7 +147,7 @@ public class VisualLayer : SceneType//could render layers have a render frequenc
             else if (pixel.a > byte.MinValue)
                 reserved[i] = reserved[i].Blend(pixel);
 
-            reserved[i].a = byte.MaxValue;
-        }
+            //reserved[i].a = byte.MaxValue;
     }
+    }//overwriting reserved.a opaque-ifies a portable screens bg
 }
