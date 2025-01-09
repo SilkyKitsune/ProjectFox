@@ -1,5 +1,4 @@
-﻿#if DEBUG
-using ProjectFox.CoreEngine.Math;
+﻿using ProjectFox.CoreEngine.Math;
 using static ProjectFox.GameEngine.Visuals.Screen;
 using static ProjectFox.GameEngine.Visuals.Screen.ClearModes;
 
@@ -99,4 +98,3 @@ public class PortableScreen : RasterObject//rename?
         texture = new ToggleTexture(viewArea.size, pixels);
     }
 }
-#endif
