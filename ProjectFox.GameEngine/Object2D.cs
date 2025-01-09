@@ -38,7 +38,7 @@ public abstract class Object2D : Object
     }
 
 #if DEBUG
-    internal override void _draw(VisualLayer layer = null)
+    internal override void _draw(PortableScreen screen = null)
     {
         if (!Screen.visible || !Debug.debugLayer.visible || !drawPosition) return;
 

@@ -18,10 +18,10 @@ public abstract class AudioSource : Object2D
 
     protected abstract Sample[] GetDrawInfo();
 
-    internal sealed override void _draw(VisualLayer layer = null)
+    internal sealed override void _draw(PortableScreen screen = null)
     {
 #if DEBUG
-        base._draw();
+        base._draw(screen);
 #endif
         
         if (!Speakers.audible || !audible) return;

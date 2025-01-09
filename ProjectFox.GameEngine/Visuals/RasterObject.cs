@@ -27,13 +27,13 @@ public abstract class RasterObject : Object2D
         out Vector drawOffset, out bool verticalFlipOffset, out bool horizontalFlipOffset, out bool flipOffsetOnPixel,
         out IPalette palette, out int paletteOffset);
 
-    internal override void _draw(VisualLayer layer = null)
+    internal override void _draw(PortableScreen screen = null)
     {
 #if DEBUG
-        base._draw();
+        base._draw(screen);
 #endif
 
-        if (layer == null) layer = this.layer;
+        //if (layer == null) layer = this.layer;
 
         if (!Screen.visible || !visible) return;
 

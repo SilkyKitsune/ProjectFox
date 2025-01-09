@@ -830,7 +830,7 @@ public class PhysicsRectangle : PhysicsShape
     }
 
 #if DEBUG
-    internal override void _draw(VisualLayer layer = null)
+    internal override void _draw(PortableScreen screen = null)
     {
         if (!Screen.visible || !Debug.debugLayer.visible || !drawShape || !shapeEnabled || size.x <= 0 || size.y <= 0 || shapeColor.a == 0)
         {

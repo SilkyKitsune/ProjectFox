@@ -15,8 +15,8 @@ public abstract class CompoundObject : Object
         {
             Engine.SendError(ErrorCodes.BadArgument, name, nameof(petCount), "Pet Count cannot be negative!");
             petCount = 0;
-    }
-    
+        }
+
         objects = new Object[petCount];
         vs = new byte[petCount];
         offsets = new VectorZ[petCount];
@@ -59,20 +59,20 @@ public abstract class CompoundObject : Object
                 if (obj == null) Engine.SendError(ErrorCodes.NullPet, name);
                 else
                 {
-                int i = vs[obj.petIndex];
-                if (i == 1)
-                {
-                    VectorZ offset = offsets[obj.petIndex];
-                    ((Object2D)obj).position = new(position.x + offset.x, position.y + offset.y);
-                }
-                else if (i == 2)
-                {
-                    VectorZ offset = offsets[obj.petIndex];
-                    ((Object3D)obj).position = new(position.x + offset.x, position.y + offset.y, position.z + offset.z);
+                    int i = vs[obj.petIndex];
+                    if (i == 1)
+                    {
+                        VectorZ offset = offsets[obj.petIndex];
+                        ((Object2D)obj).position = new(position.x + offset.x, position.y + offset.y);
+                    }
+                    else if (i == 2)
+                    {
+                        VectorZ offset = offsets[obj.petIndex];
+                        ((Object3D)obj).position = new(position.x + offset.x, position.y + offset.y, position.z + offset.z);
+                    }
                 }
             }
         }
-    }
     }
 
     internal override void _frame()
@@ -110,11 +110,11 @@ public abstract class CompoundObject : Object
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal override void _draw(VisualLayer layer = null)
+    internal override void _draw(PortableScreen screen = null)
     {
         foreach (Object obj in objects)
             if (obj == null) Engine.SendError(ErrorCodes.NullPet, name);
-            else if (obj.enabled) obj._draw(layer);
+            else if (obj.enabled) obj._draw(screen);
 #if DEBUG
         //draw pos
 #endif
