@@ -40,27 +40,39 @@ public abstract class Object2D : Object
 #if DEBUG
     internal override void _draw(PortableScreen screen = null)
     {
-        if (!Screen.visible || !Debug.debugLayer.visible || !drawPosition) return;
+        bool usePortableScreen = screen != null;
 
-        Rectangle screen = new(Screen.position, Screen.size);
-        if (screen.Overlapping(position))
+        if (!Screen.visible || !Debug.debugLayer.visible || !drawPosition || positionColor.a == 0 || (usePortableScreen && !screen.drawDebug)) return;
+
+        Rectangle screenArea = usePortableScreen ? screen.viewArea : new(Screen.position, Screen.size);
+        Color[] layerPixels = usePortableScreen ? Debug.debugLayer.portablePixels : Debug.debugLayer.pixels;
+
+        if (screenArea.Overlapping(position))
         {
+            bool useAlpha = positionColor.a < byte.MaxValue;
             Vector pos = new(
-                position.x - screen.position.x,
-                position.y - screen.position.y);
+                position.x - screenArea.position.x,
+                position.y - screenArea.position.y);
             if (intersectingLines)
             {
-                int x = 0, d = pos.y * screen.size.x;
-                while (x++ < screen.size.x && d < Debug.debugLayer.pixels.Length)
-                    Debug.debugLayer.pixels[d++] = positionColor;//blend?
-                d = pos.x;
-                while (d < Debug.debugLayer.pixels.Length)
+                int x = 0, d = pos.y * screenArea.size.x;
+                while (x++ < screenArea.size.x && d < layerPixels.Length)
                 {
-                    Debug.debugLayer.pixels[d] = positionColor;//blend?
-                    d += screen.size.x;
+                    layerPixels[d] = useAlpha ? layerPixels[d].Blend(positionColor) : positionColor;
+                    d++;
+                }
+                d = pos.x;
+                while (d < layerPixels.Length)
+                {
+                    layerPixels[d] = useAlpha ? layerPixels[d].Blend(positionColor) : positionColor;
+                    d += screenArea.size.x;
                 }
             }
-            else Debug.debugLayer.pixels[pos.y * screen.size.x + pos.x] = positionColor;//blend?
+            else
+            {
+                int i = pos.y * screenArea.size.x + pos.x;
+                layerPixels[i] = useAlpha ? layerPixels[i].Blend(positionColor) : positionColor;
+            }
         }
     }
 #endif

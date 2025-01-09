@@ -109,7 +109,7 @@ public abstract class RasterObject : Object2D
             drawArea.position.y - screenArea.position.y);
 
 #if DEBUG
-        if (Screen.visible && Debug.debugLayer.visible && drawTextureBounds)
+        if (Debug.debugLayer.visible && drawTextureBounds && boundsColor.a > 0 && (!usePortableScreen || screen.drawDebug))
         {
             Rectangle boundArea = new(
                 drawArea.position.x - 1, drawArea.position.y - 1,
@@ -118,15 +118,21 @@ public abstract class RasterObject : Object2D
                 boundArea.position.x + boundArea.size.x,
                 boundArea.position.y + boundArea.size.y);
             int boundX, boundD, boundHeight = boundArea.position.y < 0 ? boundArea.size.y : boundArea.size.y + 1;
+            bool useAlpha = positionColor.a < byte.MaxValue;
 
+            Color[] debugLayerPixels = usePortableScreen ? Debug.debugLayer.portablePixels : Debug.debugLayer.pixels;
+            //are these conditions necessary?
             //top loop
-            if (boundArea.position.y >= 0)
+            if (boundArea.position.y >= 0)//can these be combined to two loops?
             {
                 boundX = 0;
                 boundD = boundArea.position.y * screenArea.size.x + (drawArea.position.x < 0 ? 0 : drawArea.position.x);
 
-                while (boundX++ < drawArea.size.x && boundD < Debug.debugLayer.pixels.Length)
-                    Debug.debugLayer.pixels[boundD++] = boundsColor;
+                while (boundX++ < drawArea.size.x && boundD < debugLayerPixels.Length)
+                {
+                    debugLayerPixels[boundD] = useAlpha ? debugLayerPixels[boundD].Blend(boundsColor) : boundsColor;
+                    boundD++;
+            }
             }
             //bottom loop
             if (boundEnd.y < screenArea.size.y)
@@ -134,8 +140,11 @@ public abstract class RasterObject : Object2D
                 boundX = 0;
                 boundD = boundEnd.y * screenArea.size.x + (drawArea.position.x < 0 ? 0 : drawArea.position.x);
 
-                while (boundX++ < drawArea.size.x && boundD < Debug.debugLayer.pixels.Length)
-                    Debug.debugLayer.pixels[boundD++] = boundsColor;
+                while (boundX++ < drawArea.size.x && boundD < debugLayerPixels.Length)
+                {
+                    debugLayerPixels[boundD] = useAlpha ? debugLayerPixels[boundD].Blend(boundsColor) : boundsColor;
+                    boundD++;
+            }
             }
             //left loop
             if (boundArea.position.x >= 0)
@@ -143,9 +152,9 @@ public abstract class RasterObject : Object2D
                 boundX = 0;
                 boundD = (boundArea.position.y < 0 ? 0 : boundArea.position.y) * screenArea.size.x + boundArea.position.x;
 
-                while (boundX++ < boundHeight && boundD < Debug.debugLayer.pixels.Length)
+                while (boundX++ < boundHeight && boundD < debugLayerPixels.Length)
                 {
-                    Debug.debugLayer.pixels[boundD] = boundsColor;
+                    debugLayerPixels[boundD] = useAlpha ? debugLayerPixels[boundD].Blend(boundsColor) : boundsColor;
                     boundD += screenArea.size.x;
                 }
             }
@@ -155,9 +164,9 @@ public abstract class RasterObject : Object2D
                 boundX = 0;
                 boundD = (boundArea.position.y < 0 ? 0 : boundArea.position.y) * screenArea.size.x + boundEnd.x;
 
-                while (boundX++ < boundHeight && boundD < Debug.debugLayer.pixels.Length)
+                while (boundX++ < boundHeight && boundD < debugLayerPixels.Length)
                 {
-                    Debug.debugLayer.pixels[boundD] = boundsColor;
+                    debugLayerPixels[boundD] = useAlpha ? debugLayerPixels[boundD].Blend(boundsColor) : boundsColor;
                     boundD += screenArea.size.x;
                 }
             }

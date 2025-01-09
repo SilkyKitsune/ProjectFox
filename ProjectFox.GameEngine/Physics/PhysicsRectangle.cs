@@ -832,29 +832,31 @@ public class PhysicsRectangle : PhysicsShape
 #if DEBUG
     internal override void _draw(PortableScreen screen = null)
     {
-        if (!Screen.visible || !Debug.debugLayer.visible || !drawShape || !shapeEnabled || size.x <= 0 || size.y <= 0 || shapeColor.a == 0)
-        {
-            base._draw();
-            return;
-        }
+        base._draw(screen);
+
+        bool usePortableScreen = screen != null;
+
+        if (!Screen.visible || !Debug.debugLayer.visible || !drawShape || !shapeEnabled || size.x <= 0 || size.y <= 0 || shapeColor.a == 0 ||
+            (usePortableScreen && !screen.drawDebug)) return;
 
         Rectangle rect = Rectangle,//inline?
-            screen = new(Screen.position, Screen.size), area = screen.IntersectionBounds(rect);
+            screenArea = usePortableScreen ? screen.viewArea : new(Screen.position, Screen.size),
+            area = screenArea.IntersectionBounds(rect);
+        Color[] layerPixels = usePortableScreen ? Debug.debugLayer.portablePixels : Debug.debugLayer.pixels;
 
         if (area.size.x <= 0 || area.size.y <= 0) return;
 
         area.position = new(
-            area.position.x - screen.position.x,
-            area.position.y - screen.position.y);
+            area.position.x - screenArea.position.x,
+            area.position.y - screenArea.position.y);
 
         bool useAlpha = shapeColor.a < byte.MaxValue;
         int x = 0, s = 0, l = area.size.x * area.size.y,
-            d = area.position.y * screen.size.x + area.position.x,
-            step = screen.size.x - area.size.x;
-        while (s++ < l && d < Debug.debugLayer.pixels.Length)
+            d = area.position.y * screenArea.size.x + area.position.x,
+            step = screenArea.size.x - area.size.x;
+        while (s++ < l && d < layerPixels.Length)
         {
-            if (useAlpha) Debug.debugLayer.pixels[d] = Debug.debugLayer.pixels[d].Blend(shapeColor);
-            else Debug.debugLayer.pixels[d] = shapeColor;
+            layerPixels[d] = useAlpha ? layerPixels[d].Blend(shapeColor) : shapeColor;
             d++;
 
             if (++x == area.size.x)
@@ -863,8 +865,6 @@ public class PhysicsRectangle : PhysicsShape
                 d += step;
             }
         }
-
-        base._draw();
     }
 #endif
 }
