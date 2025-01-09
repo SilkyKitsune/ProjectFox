@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using ProjectFox.CoreEngine.Math;
+using ProjectFox.GameEngine.Visuals;
 
 namespace ProjectFox.GameEngine;
 
@@ -10,6 +11,11 @@ public abstract class Object3D : Object
     public Object3D(NameID name) : base(name) { }
 
     internal VectorZ position = new(0, 0, 0);
+
+#if DEBUG
+    public bool drawPosition = false, intersectingLines = false, depthColor = false;
+    public Color positionColor = new(byte.MaxValue, 0, 0);
+#endif
 
     /// <summary> the object's position in world space, or offset relative to the owner if it's a pet </summary>
     public VectorZ Position
@@ -28,6 +34,54 @@ public abstract class Object3D : Object
             else position = value;
         }
     }
+
+#if DEBUG
+    internal override void _draw(PortableScreen screen = null)
+    {
+        bool usePortableScreen = screen != null, zNeg = position.z < 0;
+
+        if (!Screen.visible || !Debug.debugLayer.visible || !drawPosition || (usePortableScreen && !screen.drawDebug)) return;
+
+        Rectangle screenArea = usePortableScreen ? screen.viewArea : new(Screen.position, Screen.size);
+        Color[] layerPixels = usePortableScreen ? Debug.debugLayer.portablePixels : Debug.debugLayer.pixels;
+        Color c = depthColor ? new(//behavior to color based on depth
+            (byte)(zNeg ? 0 : position.z), byte.MaxValue,//temp
+            (byte)(zNeg ? -position.z : 0)) ://clamp z
+            positionColor;
+
+        if (c.a == 0) return;
+
+        if (screenArea.Overlapping((Vector)position))//inline cast
+        {
+            bool useAlpha = positionColor.a < byte.MaxValue;
+            Vector pos = new(
+                position.x - screenArea.position.x,
+                position.y - screenArea.position.y);
+            if (intersectingLines)
+            {
+                int x = 0, d = pos.y * screenArea.size.x;
+                while (x++ < screenArea.size.x && d < layerPixels.Length)
+                {
+                    layerPixels[d] = useAlpha ? layerPixels[d].Blend(c) : c;
+                    d++;
+                }
+                d = pos.x;
+                while (d < layerPixels.Length)
+                {
+                    layerPixels[d] = useAlpha ? layerPixels[d].Blend(c) : c;
+                    d += screenArea.size.x;
+                }
+            }
+            else
+            {
+                int i = pos.y * screenArea.size.x + pos.x;
+                layerPixels[i] = useAlpha ? layerPixels[i].Blend(c) : c;
+            }
+        }
+
+        //behavior for when viewed by camera
+    }
+#endif
 
     public Object3D Closest(params Object3D[] objects)
     {
