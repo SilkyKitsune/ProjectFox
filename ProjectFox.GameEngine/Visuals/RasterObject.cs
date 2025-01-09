@@ -67,11 +67,17 @@ public abstract class RasterObject : Object2D
 
         if (texture.size.x <= 0 || texture.size.y <= 0) return;//size error?
 
+        bool usePortableScreen = screen != null;
+
         Rectangle textureArea = new(
             horizontalFlipOffset ? position.x - texture.size.x - drawOffset.x + (flipOffsetOnPixel ? 1 : 0) : position.x + drawOffset.x,
             verticalFlipOffset ? position.y - texture.size.y - drawOffset.y + (flipOffsetOnPixel ? 1 : 0) : position.y + drawOffset.y,
             texture.size),
-            screenArea = new(
+            screenArea = usePortableScreen ? new(
+                parallaxFactor.x == 1f ? screen.viewArea.position.x : (int)(screen.viewArea.position.x * parallaxFactor.x),
+                parallaxFactor.y == 1f ? screen.viewArea.position.y : (int)(screen.viewArea.position.y * parallaxFactor.y),
+                screen.viewArea.size) :
+                new(
                 parallaxFactor.x == 1f ? Screen.position.x : (int)(Screen.position.x * parallaxFactor.x),
                 parallaxFactor.y == 1f ? Screen.position.y : (int)(Screen.position.y * parallaxFactor.y),
                 Screen.size),
@@ -158,6 +164,8 @@ public abstract class RasterObject : Object2D
         }
 #endif
 
+        Color[] layerPixels = usePortableScreen ? layer.portablePixels : layer.pixels;
+
         int x = 0, s = topLeft.y * textureArea.size.x + topLeft.x,
             d = drawArea.position.y * screenArea.size.x + drawArea.position.x,
             destStep = screenArea.size.x - drawArea.size.x;
@@ -180,7 +188,7 @@ public abstract class RasterObject : Object2D
             bool usePaletteOffset = paletteOffset != 0;
             int lastColorIndex = colors.Length - 1;
             PalettizedTexture palettizedTexture = (PalettizedTexture)texture;
-            while (s > -1 && s < palettizedTexture.pixels.Length && d < layer.pixels.Length)
+            while (s > -1 && s < palettizedTexture.pixels.Length && d < layerPixels.Length)
             {
                 byte index = palettizedTexture.pixels[horizontalFlipTexture ? s-- : s++];
                 if (usePaletteOffset) index = (byte)Math.Wrap(index + paletteOffset, 0, lastColorIndex);
@@ -188,8 +196,8 @@ public abstract class RasterObject : Object2D
                 Color pixel = index < colors.Length ? colors[index] : new(0, 0, 0, 0);
                 //send out of range error?
 
-                if (pixel.a == byte.MaxValue) layer.pixels[d] = pixel;
-                else if (pixel.a > byte.MinValue) layer.pixels[d] = layer.pixels[d].Blend(pixel);
+                if (pixel.a == byte.MaxValue) layerPixels[d] = pixel;
+                else if (pixel.a > byte.MinValue) layerPixels[d] = layerPixels[d].Blend(pixel);
                 d++;
 
                 if (++x == drawArea.size.x)
@@ -203,11 +211,11 @@ public abstract class RasterObject : Object2D
         }
 
         ColorTexture colorTexture = (ColorTexture)texture;
-        while (s > -1 && s < colorTexture.pixels.Length && d < layer.pixels.Length)
+        while (s > -1 && s < colorTexture.pixels.Length && d < layerPixels.Length)
         {
             Color pixel = colorTexture.pixels[horizontalFlipTexture ? s-- : s++];
-            if (pixel.a == byte.MaxValue) layer.pixels[d] = pixel;
-            else if (pixel.a > byte.MinValue) layer.pixels[d] = layer.pixels[d].Blend(pixel);
+            if (pixel.a == byte.MaxValue) layerPixels[d] = pixel;
+            else if (pixel.a > byte.MinValue) layerPixels[d] = layerPixels[d].Blend(pixel);
             d++;
 
             if (++x == drawArea.size.x)
