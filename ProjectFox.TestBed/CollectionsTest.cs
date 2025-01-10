@@ -237,10 +237,10 @@ public static partial class CoreEngineTest
         C.WriteLine("-----\n");
         #endregion
 
-        #region HashLookupTable
-        C.WriteLine("---HashLookupTable---");
+        #region LookupTable
+        C.WriteLine("---LookupTable---");
 
-        HashLookupTable<char, Vector> hashTable = new HashLookupTable<char, Vector>();
+        LookupTable<char, Vector> hashTable = new LookupTable<char, Vector>();
         hashTable.Add('a', new Vector(1, 1));
         hashTable.Add('b', new Vector(2, 2));
         hashTable.Add('c', new Vector(3, 3));
@@ -248,8 +248,8 @@ public static partial class CoreEngineTest
         hashTable.Add('e', new Vector(5, 5));
         hashTable.Add('&'/*(char)0*/, new Vector(-1, -1));
 
-        ICopyTest(hashTable, out HashLookupTable<char, Vector> hashTableCopy);
-        IHashTableTest(hashTable, hashTableCopy, 'a', 'b', 'c', 'x', 'y', 'z', new Vector(-69, 69));
+        ICopyTest(hashTable, out LookupTable<char, Vector> hashTableCopy);
+        ITableTest(hashTable, hashTableCopy, 'a', 'b', 'c', 'x', 'y', 'z', new Vector(-69, 69));
 
         try
         {
@@ -280,7 +280,7 @@ public static partial class CoreEngineTest
 
         try
         {
-            IHashTable<char, Vector> t = null;
+            ITable<char, Vector> t = null;
             hashTable.CopyTo(t);
         }
         catch (ArgumentNullException e)
@@ -305,7 +305,8 @@ public static partial class CoreEngineTest
     {
         C.WriteLine("-ICopy-");
 
-        iCopy.Copy(out copy);
+        iCopy.DeepCopy(out copy);
+        //shallow
 
         C.WriteLine(iCopy.GetType());
         C.WriteLine(typeof(ICopy<T>));
@@ -335,6 +336,7 @@ public static partial class CoreEngineTest
         iCollection[0] = item;
         C.WriteLine(iCollection[0]);
 
+        //what to do with range operator tests?
         //C.WriteLine(string.Join(", ", iCollection[0, iCollection.Length]));
 
         //T[] items = iCollection[0, iCollection.Length];
@@ -416,14 +418,27 @@ public static partial class CoreEngineTest
 
         copy.CopyTo(iCollection);
         C.WriteLine(iCollection.Join(", "));
+
+        values = iCollection.ToArray();
+        T[][] valueDuplicates =
+        {
+            values, values
+        };
+        iCollection.AddConcat(valueDuplicates);
+        C.WriteLine(iCollection.Join(", "));
+
+        copy.CopyTo(iCollection);
+        C.WriteLine(iCollection.Join(", "));
+
+        //C.WriteLine(string.Join(", ", (System.Collections.Generic.IEnumerable<byte[]>)iCollection.GetBytes(false)));
     }
 
-    private static void IHashTableTest<H, T>(IHashTable<H, T> iHashTable, IHashTable<H, T> copy, H code1, H code2, H code3, H newCode1, H newCode2, H newCode3, T value)
+    private static void ITableTest<H, T>(ITable<H, T> iHashTable, ITable<H, T> copy, H code1, H code2, H code3, H newCode1, H newCode2, H newCode3, T value)
     {
         C.WriteLine("-IHashTable-");
 
         C.WriteLine(iHashTable.GetType());
-        C.WriteLine(typeof(IHashTable<H, T>));
+        C.WriteLine(typeof(ITable<H, T>));
         C.WriteLine(typeof(H));
         C.WriteLine(typeof(T));
 
@@ -524,11 +539,11 @@ public static partial class CoreEngineTest
         Debug.TestTable.Add(new("TestVal", 4), 4);
         Debug.TestTable.Add(new("TestVal", 5), 5);
 
-        HashLookupTable<NameID, int> tableCopy = new HashLookupTable<NameID, int>();
+        LookupTable<NameID, int> tableCopy = new LookupTable<NameID, int>();
         foreach (int i in Debug.TestTable.GetValues())
             tableCopy.Add(new("TestVal", (byte)i), i);
 
-        IHashTableTest(Debug.TestTable, tableCopy, new("TestVal", 1), new("TestVal", 2), new("TestVal", 3), new("TestVal", 6), new("TestVal", 7), new("TestVal", 8), 324);
+        ITableTest(Debug.TestTable, tableCopy, new("TestVal", 1), new("TestVal", 2), new("TestVal", 3), new("TestVal", 6), new("TestVal", 7), new("TestVal", 8), 324);
 
         C.WriteLine("-----\n");
     }
