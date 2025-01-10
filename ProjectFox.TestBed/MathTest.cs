@@ -6,12 +6,81 @@ using static ProjectFox.CoreEngine.Math.Math;
 
 using ProjectFox.CoreEngine.Data;
 
-using static ProjectFox.CoreEngine.Collections.Strings;
-
 namespace ProjectFox.TestBed;
 
 public static partial class CoreEngineTest
 {
+    /// <summary> the closest approximation to π/2 (1.57079632679) </summary>
+    private const float HalfPi = 1.57079637050628662109375f;
+
+    /// <summary> the closest approximation to 3/4τ (4.71238898038) </summary>
+    private const float ThreeQuartersTau = 4.7123889923095703125f;
+
+    private static readonly float[] sineOld = new float[101]
+    {
+        0f,
+        0.0157073173118f, 0.0314107590781f, 0.0471064507096f, 0.0627905195293f, 0.0784590957278f, 0.0941083133185f, 0.109734311091f, 0.125333233564f, 0.140901231938f,
+        0.15643446504f,   0.171929100279f,  0.187381314586f,  0.202787295357f,  0.218143241397f,  0.233445363856f,  0.248689887165f, 0.263873049965f, 0.278991106039f,
+        0.294040325232f,  0.309016994375f,  0.323917418198f,  0.338737920245f,  0.353474843779f,  0.368124552685f,  0.382683432365f, 0.397147890635f, 0.411514358605f,
+        0.425779291565f,  0.439939169856f,  0.45399049974f,   0.467929814261f,  0.481753674102f,  0.495458668432f,  0.50904141575f,  0.522498564716f, 0.535826794979f,
+        0.549022817998f,  0.562083377852f,  0.575005252043f,  0.587785252292f,  0.600420225326f,  0.612907053653f,  0.625242656336f, 0.637423989749f, 0.64944804833f,
+        0.661311865324f,  0.67301251351f,   0.684547105929f,  0.695912796592f,  0.707106781187f,  0.718126297763f,  0.728968627421f, 0.739631094979f, 0.75011106963f,
+        0.7604059656f,    0.770513242776f,  0.780430407338f,  0.790155012376f,  0.799684658487f,  0.809016994375f,  0.818149717425f, 0.827080574275f, 0.835807361368f,
+        0.844327925502f,  0.852640164354f,  0.860742027004f,  0.868631514438f,  0.876306680044f,  0.883765630089f,  0.891006524188f, 0.898027575761f, 0.904827052466f,
+        0.911403276635f,  0.917754625684f,  0.923879532511f,  0.929776485888f,  0.93544403083f,   0.940880768954f,  0.946085358828f, 0.951056516295f, 0.955793014798f,
+        0.960293685677f,  0.964557418458f,  0.968583161129f,  0.972369920398f,  0.975916761939f,  0.979222810622f,  0.982287250729f, 0.985109326155f, 0.987688340595f,
+        0.990023657717f,  0.992114701314f,  0.993960955455f,  0.995561964603f,  0.996917333733f,  0.998026728428f,  0.998889874962f, 0.999506560366f, 0.999876632482f,
+        1f
+    };
+
+    private static float QuarterSineOld(float amount) => sineOld[(int)((sineOld.Length - 1) * (amount - (int)amount))];
+
+    private static void SineCosineOld(float amount, out float sine, out float cosine)
+    {
+        bool neg = amount < 0f;
+        if (neg) amount = -amount;
+
+        amount = amount - (int)amount;
+
+        int i = (int)(amount * 4);
+        amount = (amount - i / 4f) / 0.25f;
+        float first = QuarterSineOld(amount), second = QuarterSineOld(1f - amount);
+
+        switch (i)
+        {
+            default:
+                sine = first;
+                cosine = second;
+                break;
+            case 1:
+                sine = second;
+                cosine = -first;
+                break;
+            case 2:
+                sine = -first;
+                cosine = -second;
+                break;
+            case 3:
+                sine = -second;
+                cosine = first;
+                break;
+        }
+
+        if (neg) sine = -sine;
+    }
+
+    private static void SinePrintOld(float amount)
+    {
+        SineCosineOld(amount, out float sine, out float cosine);
+        C.WriteLine($"Sine = {sine}, Cosine = {cosine}");
+    }
+
+    private static void SinePrint(float amount)
+    {
+        SineCosine(amount, out float sine, out float cosine);
+        C.WriteLine($"Sine = {sine} => {ArcSine(sine)}, Cosine = {cosine} => {ArcCosine(cosine)}");
+    }
+
     public static void MathTest()
     {
         #region Abs
@@ -637,7 +706,7 @@ public static partial class CoreEngineTest
 
         #region Clamp
         C.WriteLine("---Clamp---");
-
+        //these exception tests are unnecessary
         ///int
         C.WriteLine(Clamp(0, -10, 10));
         C.WriteLine(Clamp(20, -10, 10));
@@ -659,7 +728,7 @@ public static partial class CoreEngineTest
         try
         {
             ///MinMaxException Test
-            C.WriteLine(Clamp(0, 20, 10));
+            C.WriteLine(Clamp(0u, 20u, 10u));
         }
         catch (Exception e)
         {
@@ -754,6 +823,9 @@ public static partial class CoreEngineTest
         C.WriteLine(Clamp(0f, -10f, 10f));
         C.WriteLine(Clamp(20f, -10f, 10f));
         C.WriteLine(Clamp(-20f, -10f, 10f));
+        C.WriteLine(Clamp(float.PositiveInfinity, -10f, 10f));
+        C.WriteLine(Clamp(float.NegativeInfinity, -10f, 10f));
+        C.WriteLine(Clamp(float.NaN, -10f, 10f));
         try
         {
             ///MinMaxException Test
@@ -768,6 +840,9 @@ public static partial class CoreEngineTest
         C.WriteLine(Clamp(0d, -10d, 10d));
         C.WriteLine(Clamp(20d, -10d, 10d));
         C.WriteLine(Clamp(-20d, -10d, 10d));
+        C.WriteLine(Clamp(double.PositiveInfinity, -10d, 10d));
+        C.WriteLine(Clamp(double.NegativeInfinity, -10d, 10d));
+        C.WriteLine(Clamp(double.NaN, -10d, 10d));
         try
         {
             ///MinMaxException Test
@@ -777,6 +852,82 @@ public static partial class CoreEngineTest
         {
             C.WriteLine(e.Message);
         }
+
+        C.WriteLine("-----\n");
+        #endregion
+
+        #region ClampImplicit
+        C.WriteLine("---ClampImplicit---");
+
+        ///int
+        C.WriteLine(ClampImplicit(0, -10, 10));
+        C.WriteLine(ClampImplicit(20, -10, 10));
+        C.WriteLine(ClampImplicit(-20, -10, 10));
+        C.WriteLine(ClampImplicit(0, 10, -10));
+        C.WriteLine(ClampImplicit(-20, 10, -10));
+
+        ///uint
+        C.WriteLine(ClampImplicit(0u, 0u, 10u));
+        C.WriteLine(ClampImplicit(20u, 0u, 10u));
+        C.WriteLine(ClampImplicit(0u, 5u, 10u));
+        C.WriteLine(ClampImplicit(15u, 20u, 10u));
+        C.WriteLine(ClampImplicit(0u, 20u, 10u));
+
+        ///long
+        C.WriteLine(ClampImplicit(0L, -10L, 10L));
+        C.WriteLine(ClampImplicit(20L, -10L, 10L));
+        C.WriteLine(ClampImplicit(-20L, -10L, 10L));
+        C.WriteLine(ClampImplicit(0L, 10L, -10L));
+        C.WriteLine(ClampImplicit(-20L, 10L, -10L));
+
+        ///ulong
+        C.WriteLine(ClampImplicit(0uL, 0uL, 10uL));
+        C.WriteLine(ClampImplicit(20uL, 0uL, 10uL));
+        C.WriteLine(ClampImplicit(0uL, 5uL, 10uL));
+        C.WriteLine(ClampImplicit(15uL, 20uL, 10uL));
+        C.WriteLine(ClampImplicit(0uL, 20uL, 10uL));
+
+        ///short
+        C.WriteLine(ClampImplicit((short)0, (short)-10, (short)10));
+        C.WriteLine(ClampImplicit((short)20, (short)-10, (short)10));
+        C.WriteLine(ClampImplicit((short)-20, (short)-10, (short)10));
+        C.WriteLine(ClampImplicit((short)0, (short)10, (short)-10));
+        C.WriteLine(ClampImplicit((short)-20, (short)10, (short)-10));
+
+        ///ushort
+        C.WriteLine(ClampImplicit((ushort)0, (ushort)0, (ushort)10));
+        C.WriteLine(ClampImplicit((ushort)20, (ushort)0, (ushort)10));
+        C.WriteLine(ClampImplicit((ushort)0, (ushort)5, (ushort)10));
+        C.WriteLine(ClampImplicit((ushort)15, (ushort)20, (ushort)10));
+        C.WriteLine(ClampImplicit((ushort)0, (ushort)20, (ushort)10));
+
+        ///sbyte
+        C.WriteLine(ClampImplicit((sbyte)0, (sbyte)-10, (sbyte)10));
+        C.WriteLine(ClampImplicit((sbyte)20, (sbyte)-10, (sbyte)10));
+        C.WriteLine(ClampImplicit((sbyte)-20, (sbyte)-10, (sbyte)10));
+        C.WriteLine(ClampImplicit((sbyte)0, (sbyte)10, (sbyte)-10));
+        C.WriteLine(ClampImplicit((sbyte)-20, (sbyte)10, (sbyte)-10));
+
+        ///byte
+        C.WriteLine(ClampImplicit((byte)0, (byte)0, (byte)10));
+        C.WriteLine(ClampImplicit((byte)20, (byte)0, (byte)10));
+        C.WriteLine(ClampImplicit((byte)0, (byte)5, (byte)10));
+        C.WriteLine(ClampImplicit((byte)15, (byte)20, (byte)10));
+        C.WriteLine(ClampImplicit((byte)0, (byte)20, (byte)10));
+
+        ///float
+        C.WriteLine(ClampImplicit(0f, -10f, 10f));
+        C.WriteLine(ClampImplicit(20f, -10f, 10f));
+        C.WriteLine(ClampImplicit(-20f, -10f, 10f));
+        C.WriteLine(ClampImplicit(0f, 10f, -10f));
+        C.WriteLine(ClampImplicit(-20f, 10f, -10f));
+
+        ///double
+        C.WriteLine(ClampImplicit(0d, -10d, 10d));
+        C.WriteLine(ClampImplicit(20d, -10d, 10d));
+        C.WriteLine(ClampImplicit(-20d, -10d, 10d));
+        C.WriteLine(ClampImplicit(0d, 10d, -10d));
+        C.WriteLine(ClampImplicit(-20d, 10d, -10d));
 
         C.WriteLine("-----\n");
         #endregion
@@ -919,18 +1070,18 @@ public static partial class CoreEngineTest
         C.WriteLine(HasFraction(0.5f));
         C.WriteLine(HasFraction(0.99f));
         C.WriteLine(HasFraction(1f));
-        C.WriteLine(HasFraction(HalfPi));
+        //C.WriteLine(HasFraction(HalfPi));
         C.WriteLine(HasFraction(Pi));
-        C.WriteLine(HasFraction(ThreeQuartersTau));
+        //C.WriteLine(HasFraction(ThreeQuartersTau));
         C.WriteLine(HasFraction(Tau));
 
         C.WriteLine(HasFraction(0d));
         C.WriteLine(HasFraction(0.5d));
         C.WriteLine(HasFraction(0.99d));
         C.WriteLine(HasFraction(1d));
-        C.WriteLine(HasFraction((double)HalfPi));
+        //C.WriteLine(HasFraction((double)HalfPi));
         C.WriteLine(HasFraction((double)Pi));
-        C.WriteLine(HasFraction((double)ThreeQuartersTau));
+        //C.WriteLine(HasFraction((double)ThreeQuartersTau));
         C.WriteLine(HasFraction((double)Tau));
 
         C.WriteLine("-----\n");
@@ -1130,6 +1281,22 @@ public static partial class CoreEngineTest
 
         C.WriteLine(Round(0f));
         /////////////////////////
+
+        C.WriteLine("-----\n");
+        #endregion
+
+        #region Scale
+        C.WriteLine("---Scale---");
+
+        //precision issues cause exceptions sometimes because very high length values result in very small fractions that are rounded to 1
+
+        int[] vs = new int[10] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+        C.WriteLine(string.Join(',', Scale(vs, vs.Length * 2)));
+        C.WriteLine(string.Join(',', Scale(vs, vs.Length / 2)));
+
+        C.WriteLine(string.Join(',', Scale(vs, 2f)));
+        C.WriteLine(string.Join(',', Scale(vs, 0.5f)));
 
         C.WriteLine("-----\n");
         #endregion
@@ -1387,16 +1554,46 @@ public static partial class CoreEngineTest
 
     public static void MathSineTest()
     {
-        #region SineFirstQuarter
-        C.WriteLine("---SineFirstQuarter---");
+        C.WriteLine("---QuarterSineOld---");
 
-        for (float f = 0f; f <= 1f; f += 0.01f) C.WriteLine($"{f} => {SineFirstQuarter(f)}");
-        C.WriteLine(SineFirstQuarter(1f));
+        for (float f = 0f; f <= 1f; f += 0.01f) C.WriteLine($"{f} => {QuarterSineOld(f)}");
+        C.WriteLine(QuarterSineOld(1f));
 
         C.WriteLine("-----\n");
-        #endregion
+        
 
-        #region SineCosine
+
+        C.WriteLine("---SineCosineOld---");
+
+        SinePrintOld(0f);
+        SinePrintOld(0.5f);
+        SinePrintOld(1f);
+        SinePrintOld(0.25f);
+        SinePrintOld(0.75f);
+        SinePrintOld(0.1f);
+        SinePrintOld(2f);
+        SinePrintOld(1.00001f);
+        SinePrintOld(1.56464658f);
+        SinePrintOld(-1f);
+        SinePrintOld(-0.1f);
+
+        C.WriteLine("-----\n");
+
+
+
+        C.WriteLine("---QuarterSine---");
+
+        for (int i = 0; i < 25; i++)
+        {
+            float f = i / 100f, s = QuarterSine(f);
+            C.WriteLine($"{f} => {s} => {ArcSine(s)}");
+        }
+        C.WriteLine(QuarterSine(0.25f));
+
+        C.WriteLine("-----\n");
+
+
+
         C.WriteLine("---SineCosine---");
 
         SinePrint(0f);
@@ -1404,26 +1601,66 @@ public static partial class CoreEngineTest
         SinePrint(1f);
         SinePrint(0.25f);
         SinePrint(0.75f);
+        SinePrint(0.125f);
+        SinePrint(0.375f);
+        SinePrint(0.625f);
+        SinePrint(0.875f);
         SinePrint(0.1f);
         SinePrint(2f);
         SinePrint(1.00001f);
         SinePrint(1.56464658f);
         SinePrint(-1f);
         SinePrint(-0.1f);
+        try
+        {
+            ArcSine(2f);
+        }
+        catch (ArgumentException e)
+        {
+            C.WriteLine(e.Message);
+        }
+        try
+        {
+            ArcSine(-2f);
+        }
+        catch (ArgumentException e)
+        {
+            C.WriteLine(e.Message);
+        }
+        try
+        {
+            ArcSine(float.PositiveInfinity);
+        }
+        catch (ArgumentException e)
+        {
+            C.WriteLine(e.Message);
+        }
+        try
+        {
+            ArcSine(float.NegativeInfinity);
+        }
+        catch (ArgumentException e)
+        {
+            C.WriteLine(e.Message);
+        }
+        try
+        {
+            ArcSine(float.NaN);
+        }
+        catch (ArgumentException e)
+        {
+            C.WriteLine(e.Message);
+        }
 
         C.WriteLine("-----\n");
-        #endregion
-    }
-
-    private static void SinePrint(float amount)
-    {
-        SineCosine(amount, out float sine, out float cosine);
-        C.WriteLine($"Sine = {sine}, Cosine = {cosine}");
     }
 
     public static void FloatStepInterpolateTest()
     {
+        Repeat:
         string s = C.ReadLine();
+        if (s == "exit") return;
+
         if (float.TryParse(s, out float f))
         {
             int[] steps = StepInterpolate(f);
@@ -1440,22 +1677,25 @@ public static partial class CoreEngineTest
                     dist += step;
                     outPut += $"{step},";
                 }
-                C.WriteLine($"{f} => {steps.Length} => {dist} => {outPut}");
+                C.WriteLine($"{f} => {steps.Length} => {dist} => {dist / (float)steps.Length} => {outPut}");
             }
         }
-        FloatStepInterpolateTest();
+        goto Repeat;
     }
-
+    //13/21 gives a repeating 0,1,1, which is identical to 2/3
     public static void VectorStepInterpolateTest()
     {
+        Repeat:
         string s = C.ReadLine();
+        if (s == "exit") return;
+
         int comma = s.IndexOf(',');
         if (comma > -1)
         {
             if (int.TryParse(s.Substring(0, comma), out int x) && int.TryParse(s.Substring(Clamp(comma + 1, 0, s.Length)), out int y))
             {
                 Vector v = new(x, y);
-                Vector[] steps = Vector.StepInterpolate(v);
+                Vector[] steps = Vector.StepInterpolate(v);//stepsOld = Vector.StepInterpolateOld(v);
 
                 if (steps == null) C.WriteLine("null");
                 else if (steps.Length == 0) C.WriteLine("empty");
@@ -1467,12 +1707,28 @@ public static partial class CoreEngineTest
                     foreach (Vector step in steps)
                     {
                         dist += step;
+                        outPut += step;
+                    }
+                    C.WriteLine($"{v} => {steps.Length} => {dist} => {dist / (float)steps.Length} => {outPut}");
+
+                    /*outPut = "";
+                    dist = default;
+
+                    foreach (Vector step in stepsOld)
+                    {
+                        dist += step;
                         outPut += $"{step},";
                     }
-                    C.WriteLine($"{v} => {dist} => {outPut}");
+                    C.WriteLine($"{v} => {dist} => {outPut}\n---");*/
                 }
             }
         }
-        VectorStepInterpolateTest();
+        goto Repeat;
     }
+    /*
+    is this still a problem?
+    (8, 11)
+    vector gives this 1 1 1 1 1 1 1 1 0 0 0
+     float gives this 0 1 1 1 0 1 1 1 0 1 1
+    */
 }
