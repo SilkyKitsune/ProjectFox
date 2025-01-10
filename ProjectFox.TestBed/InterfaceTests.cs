@@ -11,7 +11,7 @@ using static ProjectFox.CoreEngine.Collections.Strings;
 namespace ProjectFox.TestBed;
 
 public static partial class CoreEngineTest
-{
+{//need to use copies for move to zero, or make move to zero a return method
     private static void IDataTest<T>(IData<T> iData)
     {
         C.WriteLine("-IData-");
@@ -79,15 +79,15 @@ public static partial class CoreEngineTest
 
         C.WriteLine(iMath.IsZero());
 
-        C.WriteLine(iMath.Max(bigger));
-        C.WriteLine(iMath.Max(bigger, smaller, bigger));
-        C.WriteLine(iMath.MaxIndex(new T[] { bigger }));
-        C.WriteLine(iMath.MaxIndex(new T[] { bigger, smaller, bigger }));
+        //C.WriteLine(iMath.Max(bigger));
+        //C.WriteLine(iMath.Max(bigger, smaller, bigger));
+        //C.WriteLine(iMath.MaxIndex(new T[] { bigger }));
+        //C.WriteLine(iMath.MaxIndex(new T[] { bigger, smaller, bigger }));
 
-        C.WriteLine(iMath.Min(bigger));
-        C.WriteLine(iMath.Min(bigger, smaller, bigger));
-        C.WriteLine(iMath.MinIndex(new T[] { bigger }));
-        C.WriteLine(iMath.MinIndex(new T[] { bigger, smaller, bigger }));
+        //C.WriteLine(iMath.Min(bigger));
+        //C.WriteLine(iMath.Min(bigger, smaller, bigger));
+        //C.WriteLine(iMath.MinIndex(new T[] { bigger }));
+        //C.WriteLine(iMath.MinIndex(new T[] { bigger, smaller, bigger }));
 
         C.WriteLine(iMath.Pow(2));
         C.WriteLine(iMath.Pow(3));
@@ -103,7 +103,7 @@ public static partial class CoreEngineTest
 
         C.WriteLine(iMath.Wrap(smaller, bigger));
 
-        iMath.MoveToZero(bigger);
+        //iMath.MoveToZero(bigger);
         C.WriteLine(iMath);
     }
 
@@ -138,7 +138,7 @@ public static partial class CoreEngineTest
 
         C.WriteLine(iVector.Wrap(smallert, biggert));
 
-        iVector.MoveToZero(biggert);
+        //iVector.MoveToZero(biggert);
         C.WriteLine(iVector);
     }
 
@@ -155,45 +155,45 @@ public static partial class CoreEngineTest
         C.WriteLine(iDirection.DirectionToPoint(smaller));
     }
 
-    private static void IRotate2DTest<S, V, F, Vf>(IRotate2D<S, V, F, Vf> iRotate2D, V bigger, V smaller, Vf biggerF, Vf smallerF, float rotation1, float rotation2)
+    private static void IRotateTest<V, Vf, A, R>(IRotate<V, Vf, A, R> iRotate2D, V bigger, V smaller, Vf biggerF, Vf smallerF, float rotation1, float rotation2)
     {
         C.WriteLine("-IRotate2D-");
 
         C.WriteLine(iRotate2D.GetType());
-        C.WriteLine(typeof(IRotate2D<S, V, F, Vf>));
-        C.WriteLine(typeof(S));
+        C.WriteLine(typeof(IRotate<V, Vf, A, R>));
         C.WriteLine(typeof(V));
-        C.WriteLine(typeof(F));
         C.WriteLine(typeof(Vf));
+        C.WriteLine(typeof(A));
+        C.WriteLine(typeof(R));
 
         C.WriteLine(iRotate2D.AngleFromRotationOrigin());
 
-        C.WriteLine(iRotate2D.Angle(bigger));
-        C.WriteLine(iRotate2D.Angle(smaller));
+        //C.WriteLine(iRotate2D.Angle(bigger));
+        //C.WriteLine(iRotate2D.Angle(smaller));
 
-        C.WriteLine(iRotate2D.Angle(biggerF));
-        C.WriteLine(iRotate2D.Angle(smallerF));
+        //C.WriteLine(iRotate2D.Angle(biggerF));
+        //C.WriteLine(iRotate2D.Angle(smallerF));
 
-        C.WriteLine(iRotate2D.Angle(bigger, smaller));
-        C.WriteLine(iRotate2D.Angle(smaller, bigger));
+        //C.WriteLine(iRotate2D.Angle(bigger, smaller));
+        //C.WriteLine(iRotate2D.Angle(smaller, bigger));
 
-        C.WriteLine(iRotate2D.Angle(biggerF, smallerF));
-        C.WriteLine(iRotate2D.Angle(smallerF, biggerF));
+        //C.WriteLine(iRotate2D.Angle(biggerF, smallerF));
+        //C.WriteLine(iRotate2D.Angle(smallerF, biggerF));
 
-        C.WriteLine(iRotate2D.Rotate(rotation1));
-        C.WriteLine(iRotate2D.Rotate(rotation1, biggerF));
+        //C.WriteLine(iRotate2D.Rotate(rotation1));
+        //C.WriteLine(iRotate2D.Rotate(rotation1, biggerF));
 
-        C.WriteLine(iRotate2D.RotateByRightAngles(0));
-        C.WriteLine(iRotate2D.RotateByRightAngles(1));
-        C.WriteLine(iRotate2D.RotateByRightAngles(2));
-        C.WriteLine(iRotate2D.RotateByRightAngles(3));
-        C.WriteLine(iRotate2D.RotateByRightAngles(4));
+        //C.WriteLine(iRotate2D.RotateByRightAngles(0));
+        //C.WriteLine(iRotate2D.RotateByRightAngles(1));
+        //C.WriteLine(iRotate2D.RotateByRightAngles(2));
+        //C.WriteLine(iRotate2D.RotateByRightAngles(3));
+        //C.WriteLine(iRotate2D.RotateByRightAngles(4));
 
-        C.WriteLine(iRotate2D.RotateByRightAngles(0, biggerF));
-        C.WriteLine(iRotate2D.RotateByRightAngles(1, biggerF));
-        C.WriteLine(iRotate2D.RotateByRightAngles(2, biggerF));
-        C.WriteLine(iRotate2D.RotateByRightAngles(3, biggerF));
-        C.WriteLine(iRotate2D.RotateByRightAngles(4, biggerF));
+        //C.WriteLine(iRotate2D.RotateByRightAngles(0, biggerF));
+        //C.WriteLine(iRotate2D.RotateByRightAngles(1, biggerF));
+        //C.WriteLine(iRotate2D.RotateByRightAngles(2, biggerF));
+        //C.WriteLine(iRotate2D.RotateByRightAngles(3, biggerF));
+        //C.WriteLine(iRotate2D.RotateByRightAngles(4, biggerF));
     }
 
     private static void IPolytopeTest<V, P>(IPolytope<V, P> iPolytope)
@@ -210,18 +210,25 @@ public static partial class CoreEngineTest
         C.WriteLine(string.Join(',', iPolytope.GetPrimitives()));
     }
 
-    private static void IShapeTest<S, V, t, F>(IShape<S, V, t, F> iShape, S bigger, S smaller, V biggerV, V smallerV, t biggert, t smallert, F biggerF, F smallerF)
+    private static void IShapeTest<S, Sf, V, Va, P, Pa, B, Bf, t>(IShape<S, Sf, V, Va, P, Pa, B, Bf, t> iShape, S bigger, S smaller, V biggerV, V smallerV, t biggert, t smallert, Sf biggerF, Sf smallerF, IPolytope<V, P> polytope, IPolytope<Va, Pa> polytopeF)
     {
         IVectorTest(iShape, bigger, smaller, biggerV, smallerV, biggerF, smallerF);
 
         C.WriteLine("-IShape-");
 
         C.WriteLine(iShape.GetType());
-        C.WriteLine(typeof(IShape<S, V, t, F>));
+        C.WriteLine(typeof(IShape<S, Sf, V, Va, P, Pa, B, Bf, t>));
         C.WriteLine(typeof(S));
+        C.WriteLine(typeof(Sf));
         C.WriteLine(typeof(V));
+        C.WriteLine(typeof(Va));
+        C.WriteLine(typeof(P));
+        C.WriteLine(typeof(Pa));
+        C.WriteLine(typeof(B));
+        C.WriteLine(typeof(Bf));
         C.WriteLine(typeof(t));
-        C.WriteLine(typeof(F));
+        C.WriteLine(typeof(IPolytope<V, P>));
+        C.WriteLine(typeof(IPolytope<Va, Pa>));
 
         C.WriteLine(iShape.Between(smallert, biggert));
         C.WriteLine(iShape.BetweenAgainstBounds(smallert, biggert));
@@ -246,10 +253,10 @@ public static partial class CoreEngineTest
         C.WriteLine(iShape.Farthest(biggerV, smallerV, biggerV));
         C.WriteLine(iShape.FarthestIndex(new V[] { biggerV, smallerV, biggerV }));
 
-        C.WriteLine(iShape.IntersectionArea(bigger));
-        C.WriteLine(iShape.IntersectionArea(smaller));
-        C.WriteLine(iShape.IntersectionArea(biggerF));
-        C.WriteLine(iShape.IntersectionArea(smallerF));
+        C.WriteLine(iShape.IntersectionBounds(bigger));
+        C.WriteLine(iShape.IntersectionBounds(smaller));
+        C.WriteLine(iShape.IntersectionBounds(biggerF));
+        C.WriteLine(iShape.IntersectionBounds(smallerF));
 
         C.WriteLine(iShape.Intersecting(bigger));
         C.WriteLine(iShape.Intersecting(smaller));
@@ -270,99 +277,95 @@ public static partial class CoreEngineTest
 
         C.WriteLine(iShape.Wrap(smallert, biggert));
 
-        iShape.MoveToZero(biggert);
+        //iShape.MoveToZero(biggert);
         C.WriteLine(iShape);
+
+        
+        //from 2d test
+        C.WriteLine(iShape.Bounds);
+
+        //C.WriteLine(iShape.DirectionToShape(bigger));
+        //C.WriteLine(iShape.DirectionToShape(smaller));
+
+        C.WriteLine(iShape.Enveloping(polytope));
+        C.WriteLine(iShape.Enveloping(polytopeF));
+
+        C.WriteLine(iShape.Enveloping(biggerV));
+        C.WriteLine(iShape.Enveloping(smallerV));
+        C.WriteLine(iShape.Enveloping(biggerF));
+        C.WriteLine(iShape.Enveloping(smallerF));
+
+        C.WriteLine(iShape.Equals(polytope));
+        C.WriteLine(iShape.Equals(polytopeF));
+
+        C.WriteLine(iShape.IntersectionBounds(polytope));
+        C.WriteLine(iShape.IntersectionBounds(polytopeF));
+
+        C.WriteLine(iShape.Intersecting(polytope));
+        C.WriteLine(iShape.Intersecting(polytopeF));
+
+        C.WriteLine(iShape.Overlapping(biggerV));
+        C.WriteLine(iShape.Overlapping(smallerV));
+        C.WriteLine(iShape.Overlapping(biggerF));
+        C.WriteLine(iShape.Overlapping(smallerF));
+
+        C.WriteLine(iShape.Overlapping(polytope));
+        C.WriteLine(iShape.Overlapping(polytopeF));
+
+        C.WriteLine(iShape.Touching(polytope));
+        C.WriteLine(iShape.Touching(polytopeF));
+
+
+        //from 3d test
+        C.WriteLine(iShape.Bounds);
+
+        C.WriteLine(iShape.Enveloping(biggerV));
+        C.WriteLine(iShape.Enveloping(smallerV));
+        C.WriteLine(iShape.Enveloping(biggerF));
+        C.WriteLine(iShape.Enveloping(smallerF));
+
+        C.WriteLine(iShape.Enveloping(polytope));
+        C.WriteLine(iShape.Enveloping(polytopeF));
+
+        C.WriteLine(iShape.Equals(polytope));
+        C.WriteLine(iShape.Equals(polytopeF));
+
+        C.WriteLine(iShape.IntersectionBounds(polytope));
+        C.WriteLine(iShape.IntersectionBounds(polytopeF));
+
+        C.WriteLine(iShape.Intersecting(polytope));
+        C.WriteLine(iShape.Intersecting(polytopeF));
+
+        C.WriteLine(iShape.Overlapping(biggerV));
+        C.WriteLine(iShape.Overlapping(smallerV));
+        C.WriteLine(iShape.Overlapping(biggerF));
+        C.WriteLine(iShape.Overlapping(smallerF));
+
+        C.WriteLine(iShape.Overlapping(polytope));
+        C.WriteLine(iShape.Overlapping(polytopeF));
+
+        C.WriteLine(iShape.Touching(polytope));
+        C.WriteLine(iShape.Touching(polytopeF));
     }
 
-    private static void IShape2DTest<S, V, t, F>(IShape2D<S, V, t, F> iShape2D, S bigger, S smaller, V biggerV, V smallerV, t biggert, t smallert, F biggerF, F smallerF, IPolytope<Vector, Triangle> polytope, IPolytope<VectorF, TriangleF> polytopeF)
+    public static void IProjectionTest<T, P, V, Vf, S, Sf, A>(IProjection<T, P, V, Vf, S, Sf, A> iProjection, V projectorPosition, Vf projectorPositionF, S size, Sf sizeF, A angle, A rotation)
     {
-        IShapeTest(iShape2D, bigger, smaller, biggerV, smallerV, biggert, smallert, biggerF, smallerF);
-        IDirectionTest(iShape2D, biggerV, smallerV);
+        C.WriteLine("-IProjection-");
 
-        C.WriteLine("-IShape2D-");
-
-        C.WriteLine(iShape2D.GetType());
-        C.WriteLine(typeof(IShape2D<S, V, t, F>));
-        C.WriteLine(typeof(S));
+        C.WriteLine(iProjection.GetType());
+        C.WriteLine(typeof(IProjection<T, P, V, Vf, S, Sf, A>));
+        C.WriteLine(typeof(T));
+        C.WriteLine(typeof(P));
         C.WriteLine(typeof(V));
-        C.WriteLine(typeof(t));
-        C.WriteLine(typeof(F));
-        C.WriteLine(typeof(IPolytope<Vector, Triangle>));
-        C.WriteLine(typeof(IPolytope<VectorF, TriangleF>));
-
-        C.WriteLine(iShape2D.DirectionToShape(bigger));
-        C.WriteLine(iShape2D.DirectionToShape(smaller));
-
-        C.WriteLine(iShape2D.Enveloping(polytope));
-        C.WriteLine(iShape2D.Enveloping(polytopeF));
-
-        C.WriteLine(iShape2D.Enveloping(biggerV));
-        C.WriteLine(iShape2D.Enveloping(smallerV));
-        C.WriteLine(iShape2D.Enveloping(biggerF));
-        C.WriteLine(iShape2D.Enveloping(smallerF));
-
-        C.WriteLine(iShape2D.Equals(polytope));
-        C.WriteLine(iShape2D.Equals(polytopeF));
-
-        C.WriteLine(iShape2D.IntersectionArea(polytope));
-        C.WriteLine(iShape2D.IntersectionArea(polytopeF));
-
-        C.WriteLine(iShape2D.Intersecting(polytope));
-        C.WriteLine(iShape2D.Intersecting(polytopeF));
-
-        C.WriteLine(iShape2D.Overlapping(biggerV));
-        C.WriteLine(iShape2D.Overlapping(smallerV));
-        C.WriteLine(iShape2D.Overlapping(biggerF));
-        C.WriteLine(iShape2D.Overlapping(smallerF));
-
-        C.WriteLine(iShape2D.Overlapping(polytope));
-        C.WriteLine(iShape2D.Overlapping(polytopeF));
-
-        C.WriteLine(iShape2D.Touching(polytope));
-        C.WriteLine(iShape2D.Touching(polytopeF));
-    }
-
-    private static void IShape3DTest<S, V, t, F>(IShape3D<S, V, t, F> iShape3D, S bigger, S smaller, V biggerV, V smallerV, t biggert, t smallert, F biggerF, F smallerF, IPolytope<VectorZ, Tetrahedron> polytope, IPolytope<VectorZF, TetrahedronF> polytopeF)
-    {
-        IShapeTest(iShape3D, bigger, smaller, biggerV, smallerV, biggert, smallert, biggerF, smallerF);
-
-        C.WriteLine("-IShape3D-");
-
-        C.WriteLine(iShape3D.GetType());
-        C.WriteLine(typeof(IShape2D<S, V, t, F>));
+        C.WriteLine(typeof(Vf));
         C.WriteLine(typeof(S));
-        C.WriteLine(typeof(V));
-        C.WriteLine(typeof(t));
-        C.WriteLine(typeof(F));
-        C.WriteLine(typeof(IPolytope<Vector, Triangle>));
-        C.WriteLine(typeof(IPolytope<VectorF, TriangleF>));
+        C.WriteLine(typeof(Sf));
+        C.WriteLine(typeof(A));
 
-        C.WriteLine(iShape3D.Enveloping(biggerV));
-        C.WriteLine(iShape3D.Enveloping(smallerV));
-        C.WriteLine(iShape3D.Enveloping(biggerF));
-        C.WriteLine(iShape3D.Enveloping(smallerF));
+        C.WriteLine(iProjection.OrthographicProjection(projectorPosition, size, /*length,*/ rotation));
+        C.WriteLine(iProjection.OrthographicProjection(projectorPositionF, sizeF, /*lengthF,*/ rotation));
 
-        C.WriteLine(iShape3D.Enveloping(polytope));
-        C.WriteLine(iShape3D.Enveloping(polytopeF));
-
-        C.WriteLine(iShape3D.Equals(polytope));
-        C.WriteLine(iShape3D.Equals(polytopeF));
-
-        C.WriteLine(iShape3D.IntersectionArea(polytope));
-        C.WriteLine(iShape3D.IntersectionArea(polytopeF));
-
-        C.WriteLine(iShape3D.Intersecting(polytope));
-        C.WriteLine(iShape3D.Intersecting(polytopeF));
-
-        C.WriteLine(iShape3D.Overlapping(biggerV));
-        C.WriteLine(iShape3D.Overlapping(smallerV));
-        C.WriteLine(iShape3D.Overlapping(biggerF));
-        C.WriteLine(iShape3D.Overlapping(smallerF));
-
-        C.WriteLine(iShape3D.Overlapping(polytope));
-        C.WriteLine(iShape3D.Overlapping(polytopeF));
-
-        C.WriteLine(iShape3D.Touching(polytope));
-        C.WriteLine(iShape3D.Touching(polytopeF));
+        C.WriteLine(iProjection.PerspectiveProjection(projectorPosition, angle, /*length,*/ rotation));
+        C.WriteLine(iProjection.PerspectiveProjection(projectorPositionF, angle, /*lengthF,*/ rotation));
     }
 }
