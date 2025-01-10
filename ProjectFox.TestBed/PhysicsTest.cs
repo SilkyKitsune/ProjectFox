@@ -91,9 +91,9 @@ public static partial class GameEngineTest
             //test compound cases
             //ScanForEqual = true,
             //ScanForIntersecting = true,
-            //ScanForEnveloping = true,//this one doesn't work
+            ScanForEnveloping = true,//this one doesn't work
             //ScanForWithin = true,//doesn't work either
-            ScanForTouching = true,
+            //ScanForTouching = true,
         };
         new DebugScannerRectangle(new(TestRect, 3))
         {
@@ -114,7 +114,7 @@ public static partial class GameEngineTest
             bgColor = Grey
         };
 
-        new DebugController(window)
+        new DebugController(window.kbdMouse)
         {
             Scene = scene,
             //printFrameInfo = true,
@@ -192,7 +192,7 @@ public static partial class GameEngineTest
                 shapeColor = Green
             };
 
-        protected override void PreFrame()
+        protected override void PrePhysics()
         {
             KeyboardMouseState kbm = window.KeyboardMouseState;
 
@@ -277,9 +277,9 @@ public static partial class GameEngineTest
             }
         }
 
-        protected override void PostFrame()
+        protected override void PreDraw()
         {
-            Rectangle r = new(red.Position, red.size), b = new(blue.Position, blue.size), g = r.IntersectionArea(b);
+            Rectangle r = new(red.Position, red.size), b = new(blue.Position, blue.size), g = r.IntersectionBounds(b);
 
             green.shapeColor = Green;
 
@@ -314,9 +314,10 @@ public static partial class GameEngineTest
             size = new(20, 20);
         }
         
-        protected override void PreFrame()
+        protected override void PrePhysics()
         {
             KeyboardMouseState kbm = window.KeyboardMouseState;
+            KeyboardMouseDevice kbm_ = window.kbdMouse;
 
             Vector pos = Position;
             switch (M.FindSign(kbm.A, kbm.D))
@@ -376,9 +377,13 @@ public static partial class GameEngineTest
                     shapeOffset.y += 1;
                     break;
             }
+
+            if (kbm_.F.ChangedTrue) flipOffsetOnPixel = !flipOffsetOnPixel;
+            if (kbm_.H.ChangedTrue) horizontalFlipOffset = !horizontalFlipOffset;
+            if (kbm_.V.ChangedTrue) verticalFlipOffset = !verticalFlipOffset;
         }
 
-        protected override void PostFrame()
+        protected override void PreDraw()
         {
             bool eql = Equal, intr = Intersecting, env = Enveloping, wthn = Within, tch = Touching;
 
@@ -398,7 +403,7 @@ public static partial class GameEngineTest
     {
         public DebugKinematicRectangle(NameID name) : base(name) { }
 
-        protected override void PreFrame()
+        protected override void PrePhysics()
         {
             KeyboardMouseState kbm = window.KeyboardMouseState;
 
