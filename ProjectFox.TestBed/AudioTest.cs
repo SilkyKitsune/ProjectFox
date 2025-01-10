@@ -256,14 +256,40 @@ public static partial class GameEngineTest
 
     };
 
-    private static Sample[] TestShape3 = Sample.FromBytesMultiple(F.ReadAllBytes(Path)[0x2C..], true);
+    private static Sample[] TestShape3 = F.Exists(Path) ? Sample.FromBytesMultiple(F.ReadAllBytes(Path)[0x2C..], true) : null;
+
+    private static readonly Sample[] SquareWave = new Sample[109]
+    {
+        new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue),
+        new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue),
+        new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue),
+        new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue),
+        new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue),
+        new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue), new(short.MaxValue),
+
+        new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue),
+        new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue),
+        new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue),
+        new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue),
+        new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue),
+        new(short.MinValue), new(short.MinValue), new(short.MinValue), new(short.MinValue),
+    },
+        SawWave = GenerateSawtooth();
+
+    private static Sample[] GenerateSawtooth()//I think this generates backwards
+    {
+        Sample[] samples = new Sample[109];
+        for (int i = 0; i < samples.Length; i++)
+            samples[i] = new((short)((float)i / samples.Length * ushort.MaxValue + short.MinValue));
+        return samples;
+    }
 
     public static void AudioTest()
     {
         Engine.Frequency = 15;
         Engine.uncapped = false;
         Screen.position = new(0, 0);
-        Screen.Size = new(50, 50);
+        Screen.Size = new(200, 50);
         Screen.Scale = 8f;
         Screen.OneToOne = true;
         Screen.FullScreen = false;
@@ -306,19 +332,26 @@ public static partial class GameEngineTest
             //panning = 0.5f,
         };
 
-        new DebugController(window)
+        AudioLayer layer = new(new("AudLayr", 0))
+        {
+            Scene = scene,
+            audioChannel = channel
+        };
+
+        new DebugController(window.kbdMouse)
         {
             Scene = scene,
             //printFrameInfo = true,
         };
 
-        new SampleSourceTest()
+        new SampleSourceTest()//still clicks sometimes I think
         {
             Scene = scene,
+            //enabled = false,
+            //paused = true,
             drawPosition = true,
             channel = channel,
-            audible = false,
-            loop = true,
+            //audible = false,
             //exceedMaxVolume = true,
             //mono = true,
             //swapStereo = true,
@@ -326,38 +359,274 @@ public static partial class GameEngineTest
             //leftVolume = -1f,
             //rightVolume = 10f,
             //panning = 2f,
-            maxVolumeDistance = 5f,
-            minVolumeDistance = 10f,
+            maxVolumeDistance = 20f,
+            minVolumeDistance = 50f,
             waveShape = TestShape3,
-        }/*.listeners.Add(new DebugSetPiece(new("SetPiec", 0))
+            loop = true,
+        }.listeners.Add(new DebugSetPiece(/*new("SetPiec", 0)*/)
         {
             Scene = scene,
             drawPosition = true,
             positionColor = DebugColors.Cyan,
             visible = false,
-        })*/;
-        
+        });
+
+        new OSCSourceTest(TestShape3[..(TestShape3.Length / 32)], 5, OscillatorSource.Note.ANatural)
+        {
+            Scene = scene,
+            enabled = false,
+            drawPosition = true,
+            channel = channel,
+            audible = false,
+            volume = 0.5f,
+            repeatWaveShape = false,
+            //resetPhase = false,
+            //pitchOffset = 0f,
+            //freqOffset = 0f,
+        };
+
         return scene;
     }
 
     private sealed class SampleSourceTest : SampleSource
     {
-        private static int i = 0;
+        private static byte b = 0;
         
-        public SampleSourceTest() : base(new("SmplSrc", (byte)i++)) { }
+        public SampleSourceTest() : base(new("SmplSrc", b++)) { }
 
-        protected override void PreFrame()
+        protected override void PrePhysics()
         {
             KeyboardMouseDevice kbm = window.kbdMouse;
-            if (kbm.P.ChangedTrue) audible = !audible;
+            bool shift = kbm.Shift;
+            
+            if (kbm.P.ChangedTrue)
+            {
+                if (kbm.Ctrl) Speakers.audible = !Speakers.audible;
+                else if (shift) channel.audible = !channel.audible;
+                else audible = !audible;
+            }
+            else if (kbm.Zero.ChangedTrue) waveShapeIndex = 0;
             else if (kbm.E.ChangedTrue) exceedMaxVolume = !exceedMaxVolume;
-            else if (kbm.Shift && kbm.M.ChangedTrue) channel.monophonic = !channel.monophonic;
+            else if (shift && kbm.M.ChangedTrue) channel.monophonic = !channel.monophonic;
             else if (kbm.M.ChangedTrue) mono = !mono;
             else if (kbm.S.ChangedTrue) swapStereo = !swapStereo;
             else if (kbm.C.ChangedTrue) channel.volume = channel.volume == 0f ? 1f : 0f;
             else if (kbm.V.ChangedTrue) volume = volume == 0f ? 1f : 0f;
             else if (kbm.L.ChangedTrue) leftVolume = leftVolume == 0f ? 1f : 0f;
             else if (kbm.R.ChangedTrue) rightVolume = rightVolume == 0f ? 1f : 0f;
+        }
+    }
+
+    private sealed class OSCSourceTest : OscillatorSource
+    {
+        private static byte b = 0;
+
+        public OSCSourceTest(Sample[] waveShape, int octave, Note note) : base(new("OscSrce", b++), waveShape, octave, note) { }
+
+        private int baseOctave = 4;
+
+        protected override void PrePhysics()
+        {
+            KeyboardMouseDevice kbm = window.kbdMouse;
+
+            if (kbm.BackSlash.ChangedTrue) C.QueueMessage($"BaseOctave: {baseOctave += (kbm.Shift ? -1 : 1)}");
+
+            if (kbm.Z)
+            {
+                audible = true;
+                Note_ = Note.CNatural;
+                Octave = baseOctave;
+            }
+            else if (kbm.S)
+            {
+                audible = true;
+                Note_ = Note.CSharp;
+                Octave = baseOctave;
+            }
+            else if (kbm.X)
+            {
+                audible = true;
+                Note_ = Note.DNatural;
+                Octave = baseOctave;
+            }
+            else if (kbm.D)
+            {
+                audible = true;
+                Note_ = Note.DSharp;
+                Octave = baseOctave;
+            }
+            else if (kbm.C)
+            {
+                audible = true;
+                Note_ = Note.ENatural;
+                Octave = baseOctave;
+            }
+            else if (kbm.V)
+            {
+                audible = true;
+                Note_ = Note.FNatural;
+                Octave = baseOctave;
+            }
+            else if (kbm.G)
+            {
+                audible = true;
+                Note_ = Note.FSharp;
+                Octave = baseOctave;
+            }
+            else if (kbm.B)
+            {
+                audible = true;
+                Note_ = Note.GNatural;
+                Octave = baseOctave;
+            }
+            else if (kbm.H)
+            {
+                audible = true;
+                Note_ = Note.GSharp;
+                Octave = baseOctave;
+            }
+            else if (kbm.N)
+            {
+                audible = true;
+                Note_ = Note.ANatural;
+                Octave = baseOctave;
+            }
+            else if (kbm.J)
+            {
+                audible = true;
+                Note_ = Note.ASharp;
+                Octave = baseOctave;
+            }
+            else if (kbm.M)
+            {
+                audible = true;
+                Note_ = Note.BNatural;
+                Octave = baseOctave;
+            }
+
+            else if (kbm.Comma || kbm.Q)
+            {
+                audible = true;
+                Note_ = Note.CNatural;
+                Octave = baseOctave + 1;
+            }
+            else if (kbm.L || kbm.Two)
+            {
+                audible = true;
+                Note_ = Note.CSharp;
+                Octave = baseOctave + 1;
+            }
+            else if (kbm.Period || kbm.W)
+            {
+                audible = true;
+                Note_ = Note.DNatural;
+                Octave = baseOctave + 1;
+            }
+            else if (kbm.Semicolon || kbm.Three)
+            {
+                audible = true;
+                Note_ = Note.DSharp;
+                Octave = baseOctave + 1;
+            }
+            else if (kbm.ForwardSlash || kbm.E)
+            {
+                audible = true;
+                Note_ = Note.ENatural;
+                Octave = baseOctave + 1;
+            }
+            else if (kbm.R)
+            {
+                audible = true;
+                Note_ = Note.FNatural;
+                Octave = baseOctave + 1;
+            }
+            else if (kbm.Five)
+            {
+                audible = true;
+                Note_ = Note.FSharp;
+                Octave = baseOctave + 1;
+            }
+            else if (kbm.T)
+            {
+                audible = true;
+                Note_ = Note.GNatural;
+                Octave = baseOctave + 1;
+            }
+            else if (kbm.Six)
+            {
+                audible = true;
+                Note_ = Note.GSharp;
+                Octave = baseOctave + 1;
+            }
+            else if (kbm.Y)
+            {
+                audible = true;
+                Note_ = Note.ANatural;
+                Octave = baseOctave + 1;
+            }
+            else if (kbm.Seven)
+            {
+                audible = true;
+                Note_ = Note.ASharp;
+                Octave = baseOctave + 1;
+            }
+            else if (kbm.U)
+            {
+                audible = true;
+                Note_ = Note.BNatural;
+                Octave = baseOctave + 1;
+            }
+
+            else if (kbm.I)
+            {
+                audible = true;
+                Note_ = Note.CNatural;
+                Octave = baseOctave + 2;
+            }
+            else if (kbm.Nine)
+            {
+                audible = true;
+                Note_ = Note.CSharp;
+                Octave = baseOctave + 2;
+            }
+            else if (kbm.O)
+            {
+                audible = true;
+                Note_ = Note.DNatural;
+                Octave = baseOctave + 2;
+            }
+            else if (kbm.Zero)
+            {
+                audible = true;
+                Note_ = Note.DSharp;
+                Octave = baseOctave + 2;
+            }
+            else if (kbm.P)
+            {
+                audible = true;
+                Note_ = Note.ENatural;
+                Octave = baseOctave + 2;
+            }
+            else if (kbm.LeftBracket)
+            {
+                audible = true;
+                Note_ = Note.FNatural;
+                Octave = baseOctave + 2;
+            }
+            else if (kbm.Plus)
+            {
+                audible = true;
+                Note_ = Note.FSharp;
+                Octave = baseOctave + 2;
+            }
+            else if (kbm.RightBracket)
+            {
+                audible = true;
+                Note_ = Note.GNatural;
+                Octave = baseOctave + 2;
+            }
+
+            else audible = false;
         }
     }
 }
