@@ -112,12 +112,15 @@ public static partial class CoreEngineTest
         C.WriteLine(JoinHex(false, false, ", ", Vector.GetBytes(vectors, true)));
 
         //max/min methods need to be fixed
-        //IVectorTest(v, vBigger, vSmaller, vBiggert, vSmallert, vBiggerF, vSmallerF);
+        IVectorTest(v, vBigger, vSmaller, vBiggert, vSmallert, vBiggerF, vSmallerF);
+        //IDirectionTest(v, )
 
         C.WriteLine(Vector.PointFromRotationOrigin(rotation1));//should be ( 0.587785252292, -0.809016994375)
         C.WriteLine(Vector.PointFromRotationOrigin(rotation2));//should be (-0.951056516295,  0.309016994375), this one was wrong
 
-        IRotate2DTest(v, vBigger, vSmaller, vBiggerF, vSmallerF, rotation1, rotation2);
+        IRotateTest(v, vBigger, vSmaller, vBiggerF, vSmallerF, rotation1, rotation2);
+
+        IProjectionTest(v, new(), new(), 10, 15.5f, 30f, /*20, 20f,*/ 0f/*5f*/);
 
         C.WriteLine("-Operators-");
 
