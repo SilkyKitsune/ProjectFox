@@ -109,6 +109,79 @@ public static partial class CoreEngineTest
         C.WriteLine("-----\n");
         #endregion
 
+        #region GetSeparate
+        C.WriteLine("---GetSeparate---");
+
+        string DoubleJoin(byte[][] arrays)//make part of data?
+        {
+            string s = "";
+            foreach (byte[] array in arrays) s += JoinHex(false, false, ", ", array) + "; ";
+            return s;
+        }
+
+        C.WriteLine(DoubleJoin(GetBytesSeparate(new short[] { 0x1122, 0x3344, 0x5566, 0x7788 }, false)));
+        C.WriteLine(DoubleJoin(GetBytesSeparate(new short[] { 0x1122, 0x3344, 0x5566, 0x7788 }, true)));
+        try
+        {
+            short[] n = null;
+            C.WriteLine(DoubleJoin(GetBytesSeparate(n, false)));
+        }
+        catch (ArgumentNullException e)
+        {
+            C.WriteLine(e.Message);
+        }
+
+        C.WriteLine(DoubleJoin(GetBytesSeparate(new int[] { 0x11223344, 0x55667788 }, false)));
+        C.WriteLine(DoubleJoin(GetBytesSeparate(new int[] { 0x11223344, 0x55667788 }, true)));
+        try
+        {
+            int[] n = null;
+            C.WriteLine(DoubleJoin(GetBytesSeparate(n, false)));
+        }
+        catch (ArgumentNullException e)
+        {
+            C.WriteLine(e.Message);
+        }
+
+        C.WriteLine(DoubleJoin(GetBytesSeparate(new long[] { 0x1122334455667788, unchecked((long)0x99AABBCCEEDDFF00L) }, false)));
+        C.WriteLine(DoubleJoin(GetBytesSeparate(new long[] { 0x1122334455667788, unchecked((long)0x99AABBCCEEDDFF00L) }, true)));
+        try
+        {
+            long[] n = null;
+            C.WriteLine(DoubleJoin(GetBytesSeparate(n, false)));
+        }
+        catch (ArgumentNullException e)
+        {
+            C.WriteLine(e.Message);
+        }
+
+        C.WriteLine(DoubleJoin(GetBytesSeparate(new float[] { f1, f2 }, false)));
+        C.WriteLine(DoubleJoin(GetBytesSeparate(new float[] { f1, f2 }, true)));
+        try
+        {
+            float[] n = null;
+            C.WriteLine(DoubleJoin(GetBytesSeparate(n, false)));
+        }
+        catch (ArgumentNullException e)
+        {
+            C.WriteLine(e.Message);
+        }
+
+        C.WriteLine(DoubleJoin(GetBytesSeparate(new double[] { d1, d2 }, false)));
+        C.WriteLine(DoubleJoin(GetBytesSeparate(new double[] { d1, d2 }, true)));
+        try
+        {
+            double[] n = null;
+            C.WriteLine(DoubleJoin(GetBytesSeparate(n, false)));
+        }
+        catch (ArgumentNullException e)
+        {
+            C.WriteLine(e.Message);
+        }
+
+        C.WriteLine("-----\n");
+        #endregion
+
         #region To
         C.WriteLine("---To---");
 
@@ -316,6 +389,45 @@ public static partial class CoreEngineTest
         C.WriteLine("-----\n");
         #endregion
 
+        #region FloatOperators
+        C.WriteLine("---FloatOperators---");
+
+        float left32 = 0.15f, right32 = 0.14f, result32 = ANDFloat32(left32, right32);
+        C.WriteLine($"{left32} & {right32} = {result32}");
+        C.WriteLine($" {ToBinString(left32)}\n {ToBinString(right32)}\n {ToBinString(result32)}");
+
+        result32 = ORFloat32(left32, right32);
+        C.WriteLine($"{left32} | {right32} = {result32}");
+        C.WriteLine($" {ToBinString(left32)}\n {ToBinString(right32)}\n {ToBinString(result32)}");
+
+        result32 = XORFloat32(left32, right32);
+        C.WriteLine($"{left32} ^ {right32} = {result32}");
+        C.WriteLine($" {ToBinString(left32)}\n {ToBinString(right32)}\n {ToBinString(result32)}");
+
+        result32 = NOTFloat32(left32);
+        C.WriteLine($"~{left32} = {result32}");
+        C.WriteLine($" {ToBinString(left32)}\n {ToBinString(result32)}");
+
+
+        double left64 = 0.15f, right64 = 0.14f, result64 = ANDFloat64(left64, right64);
+        C.WriteLine($"{left64} & {right64} = {result64}");
+        C.WriteLine($" {ToBinString(left64)}\n {ToBinString(right64)}\n {ToBinString(result64)}");
+
+        result64 = ORFloat64(left64, right64);
+        C.WriteLine($"{left64} | {right64} = {result64}");
+        C.WriteLine($" {ToBinString(left64)}\n {ToBinString(right64)}\n {ToBinString(result64)}");
+
+        result64 = XORFloat64(left64, right64);
+        C.WriteLine($"{left64} ^ {right64} = {result64}");
+        C.WriteLine($" {ToBinString(left64)}\n {ToBinString(right64)}\n {ToBinString(result64)}");
+
+        result64 = NOTFloat64(left64);
+        C.WriteLine($"~{left64} = {result64}");
+        C.WriteLine($" {ToBinString(left64)}\n {ToBinString(result64)}");
+
+        C.WriteLine("-----\n");
+        #endregion
+
         #region PackBits
         C.WriteLine("---PackBits---");
 
@@ -518,12 +630,18 @@ public static partial class CoreEngineTest
             C.WriteLine(ToHexString(*(float*)&fi, true, false));
             C.WriteLine(ToHexString(*(float*)&fi, false, true));
             C.WriteLine(ToHexString(*(float*)&fi, true, true));
+            C.WriteLine(ToHexString(float.PositiveInfinity, false, false));
+            C.WriteLine(ToHexString(float.NegativeInfinity, false, false));
+            C.WriteLine(ToHexString(float.NaN, false, false));
 
             long dl = 0x0123456789ABCDEF;
             C.WriteLine(ToHexString(*(double*)&dl, false, false));
             C.WriteLine(ToHexString(*(double*)&dl, true, false));
             C.WriteLine(ToHexString(*(double*)&dl, false, true));
             C.WriteLine(ToHexString(*(double*)&dl, true, true));
+            C.WriteLine(ToHexString(double.PositiveInfinity, false, false));
+            C.WriteLine(ToHexString(double.NegativeInfinity, false, false));
+            C.WriteLine(ToHexString(double.NaN, false, false));
         }
         
         C.WriteLine("-----\n");
@@ -570,6 +688,9 @@ public static partial class CoreEngineTest
             C.WriteLine(ToBinString(*(float*)&fi, true, false));
             C.WriteLine(ToBinString(*(float*)&fi, false, true));
             C.WriteLine(ToBinString(*(float*)&fi, true, true));
+            C.WriteLine(ToBinString(float.PositiveInfinity, false, false));
+            C.WriteLine(ToBinString(float.NegativeInfinity, false, false));
+            C.WriteLine(ToBinString(float.NaN, false, false));
 
             long dl = 0b0101_0101__0101_0101____0101_0101__0101_0101____0101_0101__0101_0101____0101_0101__0101_0101;
             C.WriteLine(ToBinString(*(double*)&dl, false, false));
@@ -577,6 +698,9 @@ public static partial class CoreEngineTest
             C.WriteLine(ToBinString(*(double*)&dl, true, false));
             C.WriteLine(ToBinString(*(double*)&dl, false, true));
             C.WriteLine(ToBinString(*(double*)&dl, true, true));
+            C.WriteLine(ToBinString(double.PositiveInfinity, false, false));
+            C.WriteLine(ToBinString(double.NegativeInfinity, false, false));
+            C.WriteLine(ToBinString(double.NaN, false, false));
         }
 
         C.WriteLine("-----\n");
