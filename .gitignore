@@ -7,6 +7,7 @@
 CookieBot/
 GamepadMapper/
 ReactiveAvatar/
+StreamTactics/
 VSNoodleKNight/
 
 EngineNotes.txt
@@ -15,6 +16,8 @@ EngineNotes.md
 ProjectFox.HidApi/
 ProjectFox.NES/
 
+ProjectFox.TestBed/FileMaker.cs
+ProjectFox.TestBed/HaloShuffler.cs
 ProjectFox.TestBed/HIDTest.cs
 ProjectFox.TestBed/Instruction.cs
 ProjectFox.TestBed/SNESColor.cs
