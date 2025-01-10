@@ -51,7 +51,8 @@ public static partial class CoreEngineTest
         C.WriteLine(JoinHex(false, false, ", ", Rectangle.GetBytes(rectangles, false)));
         C.WriteLine(JoinHex(false, false, ", ", Rectangle.GetBytes(rectangles, true)));
 
-        IShape2DTest(r, rBigger, rSmaller, rBiggerV, rSmallerV, rBiggert, rSmallert, rBiggerF, rSmallerF, rBigger, rBiggerF);
+        IShapeTest(r, rBigger, rSmaller, rBiggerV, rSmallerV, rBiggert, rSmallert, rBiggerF, rSmallerF, rBigger, rBiggerF);
+        IDirectionTest(r, rBiggerV, rSmallerV);
 
         C.WriteLine("-Operators-");
 
@@ -135,7 +136,8 @@ public static partial class CoreEngineTest
         C.WriteLine(JoinHex(false, false, ", ", RectangleF.GetBytes(rectangles, false)));
         C.WriteLine(JoinHex(false, false, ", ", RectangleF.GetBytes(rectangles, true)));
 
-        IShape2DTest(rf, rfBigger, rfSmaller, rfBiggerV, rfSmallerV, rfBiggert, rfSmallert, rfBiggerF, rfSmallerF, rBigger, rfBiggerF);
+        IShapeTest(rf, rfBigger, rfSmaller, rfBiggerV, rfSmallerV, rfBiggert, rfSmallert, rfBiggerF, rfSmallerF, rfBiggerF, rBigger);
+        IDirectionTest(rf, rfBiggerV, rfSmallerV);
 
         C.WriteLine("-Operators-");
 
@@ -219,7 +221,8 @@ public static partial class CoreEngineTest
         C.WriteLine(JoinHex(false, false, ", ", Triangle.GetBytes(triangles, false)));
         C.WriteLine(JoinHex(false, false, ", ", Triangle.GetBytes(triangles, true)));
 
-        IShape2DTest(t, tBigger, tSmaller, tBiggerV, tSmallerV, tBiggert, tSmallert, tBiggerF, tSmallerF, tBigger, tBiggerF);
+        IShapeTest(new Triangle(2, 2, 4, 4, 6, 3), tBigger, tSmaller, tBiggerV, tSmallerV, tBiggert, tSmallert, tBiggerF, tSmallerF, tBigger, tBiggerF);
+        IDirectionTest(t, tBiggerV, tSmallerV);
 
         C.WriteLine("-Operators-");
 
@@ -270,7 +273,8 @@ public static partial class CoreEngineTest
         C.WriteLine(JoinHex(false, false, ", ", TriangleF.GetBytes(triangles, false)));
         C.WriteLine(JoinHex(false, false, ", ", TriangleF.GetBytes(triangles, true)));
 
-        IShape2DTest(tf, tfBigger, tfSmaller, tfBiggerV, tfSmallerV, tfBiggert, tfSmallert, tfBiggerF, tfSmallerF, tBigger, tfBiggerF);
+        IShapeTest(tf, tfBigger, tfSmaller, tfBiggerV, tfSmallerV, tfBiggert, tfSmallert, tfBiggerF, tfSmallerF, tfBiggerF, tBigger);
+        IDirectionTest(tf, tfBiggerV, tfSmallerV);
 
         C.WriteLine("-Operators-");
 
