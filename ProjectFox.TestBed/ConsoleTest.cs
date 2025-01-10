@@ -221,14 +221,14 @@ public static partial class GameEngineTest
         TestStateMachine machine = new();
 
         QueueMessage(machine.State);
-        machine.CurrentStatePreFrame();
-        machine.CurrentStatePostFrame();
+        machine.CurrentStatePrePhysics();
+        machine.CurrentStatePreDraw();
 
         machine.State = TestStateMachine.States.TestStateTwo;
 
         QueueMessage(machine.State);
-        machine.CurrentStatePreFrame();
-        machine.CurrentStatePostFrame();
+        machine.CurrentStatePrePhysics();
+        machine.CurrentStatePreDraw();
         #endregion
 
         Thread.Sleep(5000);
@@ -240,7 +240,7 @@ public static partial class GameEngineTest
     {
         internal TestObject(NameID name) : base(name) { }
 
-        protected override void PreFrame()
+        protected override void PrePhysics()
         {
             QueueMessage("TestObject.PreFrame()");
             QueueMessage(Name);
@@ -251,14 +251,14 @@ public static partial class GameEngineTest
             QueueMessage(pauseWalks);
         }
 
-        protected override void PostFrame() => QueueMessage("TestObject.PostFrame()");
+        protected override void PreDraw() => QueueMessage("TestObject.PostFrame()");
     }
 
     private sealed class TestObject2D : Object2D
     {
         internal TestObject2D(NameID name) : base(name) { }
 
-        protected override void PreFrame()
+        protected override void PrePhysics()
         {
             QueueMessage("TestObject2D.PreFrame()");
             QueueMessage(Name);
@@ -270,14 +270,14 @@ public static partial class GameEngineTest
             QueueMessage(Position);
         }
 
-        protected override void PostFrame() => QueueMessage("TestObject2D.PostFrame()");
+        protected override void PreDraw() => QueueMessage("TestObject2D.PostFrame()");
     }
 
     private sealed class TestObject3D : Object3D
     {
         internal TestObject3D(NameID name) : base(name) { }
 
-        protected override void PreFrame()
+        protected override void PrePhysics()
         {
             QueueMessage("TestObject3D.PreFrame()");
             QueueMessage(Name);
@@ -289,18 +289,16 @@ public static partial class GameEngineTest
             QueueMessage(Position);
         }
 
-        protected override void PostFrame() => QueueMessage("TestObject3D.PostFrame()");
+        protected override void PreDraw() => QueueMessage("TestObject3D.PostFrame()");
     }
 
     private sealed class TestCompoundObject : CompoundObject
     {
-        internal TestCompoundObject(NameID name) : base(name) => SetObject(0, pet);
+        internal TestCompoundObject(NameID name) : base(name, 1) => SetObject(0, pet);
 
         internal TestObject2D pet = new TestObject2D(new("TestPet", 0));
 
-        protected override int ObjectCount => 1;
-
-        protected override void PreFrame()
+        protected override void PrePhysics()
         {
             QueueMessage("TestCompoundObject.PreFrame()");
             QueueMessage(Name);
@@ -312,7 +310,7 @@ public static partial class GameEngineTest
             QueueMessage(Position);
         }
 
-        protected override void PostFrame() => QueueMessage("TestCompoundObject.PostFrame()");
+        protected override void PreDraw() => QueueMessage("TestCompoundObject.PostFrame()");
 
         public VectorZ Offset(int index) => GetOffset(index);
     }
