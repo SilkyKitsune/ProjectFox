@@ -33,6 +33,7 @@ public static class DebugColors
     public static readonly Color Cyan = new(0, 255, 255);
 
     public static readonly Color Orange = new(255, 128, 0);
+    public static readonly Color Purple = new(128, 0, 255);
 }
 
 public sealed class DebugScene : Scene
@@ -49,23 +50,23 @@ public sealed class DebugScene : Scene
         Screen.FullScreen = fullScreen;
         Debug.DrawDebug = true;
 
-        window = new("Debug Window", 50, 50, true);
+        //window = new("Debug Window", 50, 50, true);
 
         Engine.SceneList.Add(this);
         Engine.SceneList.ActiveScene = Name;
     }
 
-    private readonly GameWindow window;
+    //private readonly GameWindow window;
 }
 
 public sealed class DebugController : Object
 {
     private static readonly NameID ID = new("DbgCtrl", 0);
 
-    public DebugController(GameWindow window) : base(ID)
+    public DebugController(KeyboardMouseDevice kbm) : base(ID)
     {
         pauseWalks = true;
-        kbm = window.kbdMouse;
+        this.kbm = kbm;
     }
 
     private readonly KeyboardMouseDevice kbm;
@@ -78,28 +79,61 @@ public sealed class DebugController : Object
         QueueMessage($"FPS={Engine.Frequency}");
     }
 
-    protected override void PreFrame()
+    private void SetSleepPeriod(float value)
+    {
+        Engine.SleepPeriod = value;
+        QueueMessage($"RestPeriod={Engine.SleepPeriod}");
+    }
+
+    protected override void PrePhysics()
     {
         if (printFrameInfo)
         {
-            float time = Engine.TimeOfLastFrame;
-            QueueMessage($"{Engine.FrameCount}: {1000 / (time * Engine.MillisecondsPerFrame)} {time}");
+            float msPer = Engine.MillisecondsPerFrame, msPrev = Engine.MillisecondsOfLastFrame;
+            QueueMessage($"{Engine.FrameCount}: {1000f / msPrev} {msPrev / msPer}");
         }
 
         if (kbm.Insert.ChangedTrue)
         {
-            bool value = !Debug.DrawDebug;
-            DrawDebug = value;
-            QueueMessage($"DrawDebug={value}");
+            if (kbm.Ctrl)
+            {
+                byte value = (byte)(DebugAlpha == byte.MaxValue ? 128 : byte.MaxValue);
+                DebugAlpha = value;
+                QueueMessage($"DebugAlpha={value}");
+            }
+            else
+            {
+                bool value = !DrawDebug;
+                DrawDebug = value;
+                QueueMessage($"DrawDebug={value}");
+            }
         }
 
-        if (kbm.NumpadOne.ChangedTrue) SetFPS(1);
-        else if (kbm.NumpadTwo.ChangedTrue) SetFPS(5);
-        else if (kbm.NumpadThree.ChangedTrue) SetFPS(15);
-        else if (kbm.NumpadFour.ChangedTrue) SetFPS(30);
-        else if (kbm.NumpadFive.ChangedTrue) SetFPS(60);
-        else if (kbm.NumpadSix.ChangedTrue) SetFPS(120);
-
+        if (kbm.NumpadOne.ChangedTrue)
+            if (kbm.Ctrl) SetSleepPeriod(0f);
+            else SetFPS(1);
+        else if (kbm.NumpadTwo.ChangedTrue)
+            if (kbm.Ctrl) SetSleepPeriod(0.1f);
+            else SetFPS(5);
+        else if (kbm.NumpadThree.ChangedTrue)
+            if (kbm.Ctrl) SetSleepPeriod(0.25f);
+            else SetFPS(15);
+        else if (kbm.NumpadFour.ChangedTrue)
+            if (kbm.Ctrl) SetSleepPeriod(0.5f);
+            else SetFPS(30);
+        else if (kbm.NumpadFive.ChangedTrue)
+            if (kbm.Ctrl) SetSleepPeriod(0.75f);
+            else SetFPS(60);
+        else if (kbm.NumpadSix.ChangedTrue)
+            if (kbm.Ctrl) SetSleepPeriod(0.9f);
+            else SetFPS(120);
+        else if (kbm.NumpadSubtract.ChangedTrue)
+            if (kbm.Ctrl) SetSleepPeriod(Engine.SleepPeriod - 0.01f);
+            else SetFPS(Engine.Frequency - 1);
+        else if (kbm.NumpadAdd.ChangedTrue)
+            if (kbm.Ctrl) SetSleepPeriod(Engine.SleepPeriod + 0.01f);
+            else SetFPS(Engine.Frequency + 1);
+        
         int moveSpeed = kbm.Shift ? 4 : 1;
 
         if (kbm.Delete) Screen.position.x -= moveSpeed;
@@ -118,4 +152,21 @@ public sealed class DebugController : Object
 
         //if (kbm.RightBracket.ChangedTrue) Speakers.audible = !Speakers.audible;
     }
+}
+
+public sealed class MouseDrawer : Object2D
+{
+    private static readonly NameID ID = new("MousDrw", 0);
+
+    public MouseDrawer(GameWindow window) : base(ID)
+    {
+        pauseWalks = true;
+        drawPosition = true;
+        positionColor = DebugColors.Magenta;
+        kbm = window.kbdMouse;
+    }
+
+    private readonly KeyboardMouseDevice kbm;
+
+    protected override void PrePhysics() => Position = Screen.position + kbm.mouse;
 }
