@@ -4,6 +4,7 @@ using ProjectFox.CoreEngine.Math;
 using M = ProjectFox.CoreEngine.Math.Math;
 
 using ProjectFox.GameEngine;
+using ProjectFox.GameEngine.Input;
 using ProjectFox.GameEngine.Physics;
 using ProjectFox.GameEngine.Visuals;
 
@@ -19,6 +20,7 @@ public static partial class GameEngineTest
 {
     private static GameWindow window;
     private static GameAudioOutput audioOutput;
+    private static DebugController debugController;
 
     public static void MainTest()
     {
@@ -30,11 +32,12 @@ public static partial class GameEngineTest
         Screen.FullScreen = false;
         Debug.DrawDebug = true;
 
+        window = new("Test Window", 100, 100, true);
+        
         Scene scene = PositionDrawTest();
         Engine.SceneList.Add(scene);
         Engine.SceneList.ActiveScene = scene.Name;
 
-        window = new("Test Window", 100, 100, true);
         window.Start();
     }
 
@@ -50,6 +53,7 @@ public static partial class GameEngineTest
             new PhysicsRectangle(new("ScnRect", 0))
             {
                 Scene = scene,
+                enabled = false,
                 size = new(10, 10),
                 Position = new(20, 20),
                 drawShape = true
@@ -62,9 +66,22 @@ public static partial class GameEngineTest
             intersectingLines = true,
         };
 
+        new DebugObject3D(new("Obj3D", 0), window.kbdMouse)
+        {
+            Scene = scene,
+            //enabled = false,
+            drawPosition = true,
+            intersectingLines = true,
+            depthColor = true,
+            positionColor = Blue
+        };
+
         new DebugCompoundObject(new("TestCmp", 0),
             new(new("VslLayr", 0)) { Scene = scene })
-        { Scene = scene };
+        {
+            Scene = scene,
+            enabled = false
+        };
 
         return scene;
     }
@@ -75,7 +92,7 @@ public static partial class GameEngineTest
 
         private readonly PhysicsRectangle rectangle;
 
-        protected override void PreFrame()
+        protected override void PrePhysics()
         {
             KeyboardMouseState kbm = window.KeyboardMouseState;
 
@@ -101,7 +118,7 @@ public static partial class GameEngineTest
             Position = pos;
         }
 
-        protected override void PostFrame()
+        protected override void PreDraw()
         {
             Rectangle r = new(rectangle.Position + rectangle.shapeOffset, rectangle.size);
             rectangle.shapeColor = r.Overlapping(Position) ? Green : Blue;
@@ -112,12 +129,47 @@ public static partial class GameEngineTest
 
     private sealed class DebugObject3D : Object3D
     {
-        public DebugObject3D(NameID name) : base(name) { }
+        public DebugObject3D(NameID name, KeyboardMouseDevice kbm) : base(name) => this.kbm = kbm;
+
+        private readonly KeyboardMouseDevice kbm;
+
+        protected override void PrePhysics()
+        {
+            VectorZ pos = Position;
+            switch (M.FindSign(kbm.J, kbm.L))
+            {
+                case M.Sign.Neg:
+                    pos.x -= 1;
+                    break;
+                case M.Sign.Pos:
+                    pos.x += 1;
+                    break;
+            }
+            switch (M.FindSign(kbm.I, kbm.K))
+            {
+                case M.Sign.Neg:
+                    pos.y -= 1;
+                    break;
+                case M.Sign.Pos:
+                    pos.y += 1;
+                    break;
+            }
+            switch (M.FindSign(kbm.Semicolon, kbm.Apostrophe))
+            {
+                case M.Sign.Neg:
+                    pos.z -= 1;
+                    break;
+                case M.Sign.Pos:
+                    pos.z += 1;
+                    break;
+            }
+            Position = pos;
+        }
     }
 
     private sealed class DebugCompoundObject : CompoundObject
     {
-        public DebugCompoundObject(NameID name, VisualLayer layer) : base(name)
+        public DebugCompoundObject(NameID name, VisualLayer layer) : base(name, 6)
         {
             SetObject(0, new DebugObject2D(new("TestPet", 0), null)
             {
@@ -133,7 +185,10 @@ public static partial class GameEngineTest
                 intersectingLines = true
             }, new(10, 0, 0));
 
-            SetObject(2, new DebugObject3D(new("TestPet", 2)), new(0, 0, 0));
+            SetObject(2, new DebugObject3D(new("TestPet", 2), null)
+            {
+                paused = true,
+            }, new(0, 0, 0));
 
             SetObject(3, new PhysicsRectangle(new("TestPet", 3))
             {
@@ -192,10 +247,8 @@ public static partial class GameEngineTest
             };
             SetObject(5, sprite, new(20, 20, 0));
         }
- 
-        protected override int ObjectCount => 6;
 
-        protected override void PreFrame()
+        protected override void PrePhysics()
         {
             KeyboardMouseState kbm = window.KeyboardMouseState;
 
