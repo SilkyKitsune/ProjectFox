@@ -51,7 +51,7 @@ public sealed class TestWindow : DrawingWindow
 
         private readonly GameWindow window; 
 
-        protected override void PreFrame()
+        protected override void PrePhysics()
         {
             KeyboardMouseState kbm = window.KeyboardMouseState;
 
