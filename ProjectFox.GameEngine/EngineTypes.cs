@@ -18,6 +18,6 @@ public abstract class SceneType : NamedType
 
     internal Scene scene = null;
 
-    /// <summary>  </summary>
+    /// <summary> the instance's scene, will be null if the instance has no scene </summary>
     public abstract Scene Scene { get; set; }
 }
