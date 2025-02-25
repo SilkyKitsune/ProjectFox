@@ -70,7 +70,9 @@ public class PortableScreen : RasterObject//rename?
         int length = viewArea.size.x * viewArea.size.y;
         Color[] pixels = new Color[length];
 
+#if DEBUG
         Debug.debugLayer.portablePixels = new Color[length];//a second screen would clear layers before this one had finished, only if one screen was showing the other?
+#endif
 
         for (int i = 0; i < scene.visualLayers.codes.length; i++)
             scene.visualLayers.values.elements[i].portablePixels = new Color[length];
@@ -92,9 +94,11 @@ public class PortableScreen : RasterObject//rename?
             }
         }
 
+#if DEBUG
         if (drawDebug && Debug.debugLayer.visible && Debug.debugLayer.alpha != 0)
             Debug.debugLayer.Blend(Debug.debugLayer.portablePixels, pixels);
+#endif
 
-        texture = new ToggleTexture(viewArea.size, pixels);
+        texture = new(viewArea.size, pixels);
     }
 }
