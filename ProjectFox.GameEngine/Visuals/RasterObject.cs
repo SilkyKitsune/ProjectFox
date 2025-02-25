@@ -9,7 +9,7 @@ public abstract class RasterObject : Object2D
 
     public VisualLayer layer = null;
 
-    public bool visible = true;
+    public bool visible = true, clampToPalette = false, colorFallback = false;
 
     public VectorF parallaxFactor = new(1f, 1f);
     
