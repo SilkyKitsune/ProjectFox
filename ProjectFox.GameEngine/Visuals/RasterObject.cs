@@ -33,8 +33,6 @@ public abstract class RasterObject : Object2D
         base._draw(screen);
 #endif
 
-        //if (layer == null) layer = this.layer;
-
         if (!Screen.visible || !visible) return;
 
         if (layer == null)
@@ -179,50 +177,59 @@ public abstract class RasterObject : Object2D
             d = drawArea.position.y * screenArea.size.x + drawArea.position.x,
             destStep = screenArea.size.x - drawArea.size.x;
 
-        if (texture.indexed)
+        bool palettized = texture.palettized;
+
+        Color[] colors = null;
+        int lastColorIndex = 0;
+        if (palettized)//anyway to shorten this?
         {
             if (palette == null)
             {
+                if (colorFallback) palettized = false;
+                else
+                {
                 Engine.SendError(ErrorCodes.NullPalette, name);
                 return;
             }
-
-            Color[] colors = palette.GetColors();
+            }
+            else
+            {
+                colors = palette.GetColors();
             if (colors == null || colors.Length == 0)
             {
+                    if (colorFallback) palettized = false;
+                    else
+                    {
                 Engine.SendError(ErrorCodes.EmptyPalette, name);
                 return;
             }
-
-            bool usePaletteOffset = paletteOffset != 0;
-            int lastColorIndex = colors.Length - 1;
-            PalettizedTexture palettizedTexture = (PalettizedTexture)texture;
-            while (s > -1 && s < palettizedTexture.pixels.Length && d < layerPixels.Length)
-            {
-                byte index = palettizedTexture.pixels[horizontalFlipTexture ? s-- : s++];
-                if (usePaletteOffset) index = (byte)Math.Wrap(index + paletteOffset, 0, lastColorIndex);
-
-                Color pixel = index < colors.Length ? colors[index] : new(0, 0, 0, 0);
-                //send out of range error?
-
-                if (pixel.a == byte.MaxValue) layerPixels[d] = pixel;
-                else if (pixel.a > byte.MinValue) layerPixels[d] = layerPixels[d].Blend(pixel);
-                d++;
-
-                if (++x == drawArea.size.x)
-                {
-                    x = 0;
-                    s += sourceStep;
-                    d += destStep;
                 }
+                lastColorIndex = colors.Length - 1;
             }
-            return;
         }
 
-        ColorTexture colorTexture = (ColorTexture)texture;
-        while (s > -1 && s < colorTexture.pixels.Length && d < layerPixels.Length)
-        {
-            Color pixel = colorTexture.pixels[horizontalFlipTexture ? s-- : s++];
+            bool usePaletteOffset = paletteOffset != 0;
+        while (s > -1 && s < texture.pixels.Length && d < layerPixels.Length)
+            {
+            Color pixel = texture.pixels[horizontalFlipTexture ? s-- : s++];
+
+            if (palettized)//anyway to shorten all this?
+            {
+                int index = (int)pixel.hex;
+
+                if (index == int.MinValue || (!clampToPalette && (index < 0 || index >= colors.Length))) pixel = new(0, 0, 0, 0);
+                else
+                {
+                    if (clampToPalette)
+                {
+                        if (index >= colors.Length) index = lastColorIndex;
+                        else if (index < 0) index = 0;
+                }
+                    //will it work like this?
+                    pixel = colors[usePaletteOffset ? Math.Wrap(index + paletteOffset, 0, lastColorIndex) : index];//inline wrap?
+            }
+        }
+
             if (pixel.a == byte.MaxValue) layerPixels[d] = pixel;
             else if (pixel.a > byte.MinValue) layerPixels[d] = layerPixels[d].Blend(pixel);
             d++;
