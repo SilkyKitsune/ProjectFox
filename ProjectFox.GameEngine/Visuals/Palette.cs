@@ -18,60 +18,54 @@ public class ColorPalette : IPalette, IColorGroup
 {
     private static readonly NameID Name = new("ClrPltt", 0);
 
-    public ColorPalette(params Color[] colors) => this.colors.Add(colors);
-
-    public readonly ICollection<Color> colors = new Array<Color>(0x10);
-    
-    public Color this[byte index]
+    public ColorPalette(params Color[] colors)
     {
-        get
-        {
-            Array<Color> colors = (Array<Color>)this.colors;
-            return index >= colors.length ?
-                Engine.SendError<Color>(ErrorCodes.BadArgument, Name, nameof(index), "Invalid index in ColorPalette") :
-                colors.elements[index];
-        }
+        this.colors_.Add(colors);
+        this.colors = colors_;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Color[] GetColors() => colors.ToArray();
+    private readonly Array<Color> colors_ = new(0x10);
+    
+    public readonly ICollection<Color> colors;
+
+    public Color this[byte index]
+    {
+        get => index >= colors_.length ?
+                Engine.SendError<Color>(ErrorCodes.BadArgument, Name, nameof(index), "Invalid index in ColorPalette") :
+            colors_.elements[index];
+        }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void DeepCopy(out IPalette copy) => copy = new ColorPalette(colors.ToArray());
+    public Color[] GetColors() => colors_.ToArray();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void DeepCopy(out IPalette copy) => copy = new ColorPalette(colors_.ToArray());
 
     public bool Grayscale()
     {
-        Array<Color> colors = (Array<Color>)this.colors;
-
-        if (colors.length == 0) return false;
-
-        for (int i = 0; i < colors.length; i++) if (!colors.elements[i].IsGrey()) return false;
+        if (colors_.length == 0) return false;
+        for (int i = 0; i < colors_.length; i++) if (!colors_.elements[i].IsGrey()) return false;
         return true;
     }
 
     public void ModifyHSV(float hueModifier, float saturationModifier, float velocityModifier)
     {
-        Array<Color> colors = (Array<Color>)this.colors;
-        for (int i = 0; i < colors.length; i++)
+        for (int i = 0; i < colors_.length; i++)
         {
-            colors.elements[i].GetHSV(out float hue, out float sat, out float vel, out float a);
-            colors.elements[i] = Color.FromHSV(
+            colors_.elements[i].GetHSV(out float hue, out float sat, out float vel, out float a);
+            colors_.elements[i] = Color.FromHSV(
                 hue + hueModifier, sat * saturationModifier, vel * velocityModifier, a);
         }
     }
 
     public void HueShift(float modifier)
     {
-        Array<Color> colors = (Array<Color>)this.colors;
-        for (int i = 0; i < colors.length; i++)
-            colors.elements[i].Hue += modifier;
+        for (int i = 0; i < colors_.length; i++) colors_.elements[i].Hue += modifier;
     }
 
     public void SaturationMultiply(float modifier)
     {
-        Array<Color> colors = (Array<Color>)this.colors;
-        for (int i = 0; i < colors.length; i++)
-            colors.elements[i].Saturation *= modifier;
+        for (int i = 0; i < colors_.length; i++) colors_.elements[i].Saturation *= modifier;
     }
 
     public void ShallowCopy(out IPalette copy)
@@ -82,19 +76,15 @@ public class ColorPalette : IPalette, IColorGroup
 
     public void VelocityMultiply(float modifier)
     {
-        Array<Color> colors = (Array<Color>)this.colors;
-        for (int i = 0; i < colors.length; i++)
-            colors.elements[i].Velocity *= modifier;//colors.elements[i].Highest = (byte)(colors.elements[i].Highest * modifier);
+        for (int i = 0; i < colors_.length; i++) colors_.elements[i].Velocity *= modifier;//colors.elements[i].Highest = (byte)(colors.elements[i].Highest * modifier);
     }
 
     public bool UniformAlpha()
     {
-        Array<Color> colors = (Array<Color>)this.colors;
+        if (colors_.length == 0) return false;
 
-        if (colors.length == 0) return false;
-
-        byte a = colors.elements[0].a;
-        for (int i = 1; i < colors.length; i++) if (colors.elements[i].a != a) return false;
+        byte a = colors_.elements[0].a;
+        for (int i = 1; i < colors_.length; i++) if (colors_.elements[i].a != a) return false;
         return true;
     }
 }
@@ -103,41 +93,36 @@ public abstract class IndexPalette : IPalette
 {
     private static readonly NameID Name = new("IndxPlt", 0);
 
-    public IndexPalette(params byte[] indices) => this.indices.Add(indices);
+    public IndexPalette(params byte[] indices)
+    {
+        this.indices_.Add(indices);
+        this.indices = indices_;
+    }
 
-    public readonly ICollection<byte> indices = new Array<byte>(0x10);
+    private readonly Array<byte> indices_ = new(0x10);
+    
+    public readonly ICollection<byte> indices;
     
     public Color this[byte index]
     {
-        get
-        {
-            Array<byte> indices = (Array<byte>)this.indices;
-            return index >= indices.length ?
+        get => index >= indices_.length ?
                 Engine.SendError<Color>(ErrorCodes.BadArgument, Name, nameof(index), "Invalid index in IndexPalette") :
-                GetColor(indices.elements[index]);
+            GetColor(indices_.elements[index]);
         }
-    }
 
     public byte this[int index]
     {
-        get
-        {
-            Array<byte> indices = (Array<byte>)this.indices;
-            return index >= indices.length ?
+        get => index >= indices_.length ?
                 Engine.SendError<byte>(ErrorCodes.BadArgument, Name, nameof(index), "Invalid index in IndexPalette") :
-                indices.elements[index];
+            indices_.elements[index];
         }
-    }
 
     protected abstract Color GetColor(byte index);
 
     public Color[] GetColors()
     {
-        Array<byte> indices = (Array<byte>)this.indices;
-        Color[] colors = new Color[indices.length];
-        
-        for (int i = 0; i < indices.length; i++) colors[i] = GetColor(indices.elements[i]);
-
+        Color[] colors = new Color[indices_.length];
+        for (int i = 0; i < indices_.length; i++) colors[i] = GetColor(indices_.elements[i]);
         return colors;
     }
 
