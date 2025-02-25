@@ -24,7 +24,9 @@ public abstract class Texture : ICopy<Texture>
     //rotated copy? 1 clockwise right angle
 }
 
-public sealed class ColorTexture : Texture, IColorGroup
+#if DEBUG
+/// <summary> Deprecated (DEBUG Only) </summary>
+[System.Obsolete] public sealed class ColorTexture : Texture, IColorGroup
 {
     private static readonly NameID name = new("ClrTxtr", 0);
 
@@ -102,7 +104,8 @@ public sealed class ColorTexture : Texture, IColorGroup
     }
 }
 
-public sealed class PalettizedTexture : Texture
+/// <summary> Deprecated (DEBUG Only) </summary>
+[System.Obsolete] public sealed class PalettizedTexture : Texture
 {
     private static readonly NameID name = new("PltTxtr", 0);
 
@@ -198,6 +201,7 @@ public sealed class PalettizedTexture : Texture
 
     public override void ShallowCopy(out Texture copy) => copy = new PalettizedTexture(size, pixels);
 }
+#endif
 
 public sealed class TextureAnimation : Animation
 {
