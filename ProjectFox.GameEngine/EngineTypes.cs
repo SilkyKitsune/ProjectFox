@@ -17,6 +17,7 @@ public abstract class SceneType : NamedType
     internal SceneType(NameID name) : base(name) { }
 
     internal Scene scene = null;
+    internal int sceneIndex = -1;
 
     /// <summary> the instance's scene, will be null if the instance has no scene </summary>
     public abstract Scene Scene { get; set; }

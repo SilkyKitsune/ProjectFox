@@ -133,8 +133,9 @@ public class Scene : NamedType
         else
         {
             obj.scene?.RemoveObject(obj.name);
-            objects.AddDirect(obj.name, obj);
+            obj.sceneIndex = objects.codes.length;
             obj.scene = this;
+            objects.AddDirect(obj.name, obj);
         }
     }
 
@@ -162,8 +163,9 @@ public class Scene : NamedType
             else
             {
                 obj.scene?.RemoveObject(obj.name);
-                this.objects.AddDirect(obj.name, obj);
+                obj.sceneIndex = this.objects.codes.length;
                 obj.scene = this;
+                this.objects.AddDirect(obj.name, obj);
             }
     }
 
@@ -219,8 +221,9 @@ public class Scene : NamedType
         else
         {
             layer.scene?.RemoveVisualLayer(layer.name);
-            visualLayers.AddDirect(layer.name, layer);
+            layer.sceneIndex = visualLayers.codes.length;
             layer.scene = this;
+            visualLayers.AddDirect(layer.name, layer);
             layer.Clear();
         }
     }
@@ -244,8 +247,9 @@ public class Scene : NamedType
             else
             {
                 layer.scene?.RemoveVisualLayer(layer.name);
-                visualLayers.AddDirect(layer.name, layer);
+                layer.sceneIndex = this.visualLayers.codes.length;
                 layer.scene = this;
+                visualLayers.AddDirect(layer.name, layer);
                 layer.Clear();
             }
     }
@@ -302,8 +306,9 @@ public class Scene : NamedType
         else
         {
             channel.scene?.RemoveAudioChannel(channel.name);
-            audioChannels.AddDirect(channel.name, channel);
+            channel.sceneIndex = audioChannels.codes.length;
             channel.scene = this;
+            audioChannels.AddDirect(channel.name, channel);
             channel.Clear();
         }
     }
@@ -327,8 +332,9 @@ public class Scene : NamedType
             else
             {
                 channel.scene?.RemoveAudioChannel(channel.name);
-                audioChannels.AddDirect(channel.name, channel);
+                channel.sceneIndex = this.audioChannels.codes.length;
                 channel.scene = this;
+                audioChannels.AddDirect(channel.name, channel);
                 channel.Clear();
             }
     }
