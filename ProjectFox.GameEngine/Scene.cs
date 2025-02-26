@@ -17,36 +17,14 @@ public class Scene : NamedType
     internal readonly Table<VisualLayer> visualLayers = new(0x40);
     private readonly Table<AudioChannel> audioChannels = new(0x40);
 
-    private ClearModes clearMode = Clear;
     private readonly Sprite bg = new(new("SceneBG", 0)) { layer = screenLayer, parallaxFactor = new(0f, 0f) };
 
     public bool paused = false;
 
+    public ClearModes clearMode = Clear;
+
     /// <summary> the color used when ClearMode == Fill (black by default) </summary>
     public Color bgColor = new(0, 0, 0);
-    
-    public ClearModes ClearMode
-    {
-        get => clearMode;
-        set
-        {
-            switch (value)
-            {
-                case None:
-                    clearMode = value;
-                    break;
-                case Clear:
-                    goto case None;
-                case Fill:
-                    goto case None;
-                case DrawTexture:
-                    goto case None;
-                default:
-                    Engine.SendError(ErrorCodes.BadEnumValue, name, nameof(clearMode));
-                    break;
-            }
-        }
-    }
     
     public Texture BGTexture { get => bg.texture; set => bg.texture = value; }
 
