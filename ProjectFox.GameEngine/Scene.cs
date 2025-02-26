@@ -26,15 +26,19 @@ public class Scene : NamedType
     /// <summary> the color used when ClearMode == Fill (black by default) </summary>
     public Color bgColor = new(0, 0, 0);
     
+    /// <summary> the texture of the background when ClearMode == DrawTexture </summary>
     public Texture BGTexture { get => bg.texture; set => bg.texture = value; }
 
+    /// <summary> the palette of the background when ClearMode == DrawTexture </summary>
     public IPalette BGPalette { get => bg.palette; set => bg.palette = value; }
 
     /// <summary> the offset of the background when ClearMode == DrawTexture </summary>
     public Vector BGOffset { get => bg.drawOffset; set => bg.drawOffset = value; }
 
+    /// <summary> the vertical flip of the background when ClearMode == DrawTexture </summary>
     public bool BGVerticalFlip { get => bg.verticalFlipTexture; set => bg.verticalFlipTexture = value; }
 
+    /// <summary> the horizontal flip of the background when ClearMode == DrawTexture </summary>
     public bool BGHorizontalFlip { get => bg.horizontalFlipTexture; set => bg.horizontalFlipTexture = value; }
 
     internal void _frame()
