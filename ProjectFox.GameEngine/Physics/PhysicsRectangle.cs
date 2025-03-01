@@ -830,9 +830,9 @@ public class PhysicsRectangle : PhysicsShape
     }
 
 #if DEBUG
-    internal override void _draw(PortableScreen screen = null)
+    internal override void Draw(PortableScreen screen = null)
     {
-        base._draw(screen);
+        base.Draw(screen);
 
         bool usePortableScreen = screen != null;
 

@@ -110,11 +110,11 @@ public abstract class CompoundObject : Object
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal override void _draw(PortableScreen screen = null)
+    internal override void Draw(PortableScreen screen = null)
     {
         foreach (Object obj in objects)
             if (obj == null) Engine.SendError(ErrorCodes.NullPet, name);
-            else if (obj.enabled) obj._draw(screen);
+            else if (obj.enabled) obj.Draw(screen);
 #if DEBUG
         //draw pos
 #endif

@@ -27,10 +27,10 @@ public abstract class RasterObject : Object2D
         out Vector drawOffset, out bool verticalFlipOffset, out bool horizontalFlipOffset, out bool flipOffsetOnPixel,
         out IPalette palette, out int paletteOffset);
 
-    internal override void _draw(PortableScreen screen = null)
+    internal override void Draw(PortableScreen screen = null)
     {
 #if DEBUG
-        base._draw(screen);
+        base.Draw(screen);
 #endif
 
         if (!Screen.visible || !visible) return;

@@ -42,7 +42,7 @@ public abstract class Object : SceneType
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal virtual void _draw(PortableScreen screen = null) { }
+    internal virtual void Draw(PortableScreen screen = null) { }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal virtual void _frame()

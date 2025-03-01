@@ -38,7 +38,7 @@ public abstract class Object2D : Object
     }
 
 #if DEBUG
-    internal override void _draw(PortableScreen screen = null)
+    internal override void Draw(PortableScreen screen = null)
     {
         bool usePortableScreen = screen != null;
 

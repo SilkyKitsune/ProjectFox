@@ -36,7 +36,7 @@ public abstract class Object3D : Object
     }
 
 #if DEBUG
-    internal override void _draw(PortableScreen screen = null)
+    internal override void Draw(PortableScreen screen = null)
     {
         bool usePortableScreen = screen != null, zNeg = position.z < 0;
 

@@ -17,9 +17,9 @@ public class PortableScreen : RasterObject//rename?
     public bool drawViewArea = false, drawDebug = true;
     public Color viewAreaColor = new(byte.MaxValue, 0, 0);
 
-    internal override void _draw(PortableScreen screen = null)
+    internal override void Draw(PortableScreen screen = null)
     {
-        base._draw(screen);
+        base.Draw(screen);
 
         bool usePortableScreen = screen != null;
 
@@ -80,7 +80,7 @@ public class PortableScreen : RasterObject//rename?
         for (int i = 0; i < scene.objects.codes.length; i++)
         {
             Object obj = scene.objects.values.elements[i];
-            if (obj.enabled && !(obj is PortableScreen)) obj._draw(this);//portable screens can't show up in each other
+            if (obj.enabled && !(obj is PortableScreen)) obj.Draw(this);//portable screens can't show up in each other
         }
 
         for (int i = 0; i < scene.visualLayers.codes.length; i++)
