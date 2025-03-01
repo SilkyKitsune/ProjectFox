@@ -12,10 +12,10 @@ public abstract class Object : SceneType
     internal CompoundObject owner = null;
     internal int petIndex = -1;
 
-    /// <summary> controls whether the object should process behavior and visual/audio rendering, if true PreFrame/PostFrame will not be called </summary>
+    /// <summary> controls whether the object should process behavior and visual/audio rendering, if true PrePhysics, PreDraw, and PostDraw will not be called </summary>
     public bool enabled = true;
 
-    /// <summary> controls whether the object should process behavior, if true PreFrame/PostFrame will not be called </summary>
+    /// <summary> controls whether the object should process behavior, if true PrePhysics, PreDraw, and PostDraw will not be called </summary>
     public bool paused = false;
 
     /// <summary> controls whether paused is ignored </summary>
