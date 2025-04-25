@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
-using ProjectFox.CoreEngine.Math;
 using ProjectFox.CoreEngine.Collections;
+using ProjectFox.CoreEngine.Math;
 
 namespace ProjectFox.GameEngine.Visuals;
 
@@ -25,18 +25,15 @@ public class ColorPalette : IPalette, IColorGroup
     }
 
     private readonly Array<Color> colors_ = new(0x10);
-    
+
     public readonly ICollection<Color> colors;
 
     public Color this[int index]
     {
         get => index >= colors_.length ?
-                Engine.SendError<Color>(ErrorCodes.BadArgument, Name, nameof(index), "Invalid index in ColorPalette") :
-            colors_.elements[index];
-        }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Color[] GetColors() => colors_.ToArray();
+            Engine.SendError<Color>(ErrorCodes.BadArgument, Name, nameof(index), "Invalid index in ColorPalette")
+            : colors_.elements[index];
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DeepCopy(out IPalette copy) => copy = new ColorPalette(colors_.ToArray());
@@ -48,6 +45,14 @@ public class ColorPalette : IPalette, IColorGroup
         return true;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Color[] GetColors() => colors_.ToArray();
+
+    public void HueShift(float modifier)
+    {
+        for (int i = 0; i < colors_.length; i++) colors_.elements[i].Hue += modifier;
+    }
+
     public void ModifyHSV(float hueModifier, float saturationModifier, float velocityModifier)
     {
         for (int i = 0; i < colors_.length; i++)
@@ -56,11 +61,6 @@ public class ColorPalette : IPalette, IColorGroup
             colors_.elements[i] = Color.FromHSV(
                 hue + hueModifier, sat * saturationModifier, vel * velocityModifier, a);
         }
-    }
-
-    public void HueShift(float modifier)
-    {
-        for (int i = 0; i < colors_.length; i++) colors_.elements[i].Hue += modifier;
     }
 
     public void SaturationMultiply(float modifier)
@@ -74,11 +74,6 @@ public class ColorPalette : IPalette, IColorGroup
         Engine.SendError(ErrorCodes.NotImplemented, default);
     }
 
-    public void VelocityMultiply(float modifier)
-    {
-        for (int i = 0; i < colors_.length; i++) colors_.elements[i].Velocity *= modifier;//colors.elements[i].Highest = (byte)(colors.elements[i].Highest * modifier);
-    }
-
     public bool UniformAlpha()
     {
         if (colors_.length == 0) return false;
@@ -86,6 +81,11 @@ public class ColorPalette : IPalette, IColorGroup
         byte a = colors_.elements[0].a;
         for (int i = 1; i < colors_.length; i++) if (colors_.elements[i].a != a) return false;
         return true;
+    }
+
+    public void VelocityMultiply(float modifier)
+    {
+        for (int i = 0; i < colors_.length; i++) colors_.elements[i].Velocity *= modifier;//colors.elements[i].Highest = (byte)(colors.elements[i].Highest * modifier);
     }
 }
 
