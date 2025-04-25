@@ -163,7 +163,7 @@ public class Texture : ICopy<Texture>, IColorGroup
     {
         Color[] newPixels = new Color[pixels.Length];
         pixels.CopyTo(newPixels, 0);
-        copy = new(size, newPixels);
+        copy = new(size, newPixels) { palettized = palettized };
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
