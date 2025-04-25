@@ -183,15 +183,29 @@ public class Texture : ICopy<Texture>, IColorGroup
             pixels[i].Hue += modifier;
     }
 
-    public int MaxPalettized()//uint?
+    public int MaxPalettizedSigned()
     {
-        if (pixels.Length == 0) return -1;
+        if (pixels.Length == 0) return int.MinValue;
         if (pixels.Length == 1) return (int)pixels[0].hex;
 
         int max = int.MinValue;
         foreach (Color pixel in pixels)
         {
             int index = (int)pixel.hex;
+            if (index > max) max = index;
+        }
+        return max;
+    }
+
+    public uint MaxPalettizedUnsigned()
+    {
+        if (pixels.Length == 0) return 0;
+        if (pixels.Length == 1) return pixels[0].hex;
+
+        uint max = uint.MinValue;
+        foreach (Color pixel in pixels)
+        {
+            uint index = pixel.hex;
             if (index > max) max = index;
         }
         return max;
