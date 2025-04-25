@@ -6,7 +6,7 @@ namespace ProjectFox.GameEngine.Visuals;
 
 public interface IPalette : ICopy<IPalette>
 {
-    public abstract Color this[byte index] { get; }
+    public abstract Color this[int index] { get; }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal virtual void _animate() { }
@@ -28,7 +28,7 @@ public class ColorPalette : IPalette, IColorGroup
     
     public readonly ICollection<Color> colors;
 
-    public Color this[byte index]
+    public Color this[int index]
     {
         get => index >= colors_.length ?
                 Engine.SendError<Color>(ErrorCodes.BadArgument, Name, nameof(index), "Invalid index in ColorPalette") :
@@ -103,7 +103,7 @@ public abstract class IndexPalette : IPalette
     
     public readonly ICollection<byte> indices;
     
-    public Color this[byte index]
+    public Color this[int index]
     {
         get => index >= indices_.length ?
                 Engine.SendError<Color>(ErrorCodes.BadArgument, Name, nameof(index), "Invalid index in IndexPalette") :
@@ -146,7 +146,7 @@ public sealed class PaletteAnimation : Animation, IPalette
 
     public readonly ICollection<PaletteFrame> frames = new Array<PaletteFrame>(0x10);
 
-    public Color this[byte index]
+    public Color this[int index]
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => ((Array<PaletteFrame>)frames).elements[frameIndex].palette[index];
